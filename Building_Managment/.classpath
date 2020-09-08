@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="recsources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="recsources/mssql-jdbc-7.4.1.jre8.jar"/>
+	<classpathentry kind="lib" path="D:/לימודים/&apos;שנה ג/סמסטר א/פרויקט גמר/Building Managment/recsources/mysql-connector-java-8.0.21.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
