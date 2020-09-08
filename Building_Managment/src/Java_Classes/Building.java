@@ -21,7 +21,7 @@ public class Building implements Serializable {
 	private int totalApartments;
 	private final int max_num_of_Appartments;
 	
-	
+	//shalom
 
 	//creates a building with a representative
 	public Building(String city, String streetName, int buildingNumber, Resident representative,
