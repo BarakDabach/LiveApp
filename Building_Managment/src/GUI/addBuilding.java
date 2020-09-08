@@ -36,7 +36,7 @@ public class addBuilding {
 	static JButton btnOpenDefect;
 	static JComboBox cityCombo;
 	private static ResultSet rs;
-	//aSDSADAS
+	//aSDSADASdwqeq
 	private static PreparedStatement preStatment;
 	static String databaseURL 
 	= "jdbc:sqlserver://localhost;databaseName=BuildingsManagment;integratedSecurity=true;" ; 
