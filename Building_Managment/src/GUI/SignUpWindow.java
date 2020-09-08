@@ -32,7 +32,7 @@ public class SignUpWindow {
 	private JPasswordField PasswordTextField;
 	private JTextField emailTextField;
 	private JTextField textField;
-
+	//pushed
 	/**
 	 * Launch the application.
 	 */
