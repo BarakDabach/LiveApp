@@ -35,7 +35,6 @@ public class Main {
 		//opening the User Window if the class variable in the Login window object is user.
 		if(chooseWin.equalsIgnoreCase("user")) {
 			Resident_Window r = new Resident_Window();
-			
 			r.frmUserWindow.setVisible(true);
 			r.lblWelcomeBack.setText(logedInName);
 			
