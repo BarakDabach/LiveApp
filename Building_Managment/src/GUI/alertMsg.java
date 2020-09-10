@@ -22,6 +22,8 @@ import javax.swing.border.BevelBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Window.Type;
+import java.awt.Panel;
+import java.awt.Canvas;
 
 public class alertMsg {
 
@@ -44,7 +46,6 @@ public class alertMsg {
 		alertFrame.setType(Type.POPUP);
 		alertFrame.setTitle("Login Error");
 		alertFrame.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/windowIcon.png")).getImage());
-		alertFrame.setUndecorated(true);
 		alertFrame.getContentPane().setBackground(new Color(34, 36, 39));
 		alertFrame.setBounds(100, 100, 450, 193);
 		alertFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -102,7 +103,7 @@ public class alertMsg {
 		
 		JSeparator separator = new JSeparator();
 		separator.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.BLACK, null, null, null));
-		separator.setBackground(Color.GRAY);
+		separator.setBackground(new Color(102, 0, 204));
 		separator.setBounds(14, 98, 428, 2);
 		alertFrame.getContentPane().add(separator);
 		alertFrame.getContentPane().add(btnGotIt);
