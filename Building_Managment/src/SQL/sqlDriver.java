@@ -7,7 +7,7 @@ import org.omg.CORBA.Environment;
 
 public class sqlDriver {
 	static String databaseURL 
-	= "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7363722?" + "user=sql7363722&password=LkdXCLqNGX" ; 
+	= "jdbc:mysql://ublsmfmvckznbqpi:VmafhX8y6UtU02gurY6S@b6lhj0vgkoupcplbrbof-mysql.services.clever-cloud.com:3306/b6lhj0vgkoupcplbrbof" ; 
 	static Connection con;
 	static ResultSet result;
 	static Statement statment;
