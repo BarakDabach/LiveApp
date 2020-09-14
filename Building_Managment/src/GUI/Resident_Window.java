@@ -60,6 +60,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
 import javax.swing.plaf.TableUI;
 import javax.swing.plaf.basic.BasicComboBoxUI;
+import javax.swing.plaf.basic.BasicScrollPaneUI;
 import javax.swing.plaf.basic.BasicTableHeaderUI;
 import javax.swing.plaf.basic.BasicTableUI;
 import javax.swing.JSeparator;
@@ -109,7 +110,7 @@ public class Resident_Window {
 	private static JButton aboutTab;
 	private static JButton accountTab;
 	private static JTextArea messagefield;
-	private static String[] enumVal = new String[Defect_Status.values().length+1];
+	private static String[] enumVal ;
 	static JPanel[] panels;
 	static JButton[] tabButtons;
 	private static JTable defectTable;
@@ -340,7 +341,7 @@ public class Resident_Window {
 		String[][] defects = new String[0][0] ;
 		int tableRows = 0;
 		try {
-			preStatment = con.prepareStatement("select defectID,field,status,opend,description from Defect where buildingID = ?");
+			preStatment = con.prepareStatement("select defectID,field,status,opend,description,closed from Defect where buildingID = ? and ISNULL(closed)");
 			preStatment.setInt(1,buildingIDSQL);
 			rs = preStatment.executeQuery();
 			tableRows = 0;
@@ -409,8 +410,8 @@ public class Resident_Window {
 		tableModel1.setRowCount(tableRows);
 		defectTable.setModel(tableModel1);
 		
-		int[] coulmnWidth ={270,75,60,110};
-		centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+		int[] coulmnWidth ={500,100,150,140};
+		centerRenderer.setHorizontalAlignment( JLabel.LEFT );
 		
 		messageTable.setModel(tableModel1);	
 		int i = 0;
@@ -481,13 +482,13 @@ public class Resident_Window {
 		frmUserWindow = new JFrame();
 		frmUserWindow.setUndecorated(true);
 		frmUserWindow.getContentPane().setBackground(new Color(34, 36, 39));
-		frmUserWindow.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/windowIcon.png")).getImage());
+		frmUserWindow.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/logo_transparent.png")).getImage());
 		frmUserWindow.setResizable(false);
 		frmUserWindow.setTitle("User Window");
 		frmUserWindow.setBounds(100, 100, 1280, 750);
 		frmUserWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmUserWindow.getContentPane().setLayout(null);
-		
+		frmUserWindow.setLocationRelativeTo(null);
 		
 		
 		ResidentsFrm = new JPanel();
@@ -538,6 +539,16 @@ public class Resident_Window {
 		DefectFrm.setLayout(null);
 		
 		JComboBox sortDefects = new JComboBox();
+		enumVal = new String[Defect_Status.values().length+1];
+		Defect_Status[]defectsVal = Defect_Status.values();
+		
+		enumVal[0] = "";
+		for(int i = 1;i<enumVal.length;i++) {
+			
+			enumVal[i] = defectsVal[i-1].toString();
+			
+		}
+		sortDefects.setModel(new DefaultComboBoxModel(enumVal));
 		sortDefects.setVerifyInputWhenFocusTarget(false);
 		sortDefects.setOpaque(false);
 		sortDefects.setBackground(new Color(34,36,39));
@@ -548,8 +559,9 @@ public class Resident_Window {
 				
 				sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) defectTable.getModel());
 				RowFilter<DefaultTableModel, Object> rf  = RowFilter.regexFilter(sortDefects.getSelectedItem().toString(),defectTable.getColumnModel().getColumnIndex("Status"));
-        sorter.setRowFilter(rf);
-        defectTable.setRowSorter(sorter);
+				sorter.setRowFilter(rf);
+        
+				defectTable.setRowSorter(sorter);
 			}
 		});
 		sortDefects.setAlignmentY(Component.BOTTOM_ALIGNMENT);
@@ -557,55 +569,20 @@ public class Resident_Window {
 		sortDefects.setLightWeightPopupEnabled(false);
 		sortDefects.setFocusTraversalKeysEnabled(false);
 		sortDefects.setFocusable(false);
-		sortDefects.setForeground(new Color(255, 255, 255));
+		sortDefects.setForeground(Color.WHITE);
 		sortDefects.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		sortDefects.setModel(new DefaultComboBoxModel(enumVal));
+		
 		((JLabel)sortDefects.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 		sortDefects.setRequestFocusEnabled(false);
-		sortDefects.setBackground(new Color(51, 51, 51));
-		sortDefects.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 102, 204)));
+		sortDefects.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
 		sortDefects.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
 		sortDefects.setBounds(434, 212, 148, 22);
 		
 		
-		
+		sortDefects.setForeground(Color.WHITE);
 		DefectFrm.add(sortDefects);
-		defectTable = new JTable();
-		defectTable.setOpaque(false);
-		defectTable.setShowGrid(false);
-		defectTable.setUI(new BasicTableUI());
-		defectTable.setAutoCreateRowSorter(true);
-		defectTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-		defectTable.getTableHeader().setBackground(new Color(51, 51,51));
-		defectTable.setFocusTraversalKeysEnabled(false);
-		defectTable.setFocusable(false);
-		defectTable.setBackground(new Color(153, 102, 204));
-		defectTable.setBorder(new MatteBorder(0, 0, 0, 0, (Color) new Color(0, 0, 0)));
-		defectTable.setRowMargin(5);
-		defectTable.setForeground(new Color(255, 255, 255));
-		defectTable.setSelectionForeground(new Color(255, 255, 255));
-		defectTable.setShowVerticalLines(false);
-		defectTable.setSelectionBackground(new Color(255, 140, 0));
-		defectTable.setRequestFocusEnabled(false);
-		defectTable.setRowHeight(50);
-		defectTable.setIntercellSpacing(new Dimension(0, 0));
-		defectTable.setMinimumSize(new Dimension(0, 0));
-		defectTable.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		defectTable.setBounds(new Rectangle(0, 0, 780, 289));
-		defectTable.setBounds(18, 108, 508, 347);
-		defectTable.setFont(new Font("Yu Gothic UI Light", Font.PLAIN, 18));
-		defectTable.setGridColor(new Color(0, 0, 0));
-		defectTable.setTableHeader(null);
-		JScrollPane tablePanel = new JScrollPane(defectTable);
-		tablePanel.setForeground(new Color(255, 255, 255));
-		tablePanel.setAutoscrolls(true);
-		tablePanel.setBackground(new Color(153, 102, 204));
-		tablePanel.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		tablePanel.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 0, 0)));
-		tablePanel.setBounds(new Rectangle(106, 247, 780, 239));
-		DefectFrm.add(tablePanel, BorderLayout.CENTER);
 		
-		JButton btnAddDefect = new JButton("Add Defect");
+		JButton btnAddDefect = new JButton("Open a Defect");
 		btnAddDefect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				addDefectWindow addWindow = new addDefectWindow();
@@ -616,21 +593,11 @@ public class Resident_Window {
 		btnAddDefect.setHorizontalTextPosition(SwingConstants.RIGHT);
 		btnAddDefect.setIcon(null);
 		btnAddDefect.setFocusPainted(false);
-		btnAddDefect.setBackground(new Color(0, 0, 0));
+		btnAddDefect.setBackground(new Color(34,36,39));
 		btnAddDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		btnAddDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(255, 153, 0)));
-		btnAddDefect.setBounds(482, 585, 118, 39);
-		btnAddDefect.addMouseListener(new MouseAdapter() {
-			@Override
-				public void mouseEntered(MouseEvent e) {
-					btnAddDefect.setBackground(new Color(169,100,0));
-				}
-				
-				@Override
-				public void mouseExited(MouseEvent e) {
-					btnAddDefect.setBackground(new Color(255,140, 0));
-				}
-			});
+		btnAddDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		btnAddDefect.setBounds(755, 537, 173, 39);
+		
 		
 		       
 		       
@@ -662,21 +629,11 @@ public class Resident_Window {
 		btnRemoveDefect.setForeground(new Color(255, 255, 255));
 		btnRemoveDefect.setIcon(null);
 		btnRemoveDefect.setFocusPainted(false);
-		btnRemoveDefect.setBackground(new Color(0, 0, 0));
+		btnRemoveDefect.setBackground(new Color(34,36,39));
 		btnRemoveDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		btnRemoveDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(255, 153, 0)));
-		btnRemoveDefect.setBounds(327, 585, 143, 39);
-		btnRemoveDefect.addMouseListener(new MouseAdapter() {
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		btnRemoveDefect.setBackground(new Color(169,100,0));
-	}
-	
-	@Override
-	public void mouseExited(MouseEvent e) {
-		btnRemoveDefect.setBackground(new Color(0,0, 0));
-	}
-});
+		btnRemoveDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		btnRemoveDefect.setBounds(560, 537, 173, 39);
+
 		DefectFrm.add(btnRemoveDefect);
 		
 		JLabel lblSortBy = new JLabel("Sort By:");
@@ -700,15 +657,58 @@ public class Resident_Window {
 		lblDefects.setBounds(32, 32, 94, 34);
 		panel_5.add(lblDefects);
 		
-		JLabel lblViewAndOpen = new JLabel("View and Open Defects in Your Building");
+		JLabel lblViewAndOpen = new JLabel("View/ Open Defects in Your Building");
 		lblViewAndOpen.setHorizontalTextPosition(SwingConstants.LEFT);
 		lblViewAndOpen.setHorizontalAlignment(SwingConstants.LEFT);
 		lblViewAndOpen.setForeground(Color.WHITE);
 		lblViewAndOpen.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblViewAndOpen.setBounds(32, 79, 350, 34);
 		panel_5.add(lblViewAndOpen);
+		
+		JPanel tablePanel = new JPanel();
+		tablePanel.setBorder(null);
+		tablePanel.setBackground(new Color(34, 36, 39));
+		tablePanel.setBounds(41, 268, 887, 249);
+		DefectFrm.add(tablePanel);	
+		tablePanel.setLayout(new BorderLayout(0, 0));
+		
+
+		defectTable = new JTable();		
+		
+		defectTable.setBounds(new Rectangle(41, 268, 887, 249));
+				defectTable.setOpaque(false);
+				defectTable.setShowGrid(false);
+				defectTable.setUI(new BasicTableUI());
+				defectTable.setAutoCreateRowSorter(true);
+				defectTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+				defectTable.setFocusTraversalKeysEnabled(false);
+				defectTable.setFocusable(false);
+				defectTable.setBackground(new Color(34, 36, 39));
+				defectTable.setBorder(null);
+				defectTable.setRowMargin(10);
+				defectTable.setForeground(new Color(255, 255, 255));
+				defectTable.setSelectionForeground(new Color(255, 255, 255));
+				defectTable.setShowVerticalLines(false);
+				defectTable.setSelectionBackground(new Color(153, 102, 204));
+				defectTable.setRequestFocusEnabled(false);
+				defectTable.setRowHeight(50);
+				defectTable.setIntercellSpacing(new Dimension(0, 0));
 				
-						
+
+				defectTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
+				defectTable.setGridColor(new Color(0, 0, 0));
+				defectTable.getTableHeader().setBackground(new Color(34,36,39));
+				defectTable.getTableHeader().setForeground(new Color(255,255,255));
+				
+				
+		JScrollPane scrollTablePane = new JScrollPane(defectTable);
+		scrollTablePane.setBorder(null);
+		scrollTablePane.setBackground(new Color(34,36,39));
+		
+		tablePanel.add(scrollTablePane, BorderLayout.CENTER);
+		scrollTablePane.setPreferredSize(new Dimension(887, 249));
+		
+		
 		open_Frm = new JPanel();
 		open_Frm.setBorder(null);
 		open_Frm.setBounds(new Rectangle(0, 0, 1280, 0));
@@ -1479,14 +1479,7 @@ public class Resident_Window {
 		minimizeLabel.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/minimize.png")));
 		minimizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		minimizeLabel.setAlignmentX(1.0f);
-		Defect_Status[]defectsVal = Defect_Status.values();
 		
-		enumVal[0] = "";
-		for(int i = 1;i<enumVal.length;i++) {
-			
-			enumVal[i] = defectsVal[i-1].toString();
-			
-		}
 		String[] msgNames = new String[3];
 	       try {
 	       

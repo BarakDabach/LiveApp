@@ -21,6 +21,8 @@ import javax.swing.border.BevelBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Window.Type;
+import javax.swing.border.MatteBorder;
+import javax.swing.JPanel;
 
 public class AddDefect {
 
@@ -42,24 +44,47 @@ public class AddDefect {
 		alertFrame = new JFrame();
 		alertFrame.setType(Type.POPUP);
 		alertFrame.setTitle("Defect Added");
+		alertFrame.setLocationRelativeTo(null);
 		alertFrame.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/windowIcon.png")).getImage());
-		alertFrame.setUndecorated(false);
-		alertFrame.getContentPane().setBackground(new Color(255, 255, 255));
+		alertFrame.setUndecorated(true);
+		alertFrame.getContentPane().setBackground(new Color(34,36,39));
 		alertFrame.setBounds(100, 100, 450, 193);
 		alertFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		alertFrame.setLocation(500, 500);
 		alertFrame.getContentPane().setLayout(null);
 		
-		defectaddlbl = new JLabel("Defect Added Succesfully");
-		defectaddlbl.setForeground(new Color(0, 0, 0));
+		JPanel panel = new JPanel();
+		panel.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		panel.setBackground(new Color(34,36,39));
+		panel.setBounds(0, 0, 448, 193);
+		alertFrame.getContentPane().add(panel);
+		panel.setLayout(null);
+		
+		defectaddlbl = new JLabel("Defect Reported ");
+		defectaddlbl.setBounds(153, 56, 159, 36);
+		panel.add(defectaddlbl);
+		defectaddlbl.setForeground(new Color(255, 255, 255));
 		defectaddlbl.setIconTextGap(30);
 		defectaddlbl.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		defectaddlbl.setBounds(new Rectangle(90, 49, 264, 36));
 		defectaddlbl.setHorizontalAlignment(SwingConstants.CENTER);
-		alertFrame.getContentPane().add(defectaddlbl);
+		
+		JLabel lblDetailsAreIncorrect = new JLabel("Well Done!");
+		lblDetailsAreIncorrect.setBounds(162, 13, 128, 36);
+		panel.add(lblDetailsAreIncorrect);
+		lblDetailsAreIncorrect.setForeground(new Color(255, 255, 255));
+		lblDetailsAreIncorrect.setFont(new Font("Yu Gothic UI", Font.BOLD, 20));
+		lblDetailsAreIncorrect.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblDetailsAreIncorrect.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel label = new JLabel("");
+		label.setBounds(52, 37, 69, 70);
+		panel.add(label);
+		label.setIcon(new ImageIcon(AddDefect.class.getResource("/Media/defectsuccessIcon.png")));
 		
 		JButton btnGotIt = new JButton("Got It");
-		btnGotIt.setForeground(new Color(0, 0, 0));
+		btnGotIt.setBounds(0, 138, 448, 53);
+		panel.add(btnGotIt);
+		btnGotIt.setForeground(new Color(255, 255, 255));
 		btnGotIt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				alertFrame.dispose();
@@ -69,45 +94,24 @@ public class AddDefect {
 		});
 		btnGotIt.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
 		btnGotIt.setFocusPainted(false);
-		btnGotIt.setBorder(null);
-		btnGotIt.setBackground(new Color(255, 255, 255));
-		btnGotIt.setBounds(0, 100, 432, 50);
+		btnGotIt.setBorder(new MatteBorder(2, 2, 0, 2, (Color) new Color(102, 255, 204)));
+		btnGotIt.setBackground(new Color(34,36,39));
 		
 		btnGotIt.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-//				btnLogin.setBackground(new Color(46,139,87));
-				btnGotIt.setBackground(new Color(50,205,50));
-				btnGotIt.setForeground(Color.WHITE);
+//				
+				btnGotIt.setBackground(new Color(102,255,104));
+				
 			}
 			
 			@Override
 			public void mouseExited(MouseEvent e) {
-				btnGotIt.setBackground(new Color(255,255,255));
-				btnGotIt.setForeground(Color.black);
+				btnGotIt.setBackground(new Color(34,36,39));
+				
 			}
 		
 		});
-		
-		JSeparator separator = new JSeparator();
-		separator.setBorder(new BevelBorder(BevelBorder.LOWERED, Color.BLACK, null, null, null));
-		separator.setBackground(Color.GRAY);
-		separator.setBounds(2, 98, 428, 2);
-		alertFrame.getContentPane().add(separator);
-		alertFrame.getContentPane().add(btnGotIt);
-		
-		JLabel lblDetailsAreIncorrect = new JLabel("Message");
-		lblDetailsAreIncorrect.setForeground(new Color(255, 140, 0));
-		lblDetailsAreIncorrect.setFont(new Font("Yu Gothic UI", Font.BOLD, 20));
-		lblDetailsAreIncorrect.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblDetailsAreIncorrect.setHorizontalAlignment(SwingConstants.CENTER);
-		lblDetailsAreIncorrect.setBounds(115, 13, 210, 36);
-		alertFrame.getContentPane().add(lblDetailsAreIncorrect);
-		
-		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon(AddDefect.class.getResource("/Media/defectsuccescIcon.png")));
-		label.setBounds(33, 20, 60, 60);
-		alertFrame.getContentPane().add(label);
 		alertFrame.setLocationRelativeTo(null);
 	}
 }

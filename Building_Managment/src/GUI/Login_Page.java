@@ -216,6 +216,7 @@ public class Login_Page {
 		con =conec.connect();
 		
 		frmLoginPage = new JFrame();
+		frmLoginPage.setLocationRelativeTo(null);
 		frmLoginPage.getContentPane().setLocation(143, 0);
 		loginPanel = new JPanel();
 		JLabel loginLabel = new JLabel("Login");
@@ -224,7 +225,7 @@ public class Login_Page {
 		frmLoginPage.setUndecorated(true);
 		frmLoginPage.getContentPane().setFont(new Font("Yu Gothic UI", Font.PLAIN, 13));
 		
-		frmLoginPage.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/windowIcon.png")).getImage());
+		frmLoginPage.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/logo_transparent.png")).getImage());
 		frmLoginPage.setTitle("Login Page");
 		frmLoginPage.getContentPane().setBackground(new Color(34, 36, 39));
 		frmLoginPage.setBounds(100, 100, 668, 809);
@@ -296,6 +297,11 @@ public class Login_Page {
 		panel_1.add(lblToBeIn);
 		
 		label_1 = new JLabel("");
+		label_1.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
 		label_1.setIcon(new ImageIcon(Login_Page.class.getResource("/Media/minimize.png")));
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setAlignmentX(1.0f);

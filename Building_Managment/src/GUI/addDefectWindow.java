@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -21,11 +22,14 @@ import javax.swing.DefaultComboBoxModel;
 import Enums.Defect_Status;
 import Enums.professionalField;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.MatteBorder;
+import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPanel;
 
 public class addDefectWindow {
 
@@ -42,6 +46,10 @@ public class addDefectWindow {
 	static String userPhone = Login_Page.getPhoneEntry().getText();
 	static private JComboBox defectStatusCombo;
 	private JLabel lblStatus;
+	private JPanel panel;
+	private JLabel closeLabel;
+	private JLabel minimizeLabel;
+	private JPanel panel_1;
 	/**
 	 * Launch the application.
 	 */
@@ -70,61 +78,80 @@ public class addDefectWindow {
 	 */
 	private void initialize() {
 		addDefectFrame = new JFrame();
-		addDefectFrame.getContentPane().setBackground(new Color(192,192,192));
+		addDefectFrame.setUndecorated(true);
+		
+		addDefectFrame.getContentPane().setForeground(new Color(255, 255, 255));
+		addDefectFrame.getContentPane().setBackground(new Color(34,36,39));
 		addDefectFrame.setTitle("Add Defect");
-		addDefectFrame.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/windowIcon.png")).getImage());
-		addDefectFrame.setBounds(100, 100, 556, 477);
+		addDefectFrame.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/logo_transparent.png")).getImage());
+		addDefectFrame.setBounds(100, 100, 624, 530);
 		addDefectFrame.setDefaultCloseOperation(this.addDefectFrame.DISPOSE_ON_CLOSE);
 		addDefectFrame.getContentPane().setLayout(null);
+		addDefectFrame.setLocationRelativeTo(null);
+		panel_1 = new JPanel();
+		panel_1.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		panel_1.setBackground(new Color(34, 36, 39));
+		panel_1.setBounds(0, 0, 624, 530);
+		addDefectFrame.getContentPane().add(panel_1);
+		panel_1.setLayout(null);
 		
-		JLabel lblAddADefect = new JLabel("Add A Defect");
-		lblAddADefect.setForeground(Color.BLACK);
+		JLabel lblAddADefect = new JLabel("Report a Defect");
+		lblAddADefect.setBounds(210, 26, 189, 87);
+		panel_1.add(lblAddADefect);
+		lblAddADefect.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblAddADefect.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAddADefect.setVerticalTextPosition(SwingConstants.BOTTOM);
+		lblAddADefect.setForeground(new Color(255, 255, 255));
 		lblAddADefect.setIcon(new ImageIcon(addDefectWindow.class.getResource("/Media/addDefectIcon.png")));
-		lblAddADefect.setBounds(175, 13, 189, 58);
 		lblAddADefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		addDefectFrame.getContentPane().add(lblAddADefect);
 		
 		descTxtField = new JTextArea();
+		descTxtField.setBounds(154, 309, 304, 127);
+		panel_1.add(descTxtField);
+		descTxtField.setBackground(new Color(34, 36, 39));
+		descTxtField.setLineWrap(true);
+		descTxtField.setForeground(new Color(255, 255, 255));
 		descTxtField.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		descTxtField.setSelectionColor(new Color(255,140,0));
-		descTxtField.setCaretColor(Color.BLACK);
-		descTxtField.setBorder(new MatteBorder(2, 2, 2, 2, new Color(255, 140, 0)));
-		descTxtField.setBounds(128, 219, 304, 127);
-		addDefectFrame.getContentPane().add(descTxtField);
+		descTxtField.setSelectionColor(new Color(153, 153, 204));
+		descTxtField.setCaretColor(new Color(153, 51, 255));
+		descTxtField.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
 		
 		JLabel lblDescription = new JLabel("Description");
-		lblDescription.setForeground(Color.BLACK);
+		lblDescription.setBounds(251, 273, 120, 37);
+		panel_1.add(lblDescription);
+		lblDescription.setForeground(new Color(255, 255, 255));
 		lblDescription.setHorizontalAlignment(SwingConstants.CENTER);
 		lblDescription.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		lblDescription.setBounds(219, 183, 120, 37);
-		addDefectFrame.getContentPane().add(lblDescription);
 		
 		JLabel lblType = new JLabel("Type");
-		lblType.setForeground(Color.BLACK);
+		lblType.setBounds(358, 171, 62, 37);
+		panel_1.add(lblType);
+		lblType.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblType.setForeground(new Color(255, 255, 255));
 		lblType.setHorizontalAlignment(SwingConstants.CENTER);
 		lblType.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		lblType.setBounds(132, 100, 120, 37);
-		addDefectFrame.getContentPane().add(lblType);
 		
 		defectTypecombo = new JComboBox();
-		defectTypecombo.setBorder(new MatteBorder(1, 1, 1, 1, new Color(255, 140, 0)));
+		defectTypecombo.setBounds(329, 205, 136, 26);
+		panel_1.add(defectTypecombo);
+		defectTypecombo.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
 		defectTypecombo.setFocusable(false);
 		defectTypecombo.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
 		defectTypecombo.setModel(new DefaultComboBoxModel(professionalField.values()));
-		defectTypecombo.setBounds(128, 133, 136, 37);
 		defectTypecombo.setRequestFocusEnabled(false);
 		defectTypecombo.setLightWeightPopupEnabled(false);
-		defectTypecombo.setForeground(Color.BLACK);
+		defectTypecombo.setForeground(Color.white);
 		defectTypecombo.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
 		defectTypecombo.setFocusable(false);
 		defectTypecombo.setFocusTraversalKeysEnabled(false);
 		defectTypecombo.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		defectTypecombo.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(255, 127, 80)));
-		defectTypecombo.setBackground(Color.WHITE);
-		((JLabel)defectTypecombo.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-		addDefectFrame.getContentPane().add(defectTypecombo);
 		
-		btnOpenDefect = new JButton("ADD");
+		defectTypecombo.setBackground(new Color(34,36,39));
+		defectTypecombo.setUI(new BasicComboBoxUI());
+		
+		btnOpenDefect = new JButton("Report");
+		btnOpenDefect.setBounds(236, 462, 158, 39);
+		panel_1.add(btnOpenDefect);
 		btnOpenDefect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (descTxtField.getText().equals("")) {
@@ -156,74 +183,77 @@ public class addDefectWindow {
 					
 			}
 		});
-		btnOpenDefect.setIcon(new ImageIcon(addDefectWindow.class.getResource("/Media/addIcon.png")));
 		btnOpenDefect.addMouseListener(new MouseAdapter() {
 	    	   @Override
 				public void mouseEntered(MouseEvent e) {
-	    		   btnOpenDefect.setBackground(new Color(169,100,0));
+	    		   btnOpenDefect.setBackground(new Color(153,51,255));
 				}
 				
 				@Override
 				public void mouseExited(MouseEvent e) {
-					btnOpenDefect.setBackground(new Color(255,140, 0));
+					btnOpenDefect.setBackground(new Color(34,36,39));
 				}
 	       });
 		btnOpenDefect.setHorizontalTextPosition(SwingConstants.RIGHT);
-		btnOpenDefect.setForeground(Color.BLACK);
+		btnOpenDefect.setForeground(new Color(255, 255, 255));
 		btnOpenDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
 		btnOpenDefect.setFocusPainted(false);
-		btnOpenDefect.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		btnOpenDefect.setBackground(new Color(255, 140, 0));
-		btnOpenDefect.setBounds(408, 378, 118, 39);
-		addDefectFrame.getContentPane().add(btnOpenDefect);
-		
-		JButton clearMsg = new JButton("");
-		clearMsg.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				descTxtField.setText("");
-			}
-		});
-		clearMsg.setIcon(new ImageIcon(addDefectWindow.class.getResource("/Media/clearMessageIcon.png")));
-		clearMsg.addMouseListener(new MouseAdapter() {
-	    	   @Override
-				public void mouseEntered(MouseEvent e) {
-	    		   clearMsg.setBackground(new Color(169,100,0));
-				}
-				
-				@Override
-				public void mouseExited(MouseEvent e) {
-					clearMsg.setBackground(new Color(255,140, 0));
-				}
-	       });
-		clearMsg.setIconTextGap(0);
-		clearMsg.setHorizontalTextPosition(SwingConstants.RIGHT);
-		clearMsg.setForeground(Color.BLACK);
-		clearMsg.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		clearMsg.setFocusPainted(false);
-		clearMsg.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-		clearMsg.setBackground(new Color(255, 140, 0));
-		clearMsg.setBounds(128, 352, 37, 37);
-		addDefectFrame.getContentPane().add(clearMsg);
+		btnOpenDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 51, 255)));
+		btnOpenDefect.setBackground(new Color(34,36,39));
 		
 		defectStatusCombo = new JComboBox();
+		defectStatusCombo.setBounds(149, 205, 136, 26);
+		panel_1.add(defectStatusCombo);
 		defectStatusCombo.setModel(new DefaultComboBoxModel(Defect_Status.values()));
 		defectStatusCombo.setRequestFocusEnabled(false);
 		defectStatusCombo.setLightWeightPopupEnabled(false);
-		defectStatusCombo.setForeground(Color.BLACK);
+		defectStatusCombo.setForeground(Color.white);
 		defectStatusCombo.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
 		defectStatusCombo.setFocusable(false);
 		defectStatusCombo.setFocusTraversalKeysEnabled(false);
 		defectStatusCombo.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		defectStatusCombo.setBorder(new MatteBorder(1, 1, 1, 1, new Color(255, 140, 0)));
-		defectStatusCombo.setBackground(Color.WHITE);
-		defectStatusCombo.setBounds(296, 133, 136, 37);
-		addDefectFrame.getContentPane().add(defectStatusCombo);
+		defectStatusCombo.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		defectStatusCombo.setBackground(new Color(34,36,39));
+		defectStatusCombo.setUI(new BasicComboBoxUI());
 		
 		lblStatus = new JLabel("Status");
+		lblStatus.setBounds(185, 171, 54, 37);
+		panel_1.add(lblStatus);
 		lblStatus.setHorizontalAlignment(SwingConstants.CENTER);
-		lblStatus.setForeground(Color.BLACK);
+		lblStatus.setForeground(new Color(255, 255, 255));
 		lblStatus.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		lblStatus.setBounds(300, 100, 120, 37);
-		addDefectFrame.getContentPane().add(lblStatus);
+		
+		panel = new JPanel();
+		panel.setBounds(149, 126, 310, 2);
+		panel_1.add(panel);
+		panel.setBackground(new Color(102, 0, 204));
+		
+		closeLabel = new JLabel("");
+		closeLabel.setBounds(588, 13, 24, 24);
+		panel_1.add(closeLabel);
+		closeLabel.setIcon(new ImageIcon(addDefectWindow.class.getResource("/Media/close.png")));
+		closeLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				addDefectFrame.dispose();
+			}
+		});
+		closeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		closeLabel.setAlignmentX(1.0f);
+		
+		minimizeLabel = new JLabel("");
+		minimizeLabel.setBounds(553, 13, 24, 24);
+		panel_1.add(minimizeLabel);
+		minimizeLabel.setIcon(new ImageIcon(addDefectWindow.class.getResource("/Media/minimize.png")));
+		minimizeLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				addDefectFrame.setState(Frame.ICONIFIED);
+				
+			}
+		});
+		minimizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		minimizeLabel.setAlignmentX(1.0f);
+		((JLabel)defectTypecombo.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
 	}
 }
