@@ -27,6 +27,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -88,7 +89,15 @@ public class Admin_Window {
 	private static JPanel ContractorFrm;
 	private static JPanel BuildingsFrm;
 	private static JLabel clock;
+	private static JButton residentTab;
+	private static JButton HomeTab;
+	private static JButton DefectTab;
+	private static JButton inboxTab;
+	private static JButton sendMsgTab;
+	private static JButton aboutTab;
+	private static JButton accountTab;
 	static JPanel[] panels;
+	static JButton[] tabButtons;
 	private static JTable defectTable;
 	private static JTable buildingTable;
 	public static JLabel lblWelcomeBack;
@@ -116,6 +125,22 @@ public class Admin_Window {
 			}
 		}
 	}
+	
+	public static void setTabColorGray(JButton currentTab) {
+		tabButtons  = new JButton[]{residentTab,HomeTab,DefectTab,inboxTab,sendMsgTab,accountTab,aboutTab};
+		for(int i = 0;i<tabButtons.length;i++) {
+			if(tabButtons[i].equals(currentTab)) {
+				tabButtons[i].setBackground(new Color(86,70,119));
+				
+			}
+			
+			else {
+				tabButtons[i].setBackground(new Color(62,0,110));
+				
+			}
+		}
+	}
+	
 	/**
 	 * Launch the application.
 	 */
@@ -136,6 +161,11 @@ public class Admin_Window {
 		
 		
 	}
+	
+	
+	
+	
+	
 	
 	
 	//adding the residents names to the list of residents.
@@ -317,36 +347,228 @@ public class Admin_Window {
 //		}
 
 		frmAdminWindow = new JFrame();
-		frmAdminWindow.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/windowIcon.png")).getImage());
+		frmAdminWindow.setUndecorated(true);
+		frmAdminWindow.getContentPane().setBackground(new Color(34, 36, 39));
+		frmAdminWindow.setIconImage(new ImageIcon(Resident_Window.class.getResource("/Media/logo_transparent.png")).getImage());
 		frmAdminWindow.setResizable(false);
 		frmAdminWindow.setTitle("Admin Window");
-		frmAdminWindow.setBounds(100, 100, 712, 552);
+		frmAdminWindow.setBounds(100, 100, 1280, 750);
 		frmAdminWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmAdminWindow.getContentPane().setLayout(null);
+		frmAdminWindow.setLocationRelativeTo(null);
 														
-														ContractorFrm = new JPanel();
-														ContractorFrm.setVisible(false);
-							
+//		ContractorFrm = new JPanel();
+//		ContractorFrm.setVisible(false);
+//							
 
 							
 							
 							
-							BuildingsFrm = new JPanel();
-							BuildingsFrm.setVisible(false);
-									
-									
-									
-									ResidentsFrm = new JPanel();
-									ResidentsFrm.setVisible(false);
+//							BuildingsFrm = new JPanel();
+//							BuildingsFrm.setVisible(false);
+//						
+//						
+//						
+//						DefectFrm = new JPanel();
+//						DefectFrm.setVisible(false);
 						
 						
 						
-						DefectFrm = new JPanel();
-						DefectFrm.setVisible(false);
+//						ResidentsFrm = new JPanel();
+//						ResidentsFrm.setVisible(false);
+//						
+//						
+//						
+//						
+//
+//						
+//						ResidentsFrm.setBackground(new Color(169, 169, 169));
+//						ResidentsFrm.setBounds(174, 0, 532, 517);
+//						frmAdminWindow.getContentPane().add(ResidentsFrm);
+//						ResidentsFrm.setLayout(null);
+						
+							JScrollPane scrollPane = new JScrollPane();
+							
+							scrollPane.setFocusTraversalKeysEnabled(false);
+							scrollPane.setFocusable(false);
+							scrollPane.setBounds(23, 101, 203, 351);
+							
+//								ResidentsFrm.add(scrollPane);
+								
+								
+
+							
+								
+								list = new JList(new String[]{"",""}) ;
+								scrollPane.setViewportView(list);
+								list.setAlignmentX(Component.RIGHT_ALIGNMENT);
+								list.setRequestFocusEnabled(false);
+								list.setValueIsAdjusting(true);
+								list.setFocusable(false);
+								list.setFocusTraversalKeysEnabled(false);
+								list.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+								list.setSelectionForeground(new Color(0, 0, 0));
+								list.setSelectionBackground(new Color(255,140, 0));
+								list.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(255, 140, 0)));
+								list.setBackground(new Color(255, 255, 255));
+								
+								list.setSelectedIndex(0);
+								
+								JLabel label_3 = new JLabel("");
+								label_3.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/userImg1.png")));
+								label_3.setBounds(284, 76, 215, 212);
+//								ResidentsFrm.add(label_3);
+								
+	
+								
+								
+								JLabel lblResidents = new JLabel("Residents");
+								lblResidents.setForeground(new Color(0, 0, 0));
+								lblResidents.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+								lblResidents.setBounds(236, 16, 95, 22);
+//								ResidentsFrm.add(lblResidents);
+								
+								JLabel lblSelectResident = new JLabel("Select Resident");
+								lblSelectResident.setForeground(new Color(0, 0, 0));
+								lblSelectResident.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+								lblSelectResident.setBounds(23, 76, 123, 22);
+//								ResidentsFrm.add(lblSelectResident);
+								
+								JButton removeResident = new JButton("Remove");
+								removeResident.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										try {
+											preStatment = con.prepareStatement("delete from Resident where phone = ?");
+										} catch (SQLException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+						       			String phone = "";
+						       			for(int i = 0; i < list.getSelectedIndices().length; i++) {
+						       				phone = phones.get(list.getSelectedIndices()[i]);
+						       				try {
+												preStatment.setString(1,phone);
+												preStatment.executeUpdate();
+												addDataDefectTable();
+												
+											} catch (SQLException e1) {
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+						       		}
+						       			try {
+											enterResidetnsName();
+										} catch (SQLException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+									}
+								});
+								removeResident.setForeground(new Color(0, 0, 0));
+								removeResident.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/removeIcon.png")));
+								removeResident.setHorizontalTextPosition(SwingConstants.RIGHT);
+								removeResident.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+								removeResident.setFocusPainted(false);
+								removeResident.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+								removeResident.setBackground(new Color(255,140, 0));
+								removeResident.setBounds(321, 413, 123, 39);
+								removeResident.addMouseListener(new MouseAdapter() {
+									@Override
+									public void mouseEntered(MouseEvent e) {
+										removeResident.setBackground(new Color(169,100,0));
+									}
+									
+									@Override
+									public void mouseExited(MouseEvent e) {
+										removeResident.setBackground(new Color(255,140, 0));
+									}
+									
+									
+								});
+								
+								
+//								ResidentsFrm.add(removeResident);
+								
+								JButton addResident = new JButton("Add");
+								addResident.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										addResident addWindow = null;
+										try {
+											addWindow = new addResident();
+										} catch (SQLException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+							       		addWindow.addResidentFrame.setVisible(true);
+									}
+								});
+								addResident.setForeground(new Color(0, 0, 0));
+								addResident.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/addIcon.png")));
+								addResident.setIconTextGap(0);
+								addResident.setHorizontalTextPosition(SwingConstants.RIGHT);
+								addResident.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+								addResident.setFocusPainted(false);
+								addResident.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
+								addResident.setBackground(new Color(255, 140, 0));
+								addResident.setBounds(321, 343, 123, 39);
+								addResident.addMouseListener(new MouseAdapter() {
+									@Override
+									public void mouseEntered(MouseEvent e) {
+										addResident.setBackground(new Color(169,100,0));
+									}
+									
+									@Override
+									public void mouseExited(MouseEvent e) {
+										addResident.setBackground(new Color(255,140, 0));
+									}
+									
+									
+								});
+								
+								
+								
+								
+//								ResidentsFrm.add(addResident);
 						
 						
 							
-							
+						JPanel closeminimizePanel = new JPanel();
+						closeminimizePanel.setBounds(1195, 0, 78, 53);
+						frmAdminWindow.getContentPane().add(closeminimizePanel);
+						closeminimizePanel.setBackground(new Color(34, 36, 39));
+						closeminimizePanel.setLayout(null);
+						
+						JLabel closeLabel = new JLabel("");
+						closeLabel.setBounds(50, 13, 24, 24);
+						closeminimizePanel.add(closeLabel);
+						closeLabel.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								try {
+									con.close();
+								} catch (SQLException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								System.exit(0);
+							}
+						});
+						closeLabel.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/close.png")));
+						closeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+						closeLabel.setAlignmentX(1.0f);
+						
+						JLabel minimizeLabel = new JLabel("");
+						minimizeLabel.setBounds(12, 13, 24, 24);
+						closeminimizePanel.add(minimizeLabel);
+						minimizeLabel.addMouseListener(new MouseAdapter() {
+							@Override
+							public void mouseClicked(MouseEvent e) {
+								frmAdminWindow.setState(Frame.ICONIFIED);
+							}
+						});
+						minimizeLabel.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/minimize.png")));
+						minimizeLabel.setHorizontalAlignment(SwingConstants.CENTER);
+						minimizeLabel.setAlignmentX(1.0f);			
 							
 							
 							
@@ -509,159 +731,6 @@ public class Admin_Window {
 							       
 							       DefectFrm.add(lblSortBy);
 									
-						
-						
-						
-
-						
-						ResidentsFrm.setBackground(new Color(169, 169, 169));
-						ResidentsFrm.setBounds(174, 0, 532, 517);
-						frmAdminWindow.getContentPane().add(ResidentsFrm);
-						ResidentsFrm.setLayout(null);
-						
-							JScrollPane scrollPane = new JScrollPane();
-							
-							scrollPane.setFocusTraversalKeysEnabled(false);
-							scrollPane.setFocusable(false);
-							scrollPane.setBounds(23, 101, 203, 351);
-							
-								ResidentsFrm.add(scrollPane);
-								
-								
-
-							
-								
-								list = new JList(new String[]{"",""}) ;
-								scrollPane.setViewportView(list);
-								list.setAlignmentX(Component.RIGHT_ALIGNMENT);
-								list.setRequestFocusEnabled(false);
-								list.setValueIsAdjusting(true);
-								list.setFocusable(false);
-								list.setFocusTraversalKeysEnabled(false);
-								list.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-								list.setSelectionForeground(new Color(0, 0, 0));
-								list.setSelectionBackground(new Color(255,140, 0));
-								list.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(255, 140, 0)));
-								list.setBackground(new Color(255, 255, 255));
-								
-								list.setSelectedIndex(0);
-								
-								JLabel label_3 = new JLabel("");
-								label_3.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/userImg1.png")));
-								label_3.setBounds(284, 76, 215, 212);
-								ResidentsFrm.add(label_3);
-								
-	
-								
-								
-								JLabel lblResidents = new JLabel("Residents");
-								lblResidents.setForeground(new Color(0, 0, 0));
-								lblResidents.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-								lblResidents.setBounds(236, 16, 95, 22);
-								ResidentsFrm.add(lblResidents);
-								
-								JLabel lblSelectResident = new JLabel("Select Resident");
-								lblSelectResident.setForeground(new Color(0, 0, 0));
-								lblSelectResident.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-								lblSelectResident.setBounds(23, 76, 123, 22);
-								ResidentsFrm.add(lblSelectResident);
-								
-								JButton removeResident = new JButton("Remove");
-								removeResident.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										try {
-											preStatment = con.prepareStatement("delete from Resident where phone = ?");
-										} catch (SQLException e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
-						       			String phone = "";
-						       			for(int i = 0; i < list.getSelectedIndices().length; i++) {
-						       				phone = phones.get(list.getSelectedIndices()[i]);
-						       				try {
-												preStatment.setString(1,phone);
-												preStatment.executeUpdate();
-												addDataDefectTable();
-												
-											} catch (SQLException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
-						       		}
-						       			try {
-											enterResidetnsName();
-										} catch (SQLException e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
-									}
-								});
-								removeResident.setForeground(new Color(0, 0, 0));
-								removeResident.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/removeIcon.png")));
-								removeResident.setHorizontalTextPosition(SwingConstants.RIGHT);
-								removeResident.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-								removeResident.setFocusPainted(false);
-								removeResident.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-								removeResident.setBackground(new Color(255,140, 0));
-								removeResident.setBounds(321, 413, 123, 39);
-								removeResident.addMouseListener(new MouseAdapter() {
-									@Override
-									public void mouseEntered(MouseEvent e) {
-										removeResident.setBackground(new Color(169,100,0));
-									}
-									
-									@Override
-									public void mouseExited(MouseEvent e) {
-										removeResident.setBackground(new Color(255,140, 0));
-									}
-									
-									
-								});
-								
-								
-								ResidentsFrm.add(removeResident);
-								
-								JButton addResident = new JButton("Add");
-								addResident.addActionListener(new ActionListener() {
-									public void actionPerformed(ActionEvent e) {
-										addResident addWindow = null;
-										try {
-											addWindow = new addResident();
-										} catch (SQLException e1) {
-											// TODO Auto-generated catch block
-											e1.printStackTrace();
-										}
-							       		addWindow.addResidentFrame.setVisible(true);
-									}
-								});
-								addResident.setForeground(new Color(0, 0, 0));
-								addResident.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/addIcon.png")));
-								addResident.setIconTextGap(0);
-								addResident.setHorizontalTextPosition(SwingConstants.RIGHT);
-								addResident.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-								addResident.setFocusPainted(false);
-								addResident.setBorder(new LineBorder(new Color(0, 0, 0), 1, true));
-								addResident.setBackground(new Color(255, 140, 0));
-								addResident.setBounds(321, 343, 123, 39);
-								addResident.addMouseListener(new MouseAdapter() {
-									@Override
-									public void mouseEntered(MouseEvent e) {
-										addResident.setBackground(new Color(169,100,0));
-									}
-									
-									@Override
-									public void mouseExited(MouseEvent e) {
-										addResident.setBackground(new Color(255,140, 0));
-									}
-									
-									
-								});
-								
-								
-								
-								
-								ResidentsFrm.add(addResident);
-									
 									Defect_Status[]defectsVal = Defect_Status.values();
 									String[] enumVal = new String[Defect_Status.values().length+1];
 									enumVal[0] = "";
@@ -672,9 +741,9 @@ public class Admin_Window {
 									}
 						
 								
-								open_Frm = new JPanel();
-								open_Frm.setBackground(new Color(169, 169, 169));
-								open_Frm.setBounds(174, 0, 532, 517);
+//								open_Frm = new JPanel();
+//								open_Frm.setBackground(new Color(169, 169, 169));
+//								open_Frm.setBounds(174, 0, 532, 517);
 								frmAdminWindow.getContentPane().add(open_Frm);
 								open_Frm.setLayout(null);
 								
@@ -917,220 +986,323 @@ public class Admin_Window {
 		
 		String[] s = new String[] {"david","barak"};
 		
+//		JPanel tabFrm = new JPanel();
+//		tabFrm.setBorder(new MatteBorder(0, 0, 0, 2, (Color) new Color(0, 0, 0)));
+//		tabFrm.setBackground(new Color(255,140, 0));
+//		
+//		
+//		tabFrm.setBounds(0, 0, 174, 517);
+//		frmAdminWindow.getContentPane().add(tabFrm);
+//		tabFrm.setLayout(null);
+		
+		
 		JPanel tabFrm = new JPanel();
-		tabFrm.setBorder(new MatteBorder(0, 0, 0, 2, (Color) new Color(0, 0, 0)));
-		tabFrm.setBackground(new Color(255,140, 0));
+		tabFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		tabFrm.setBorder(new MatteBorder(0, 0, 0, 0, (Color) new Color(0, 0, 0)));
+		tabFrm.setBackground(new Color(62, 0, 110));
 		
 		
-		tabFrm.setBounds(0, 0, 174, 517);
+		tabFrm.setBounds(0, 0, 304, 750);
 		frmAdminWindow.getContentPane().add(tabFrm);
 		tabFrm.setLayout(null);
 		
-		JButton HomeTab = new JButton("Home");
-		HomeTab.setIconTextGap(0);
-		HomeTab.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				setPanel(open_Frm);
-				
-				
-			}
-		});
-		HomeTab.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				HomeTab.setBackground(new Color(169,100,0));
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				HomeTab.setBackground(new Color(255,140, 0));
-			}
-		});
 		
-		JButton DefectTab = new JButton("Defects");
-		DefectTab.setIconTextGap(0);
-		DefectTab.setForeground(new Color(0, 0, 0));
-		DefectTab.setHorizontalTextPosition(SwingConstants.RIGHT);
+		
+		JLabel lblLiveapp = new JLabel("LiveApp");
+		lblLiveapp.setForeground(Color.WHITE);
+		lblLiveapp.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
+		lblLiveapp.setBackground(new Color(34, 36, 39));
+		lblLiveapp.setBounds(20, 46, 101, 33);
+		tabFrm.add(lblLiveapp);
+		
+		JLabel label1 = new JLabel("");
+		label1.setBounds(112, 103, 64, 64);
+		tabFrm.add(label1);
+		label1.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
+		
+			
+		HomeTab  = new JButton("Home");
+		
+		HomeTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/homeIcon.png")));
+		HomeTab.setIconTextGap(10);
+		HomeTab.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		HomeTab.addActionListener(new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			setPanel(open_Frm);
+			setTabColorGray(HomeTab);
+			
+		}
+});
+		
+		HomeTab.setRequestFocusEnabled(false);
+		HomeTab.setForeground(new Color(255, 255, 255));
+		HomeTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+		HomeTab.setFocusTraversalKeysEnabled(false);
+		HomeTab.setFocusPainted(false);
+		HomeTab.setBorderPainted(false);
+		HomeTab.setBorder(null);
+		HomeTab.setBackground(new Color(86,70,119));
+		HomeTab.setAlignmentX(1.0f);
+		HomeTab.setBounds(0, 207, 304, 63);
+		
+		tabFrm.add(HomeTab);
+		
+		
+		
+		residentTab = new JButton("Residents");
+		residentTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/residentIcon.png")));
+		residentTab.setIconTextGap(10);
+		residentTab.setRequestFocusEnabled(false);
+		residentTab.setForeground(new Color(255, 255, 255));
+		residentTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+		residentTab.setFocusTraversalKeysEnabled(false);
+		residentTab.setFocusPainted(false);
+		residentTab.setBorderPainted(false);
+		residentTab.setBorder(null);
+		
+		
+		
+		
+		residentTab.setBackground(new Color(62, 0, 110));
+		residentTab.setAlignmentX(1.0f);
+		residentTab.setBounds(0, 270, 304, 63);
+		residentTab.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+//				getResidetnsNames();
+				setPanel(ResidentsFrm);
+				setTabColorGray(residentTab);
+				
+			}
+		});
+		tabFrm.add(residentTab);
+		DefectTab.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		DefectTab.setBounds(0, 333, 304, 63);
+		tabFrm.add(DefectTab);
+		
+		DefectTab = new JButton("Defects");
+		DefectTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/DefectIcon.png")));
+		DefectTab.setIconTextGap(10);
+		DefectTab.setForeground(new Color(255, 255, 255));
 		DefectTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+//				addDataDefectTable();
 				setPanel(DefectFrm);
-				try {
-					addDataDefectTable();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				setTabColorGray(DefectTab);
 				
 			}
 		});
-		DefectTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/DefectIcon.png")));
 		DefectTab.setRequestFocusEnabled(false);
 		DefectTab.setFocusTraversalKeysEnabled(false);
 		DefectTab.setFocusPainted(false);
 		DefectTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
 		DefectTab.setBorder(null);
 		DefectTab.setBorderPainted(false);
-		DefectTab.setBackground(new Color(255,140, 0));
-		DefectTab.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				DefectTab.setBackground(new Color(169,100,0));
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				DefectTab.setBackground(new Color(255,140, 0));
-			}
-			
-			
-		});
-		DefectTab.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		DefectTab.setBounds(12, 216, 150, 73);
-		tabFrm.add(DefectTab);
-		HomeTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/homeIcon.png")));
-		HomeTab.setRequestFocusEnabled(false);
-		HomeTab.setHorizontalTextPosition(SwingConstants.RIGHT);
-		HomeTab.setForeground(new Color(0, 0, 0));
-		HomeTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-		HomeTab.setFocusTraversalKeysEnabled(false);
-		HomeTab.setFocusPainted(false);
-		HomeTab.setBorderPainted(false);
-		HomeTab.setBorder(null);
-		HomeTab.setBackground(new Color(255, 140, 0));
-		HomeTab.setAlignmentX(1.0f);
-		HomeTab.setBounds(12, 20, 150, 73);
+		DefectTab.setBackground(new Color(62,0,110));
+
+//		HomeTab.setIconTextGap(0);
+//		HomeTab.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				setPanel(open_Frm);
+//				
+//				
+//			}
+//		});
+//		HomeTab.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//				HomeTab.setBackground(new Color(169,100,0));
+//			}
+//			
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//				HomeTab.setBackground(new Color(255,140, 0));
+//			}
+//		});
 		
-		tabFrm.add(HomeTab);
+//		JButton DefectTab = new JButton("Defects");
+//		DefectTab.setIconTextGap(0);
+//		DefectTab.setForeground(new Color(0, 0, 0));
+//		DefectTab.setHorizontalTextPosition(SwingConstants.RIGHT);
+//		DefectTab.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				
+//				setPanel(DefectFrm);
+//				try {
+//					addDataDefectTable();
+//				} catch (SQLException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				
+//			}
+//		});
+//		DefectTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/DefectIcon.png")));
+//		DefectTab.setRequestFocusEnabled(false);
+//		DefectTab.setFocusTraversalKeysEnabled(false);
+//		DefectTab.setFocusPainted(false);
+//		DefectTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+//		DefectTab.setBorder(null);
+//		DefectTab.setBorderPainted(false);
+//		DefectTab.setBackground(new Color(255,140, 0));
+//		DefectTab.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//				DefectTab.setBackground(new Color(169,100,0));
+//			}
+//			
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//				DefectTab.setBackground(new Color(255,140, 0));
+//			}
+//			
+//			
+//		});
+//		DefectTab.setAlignmentX(Component.RIGHT_ALIGNMENT);
+//		DefectTab.setBounds(12, 216, 150, 73);
+//		tabFrm.add(DefectTab);
+//		HomeTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/homeIcon.png")));
+//		HomeTab.setRequestFocusEnabled(false);
+//		HomeTab.setHorizontalTextPosition(SwingConstants.RIGHT);
+//		HomeTab.setForeground(new Color(0, 0, 0));
+//		HomeTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+//		HomeTab.setFocusTraversalKeysEnabled(false);
+//		HomeTab.setFocusPainted(false);
+//		HomeTab.setBorderPainted(false);
+//		HomeTab.setBorder(null);
+//		HomeTab.setBackground(new Color(255, 140, 0));
+//		HomeTab.setAlignmentX(1.0f);
+//		HomeTab.setBounds(12, 20, 150, 73);
+//		
+//		tabFrm.add(HomeTab);
 		
-		JButton residentTab = new JButton("Residents");
-		residentTab.setIconTextGap(0);
-		residentTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/residentIcon.png")));
-		residentTab.setRequestFocusEnabled(false);
-		residentTab.setHorizontalTextPosition(SwingConstants.RIGHT);
-		residentTab.setForeground(new Color(0, 0, 0));
-		residentTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-		residentTab.setFocusTraversalKeysEnabled(false);
-		residentTab.setFocusPainted(false);
-		residentTab.setBorderPainted(false);
-		residentTab.setBorder(null);
-		residentTab.setBackground(new Color(255, 140, 0));
-		residentTab.setAlignmentX(1.0f);
-		residentTab.setBounds(12, 116, 150, 73);
-		residentTab.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+//		JButton residentTab = new JButton("Residents");
+//		residentTab.setIconTextGap(0);
+//		residentTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/residentIcon.png")));
+//		residentTab.setRequestFocusEnabled(false);
+//		residentTab.setHorizontalTextPosition(SwingConstants.RIGHT);
+//		residentTab.setForeground(new Color(0, 0, 0));
+//		residentTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+//		residentTab.setFocusTraversalKeysEnabled(false);
+//		residentTab.setFocusPainted(false);
+//		residentTab.setBorderPainted(false);
+//		residentTab.setBorder(null);
+//		residentTab.setBackground(new Color(255, 140, 0));
+//		residentTab.setAlignmentX(1.0f);
+//		residentTab.setBounds(12, 116, 150, 73);
+//		residentTab.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				
+//				setPanel(ResidentsFrm);
+//				try {
+//					enterResidetnsName();
+//				} catch (SQLException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			}
+//		});
+//		residentTab.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//				residentTab.setBackground(new Color(169,100,0));
+//			}
+//			
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//				residentTab.setBackground(new Color(255,140, 0));
+//			}
+//		});
+//		tabFrm.add(residentTab);
+		
+		
+		
+		
+		
+		
+		
+		
+//		JButton buildingsTab = new JButton("Buildings");
+//		buildingsTab.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				
+//				setPanel(BuildingsFrm);
+//				try {
+//					addDataBuildingTable();
+//				} catch (SQLException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//				
+//			}
+//		});
+//		
+//		buildingsTab.setIconTextGap(0);
+//		buildingsTab.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/buildingsIcon.png")));
+//		
+//		buildingsTab.setRequestFocusEnabled(false);
+//		buildingsTab.setHorizontalTextPosition(SwingConstants.RIGHT);
+//		buildingsTab.setForeground(new Color(0, 0, 0));
+//		buildingsTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+//		buildingsTab.setFocusTraversalKeysEnabled(false);
+//		buildingsTab.setFocusPainted(false);
+//		buildingsTab.setBorderPainted(false);
+//		buildingsTab.setBorder(null);
+//		buildingsTab.setBackground(new Color(255, 140, 0));
+//		buildingsTab.setAlignmentX(1.0f);
+//		buildingsTab.setBounds(12, 319, 150, 73);
+//		buildingsTab.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseEntered(MouseEvent e) {
+//				buildingsTab.setBackground(new Color(169,100,0));
+//			}
+//			
+//			@Override
+//			public void mouseExited(MouseEvent e) {
+//				buildingsTab.setBackground(new Color(255,140, 0));
+//			}
+//		});
+//		
+//				tabFrm.add(buildingsTab);
 				
-				setPanel(ResidentsFrm);
-				try {
-					enterResidetnsName();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		residentTab.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				residentTab.setBackground(new Color(169,100,0));
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				residentTab.setBackground(new Color(255,140, 0));
-			}
-		});
-		tabFrm.add(residentTab);
-		
-		
-		
-		
-		
-		
-		
-		
-		JButton buildingsTab = new JButton("Buildings");
-		buildingsTab.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				setPanel(BuildingsFrm);
-				try {
-					addDataBuildingTable();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
-			}
-		});
-		
-		buildingsTab.setIconTextGap(0);
-		buildingsTab.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/buildingsIcon.png")));
-		
-		buildingsTab.setRequestFocusEnabled(false);
-		buildingsTab.setHorizontalTextPosition(SwingConstants.RIGHT);
-		buildingsTab.setForeground(new Color(0, 0, 0));
-		buildingsTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-		buildingsTab.setFocusTraversalKeysEnabled(false);
-		buildingsTab.setFocusPainted(false);
-		buildingsTab.setBorderPainted(false);
-		buildingsTab.setBorder(null);
-		buildingsTab.setBackground(new Color(255, 140, 0));
-		buildingsTab.setAlignmentX(1.0f);
-		buildingsTab.setBounds(12, 319, 150, 73);
-		buildingsTab.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				buildingsTab.setBackground(new Color(169,100,0));
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				buildingsTab.setBackground(new Color(255,140, 0));
-			}
-		});
-		
-				tabFrm.add(buildingsTab);
-				
-				JButton contractorsTab = new JButton("Contractors");
-				contractorsTab.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						setPanel(ContractorFrm);
-						try {
-							addDataContractorTable();
-						} catch (SQLException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-					}
-				});
-				contractorsTab.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseEntered(MouseEvent e) {
-						contractorsTab.setBackground(new Color(169,100,0));
-					}
-					
-					@Override
-					public void mouseExited(MouseEvent e) {
-						contractorsTab.setBackground(new Color(255,140, 0));
-					}
-				});
-				contractorsTab.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/contractorIcon.png")));
-				contractorsTab.setRequestFocusEnabled(false);
-				contractorsTab.setIconTextGap(0);
-				contractorsTab.setHorizontalTextPosition(SwingConstants.RIGHT);
-				contractorsTab.setForeground(new Color(0, 0, 0));
-				contractorsTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-				contractorsTab.setFocusTraversalKeysEnabled(false);
-				contractorsTab.setFocusPainted(false);
-				contractorsTab.setBorderPainted(false);
-				contractorsTab.setBorder(null);
-				contractorsTab.setBackground(new Color(255, 140, 0));
-				contractorsTab.setAlignmentX(1.0f);
-				contractorsTab.setBounds(12, 416, 150, 73);
-				tabFrm.add(contractorsTab);
-        
-		
+//				JButton contractorsTab = new JButton("Contractors");
+//				contractorsTab.addActionListener(new ActionListener() {
+//					public void actionPerformed(ActionEvent e) {
+//						setPanel(ContractorFrm);
+//						try {
+//							addDataContractorTable();
+//						} catch (SQLException e1) {
+//							// TODO Auto-generated catch block
+//							e1.printStackTrace();
+//						}
+//					}
+//				});
+//				contractorsTab.addMouseListener(new MouseAdapter() {
+//					@Override
+//					public void mouseEntered(MouseEvent e) {
+//						contractorsTab.setBackground(new Color(169,100,0));
+//					}
+//					
+//					@Override
+//					public void mouseExited(MouseEvent e) {
+//						contractorsTab.setBackground(new Color(255,140, 0));
+//					}
+//				});
+//				contractorsTab.setIcon(new ImageIcon(Admin_Window.class.getResource("/Media/contractorIcon.png")));
+//				contractorsTab.setRequestFocusEnabled(false);
+//				contractorsTab.setIconTextGap(0);
+//				contractorsTab.setHorizontalTextPosition(SwingConstants.RIGHT);
+//				contractorsTab.setForeground(new Color(0, 0, 0));
+//				contractorsTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+//				contractorsTab.setFocusTraversalKeysEnabled(false);
+//				contractorsTab.setFocusPainted(false);
+//				contractorsTab.setBorderPainted(false);
+//				contractorsTab.setBorder(null);
+//				contractorsTab.setBackground(new Color(255, 140, 0));
+//				contractorsTab.setAlignmentX(1.0f);
+//				contractorsTab.setBounds(12, 416, 150, 73);
+//				tabFrm.add(contractorsTab);
+//        
+//		
 				
 				
 				
