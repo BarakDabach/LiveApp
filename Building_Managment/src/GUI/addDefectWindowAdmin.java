@@ -236,7 +236,7 @@ public class addDefectWindowAdmin {
 		addDefectFrame.getContentPane().add(lblBuilding);
 		
 		BuildingIDCombo = new JComboBox();
-		BuildingIDCombo.setModel(new DefaultComboBoxModel(Admin_Window.defectID.toArray()));
+		BuildingIDCombo.setModel(new DefaultComboBoxModel(Admin_Window.defectIDs.toArray()));
 		BuildingIDCombo.setRequestFocusEnabled(false);
 		BuildingIDCombo.setLightWeightPopupEnabled(false);
 		BuildingIDCombo.setForeground(Color.BLACK);

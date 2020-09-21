@@ -93,6 +93,13 @@ import java.awt.event.InputMethodListener;
 import java.awt.event.InputMethodEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.VetoableChangeListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class Resident_Window {
 
@@ -505,6 +512,15 @@ public class Resident_Window {
 		inboxFrm.setVisible(false);
 		
 		
+		ResidentsFrm = new JPanel();
+		ResidentsFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		ResidentsFrm.setVisible(false);
+		
+		Aboutfrm = new JPanel();
+		Aboutfrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		Aboutfrm.setVisible(false);
+		
+		
 		
 		DefectFrm = new JPanel();
 		DefectFrm.setBounds(new Rectangle(0, 0, 1280, 0));
@@ -516,14 +532,206 @@ public class Resident_Window {
 		});
 		DefectFrm.setVisible(false);
 		
+			   
 		
-		ResidentsFrm = new JPanel();
-		ResidentsFrm.setBounds(new Rectangle(0, 0, 1280, 0));
-		ResidentsFrm.setVisible(false);
 		
-		Aboutfrm = new JPanel();
-		Aboutfrm.setBounds(new Rectangle(0, 0, 1280, 0));
-		Aboutfrm.setVisible(false);
+		
+		
+		DefectFrm.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
+		DefectFrm.setRequestFocusEnabled(false);
+		DefectFrm.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		DefectFrm.setBounds(306, 45, 974, 705);
+		DefectFrm.setBackground(new Color(34,36,39));
+		frmUserWindow.getContentPane().add(DefectFrm);
+		DefectFrm.setLayout(null);
+		
+		JComboBox sortDefects = new JComboBox();
+		enumVal = new String[Defect_Status.values().length+1];
+		sortDefects.setModel(new DefaultComboBoxModel(enumVal));
+		sortDefects.setVerifyInputWhenFocusTarget(false);
+		sortDefects.setOpaque(false);
+		sortDefects.setBackground(new Color(34,36,39));
+		sortDefects.setUI(new BasicComboBoxUI());
+		sortDefects.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) defectTable.getModel());
+				RowFilter<DefaultTableModel, Object> rf  = RowFilter.regexFilter(sortDefects.getSelectedItem().toString(),defectTable.getColumnModel().getColumnIndex("Status"));
+				sorter.setRowFilter(rf);
+        
+				defectTable.setRowSorter(sorter);
+			}
+		});
+		sortDefects.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		sortDefects.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		sortDefects.setLightWeightPopupEnabled(false);
+		sortDefects.setFocusTraversalKeysEnabled(false);
+		sortDefects.setFocusable(false);
+		sortDefects.setForeground(Color.WHITE);
+		sortDefects.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		
+		((JLabel)sortDefects.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		sortDefects.setRequestFocusEnabled(false);
+		sortDefects.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		sortDefects.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
+		sortDefects.setBounds(434, 212, 148, 22);
+		
+		
+		sortDefects.setForeground(Color.WHITE);
+		DefectFrm.add(sortDefects);
+		
+		JButton btnAddDefect = new JButton("Open a Defect");
+		btnAddDefect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addDefectWindow addWindow = new addDefectWindow();
+				addWindow.addDefectFrame.setVisible(true);
+			}
+		});
+		btnAddDefect.setForeground(new Color(255, 255, 255));
+		btnAddDefect.setHorizontalTextPosition(SwingConstants.RIGHT);
+		btnAddDefect.setIcon(null);
+		btnAddDefect.setFocusPainted(false);
+		btnAddDefect.setBackground(new Color(34,36,39));
+		btnAddDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+		btnAddDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		btnAddDefect.setBounds(755, 537, 173, 39);
+		
+		
+		       
+		       
+		DefectFrm.add(btnAddDefect);
+		
+		JButton btnRemoveDefect = new JButton("Remove Defect");
+		btnRemoveDefect.setEnabled(false);
+		btnRemoveDefect.setToolTipText("Select a defect");
+		btnRemoveDefect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				int[]selectedRows = defectTable.getSelectedRows();
+				
+				for(int i = 0; i<selectedRows.length;i++) {
+					try {
+					preStatment = con.prepareStatement("delete from Defect where defectID = ?");
+					preStatment.setInt(1,defectIDs[selectedRows[i]]);
+	       			preStatment.executeUpdate();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+									       		
+					
+				
+				}
+				
+				addDataDefectTable();
+			}
+		});
+		btnRemoveDefect.setForeground(new Color(255, 255, 255));
+		btnRemoveDefect.setIcon(null);
+		btnRemoveDefect.setFocusPainted(false);
+		btnRemoveDefect.setBackground(new Color(34,36,39));
+		btnRemoveDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+		btnRemoveDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		btnRemoveDefect.setBounds(560, 537, 173, 39);
+		
+				DefectFrm.add(btnRemoveDefect);
+				
+				JLabel lblSortBy = new JLabel("Sort By:");
+				lblSortBy.setForeground(new Color(255, 255, 255));
+				lblSortBy.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+				lblSortBy.setBounds(477, 177, 67, 22);
+				DefectFrm.add(lblSortBy);
+				
+				JPanel panel_5 = new JPanel();
+				panel_5.setBounds(0, 0, 973, 142);
+				DefectFrm.add(panel_5);
+				panel_5.setLayout(null);
+				panel_5.setBorder(null);
+				panel_5.setBackground(new Color(51, 153, 153));
+				
+				JLabel lblDefects = new JLabel("Defects");
+				lblDefects.setHorizontalTextPosition(SwingConstants.LEFT);
+				lblDefects.setHorizontalAlignment(SwingConstants.LEFT);
+				lblDefects.setForeground(Color.WHITE);
+				lblDefects.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+				lblDefects.setBounds(32, 32, 94, 34);
+				panel_5.add(lblDefects);
+				
+				JLabel lblViewAndOpen = new JLabel("View/ Open Defects in Your Building");
+				lblViewAndOpen.setHorizontalTextPosition(SwingConstants.LEFT);
+				lblViewAndOpen.setHorizontalAlignment(SwingConstants.LEFT);
+				lblViewAndOpen.setForeground(Color.WHITE);
+				lblViewAndOpen.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+				lblViewAndOpen.setBounds(32, 79, 350, 34);
+				panel_5.add(lblViewAndOpen);
+				
+				JPanel tablePanel = new JPanel();
+				tablePanel.setBorder(null);
+				tablePanel.setBackground(new Color(34, 36, 39));
+				tablePanel.setBounds(41, 268, 887, 249);
+				DefectFrm.add(tablePanel);	
+				tablePanel.setLayout(new BorderLayout(0, 0));
+				
+
+				defectTable = new JTable();		
+				defectTable.addFocusListener(new FocusAdapter() {
+					@Override
+					public void focusLost(FocusEvent arg0) {
+						
+						if (defectTable.getSelectedRowCount() == 0) {
+								
+								btnRemoveDefect.setEnabled(false);
+								System.out.println(defectTable.getSelectedRowCount());
+							}
+
+					}
+				});
+				defectTable.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent arg0) {
+						
+						btnRemoveDefect.setEnabled(true);
+						System.out.println(defectTable.getSelectedRowCount());
+					}
+				});
+
+
+
+
+
+				
+				defectTable.setBounds(new Rectangle(41, 268, 887, 249));
+				defectTable.setOpaque(false);
+				defectTable.setShowGrid(false);
+				defectTable.setUI(new BasicTableUI());
+				defectTable.setAutoCreateRowSorter(true);
+				defectTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+				defectTable.setFocusTraversalKeysEnabled(false);
+				defectTable.setBackground(new Color(34, 36, 39));
+				defectTable.setBorder(null);
+				defectTable.setRowMargin(10);
+				defectTable.setForeground(new Color(255, 255, 255));
+				defectTable.setSelectionForeground(new Color(255, 255, 255));
+				defectTable.setShowVerticalLines(false);
+				defectTable.setSelectionBackground(new Color(153, 102, 204));
+				defectTable.setRequestFocusEnabled(false);
+				defectTable.setRowHeight(50);
+				defectTable.setIntercellSpacing(new Dimension(0, 0));
+				
+
+				defectTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
+				defectTable.setGridColor(new Color(0, 0, 0));
+				defectTable.getTableHeader().setBackground(new Color(34,36,39));
+				defectTable.getTableHeader().setForeground(new Color(255,255,255));
+				
+				
+		JScrollPane scrollTablePane = new JScrollPane(defectTable);
+		scrollTablePane.setBorder(null);
+		scrollTablePane.setBackground(new Color(34,36,39));
+		
+		tablePanel.add(scrollTablePane, BorderLayout.CENTER);
+		scrollTablePane.setPreferredSize(new Dimension(887, 249));
 		
 		
 		open_Frm = new JPanel();
@@ -869,21 +1077,6 @@ public class Resident_Window {
 		messagefield.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(255, 140, 0)));
 		ResidentsFrm.add(messagefield);
 		
-			   
-		
-		
-		
-		
-		DefectFrm.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-		DefectFrm.setRequestFocusEnabled(false);
-		DefectFrm.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		DefectFrm.setBounds(306, 45, 974, 705);
-		DefectFrm.setBackground(new Color(34,36,39));
-		frmUserWindow.getContentPane().add(DefectFrm);
-		DefectFrm.setLayout(null);
-		
-		JComboBox sortDefects = new JComboBox();
-		enumVal = new String[Defect_Status.values().length+1];
 		Defect_Status[]defectsVal = Defect_Status.values();
 		
 		enumVal[0] = "";
@@ -892,165 +1085,6 @@ public class Resident_Window {
 			enumVal[i] = defectsVal[i-1].toString();
 			
 		}
-		sortDefects.setModel(new DefaultComboBoxModel(enumVal));
-		sortDefects.setVerifyInputWhenFocusTarget(false);
-		sortDefects.setOpaque(false);
-		sortDefects.setBackground(new Color(34,36,39));
-		sortDefects.setUI(new BasicComboBoxUI());
-		sortDefects.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				
-				sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) defectTable.getModel());
-				RowFilter<DefaultTableModel, Object> rf  = RowFilter.regexFilter(sortDefects.getSelectedItem().toString(),defectTable.getColumnModel().getColumnIndex("Status"));
-				sorter.setRowFilter(rf);
-        
-				defectTable.setRowSorter(sorter);
-			}
-		});
-		sortDefects.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-		sortDefects.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		sortDefects.setLightWeightPopupEnabled(false);
-		sortDefects.setFocusTraversalKeysEnabled(false);
-		sortDefects.setFocusable(false);
-		sortDefects.setForeground(Color.WHITE);
-		sortDefects.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		
-		((JLabel)sortDefects.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-		sortDefects.setRequestFocusEnabled(false);
-		sortDefects.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		sortDefects.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-		sortDefects.setBounds(434, 212, 148, 22);
-		
-		
-		sortDefects.setForeground(Color.WHITE);
-		DefectFrm.add(sortDefects);
-		
-		JButton btnAddDefect = new JButton("Open a Defect");
-		btnAddDefect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				addDefectWindow addWindow = new addDefectWindow();
-				addWindow.addDefectFrame.setVisible(true);
-			}
-		});
-		btnAddDefect.setForeground(new Color(255, 255, 255));
-		btnAddDefect.setHorizontalTextPosition(SwingConstants.RIGHT);
-		btnAddDefect.setIcon(null);
-		btnAddDefect.setFocusPainted(false);
-		btnAddDefect.setBackground(new Color(34,36,39));
-		btnAddDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		btnAddDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		btnAddDefect.setBounds(755, 537, 173, 39);
-		
-		
-		       
-		       
-		DefectFrm.add(btnAddDefect);
-		
-		JButton btnRemoveDefect = new JButton("Remove Defect");
-		btnRemoveDefect.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				int[]selectedRows = defectTable.getSelectedRows();
-				
-				for(int i = 0; i<selectedRows.length;i++) {
-					try {
-					preStatment = con.prepareStatement("delete from Defect where defectID = ?");
-					preStatment.setInt(1,defectIDs[selectedRows[i]]);
-	       			preStatment.executeUpdate();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-									       		
-					
-				
-				}
-				
-				addDataDefectTable();
-			}
-		});
-		btnRemoveDefect.setForeground(new Color(255, 255, 255));
-		btnRemoveDefect.setIcon(null);
-		btnRemoveDefect.setFocusPainted(false);
-		btnRemoveDefect.setBackground(new Color(34,36,39));
-		btnRemoveDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		btnRemoveDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		btnRemoveDefect.setBounds(560, 537, 173, 39);
-
-		DefectFrm.add(btnRemoveDefect);
-		
-		JLabel lblSortBy = new JLabel("Sort By:");
-		lblSortBy.setForeground(new Color(255, 255, 255));
-		lblSortBy.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
-		lblSortBy.setBounds(477, 177, 67, 22);
-		DefectFrm.add(lblSortBy);
-		
-		JPanel panel_5 = new JPanel();
-		panel_5.setBounds(0, 0, 973, 142);
-		DefectFrm.add(panel_5);
-		panel_5.setLayout(null);
-		panel_5.setBorder(null);
-		panel_5.setBackground(new Color(51, 153, 153));
-		
-		JLabel lblDefects = new JLabel("Defects");
-		lblDefects.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblDefects.setHorizontalAlignment(SwingConstants.LEFT);
-		lblDefects.setForeground(Color.WHITE);
-		lblDefects.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-		lblDefects.setBounds(32, 32, 94, 34);
-		panel_5.add(lblDefects);
-		
-		JLabel lblViewAndOpen = new JLabel("View/ Open Defects in Your Building");
-		lblViewAndOpen.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblViewAndOpen.setHorizontalAlignment(SwingConstants.LEFT);
-		lblViewAndOpen.setForeground(Color.WHITE);
-		lblViewAndOpen.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblViewAndOpen.setBounds(32, 79, 350, 34);
-		panel_5.add(lblViewAndOpen);
-		
-		JPanel tablePanel = new JPanel();
-		tablePanel.setBorder(null);
-		tablePanel.setBackground(new Color(34, 36, 39));
-		tablePanel.setBounds(41, 268, 887, 249);
-		DefectFrm.add(tablePanel);	
-		tablePanel.setLayout(new BorderLayout(0, 0));
-		
-
-		defectTable = new JTable();		
-		
-		defectTable.setBounds(new Rectangle(41, 268, 887, 249));
-				defectTable.setOpaque(false);
-				defectTable.setShowGrid(false);
-				defectTable.setUI(new BasicTableUI());
-				defectTable.setAutoCreateRowSorter(true);
-				defectTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-				defectTable.setFocusTraversalKeysEnabled(false);
-				defectTable.setFocusable(false);
-				defectTable.setBackground(new Color(34, 36, 39));
-				defectTable.setBorder(null);
-				defectTable.setRowMargin(10);
-				defectTable.setForeground(new Color(255, 255, 255));
-				defectTable.setSelectionForeground(new Color(255, 255, 255));
-				defectTable.setShowVerticalLines(false);
-				defectTable.setSelectionBackground(new Color(153, 102, 204));
-				defectTable.setRequestFocusEnabled(false);
-				defectTable.setRowHeight(50);
-				defectTable.setIntercellSpacing(new Dimension(0, 0));
-				
-
-				defectTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
-				defectTable.setGridColor(new Color(0, 0, 0));
-				defectTable.getTableHeader().setBackground(new Color(34,36,39));
-				defectTable.getTableHeader().setForeground(new Color(255,255,255));
-				
-				
-		JScrollPane scrollTablePane = new JScrollPane(defectTable);
-		scrollTablePane.setBorder(null);
-		scrollTablePane.setBackground(new Color(34,36,39));
-		
-		tablePanel.add(scrollTablePane, BorderLayout.CENTER);
-		scrollTablePane.setPreferredSize(new Dimension(887, 249));
 		
 		JPanel tabFrm = new JPanel();
 		tabFrm.setBounds(new Rectangle(0, 0, 1280, 0));
