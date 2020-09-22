@@ -35,6 +35,15 @@ public class sqlDriver {
 		
 	}
 	
+	public void disconnect() {
+		try {
+			con.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	
 	//Function that create a query and returning the result set for manipulation.
@@ -44,6 +53,8 @@ public class sqlDriver {
 			connect();
 			statment = con.createStatement();
 			result = statment.executeQuery(query);
+			
+		
 			return result;
 		} catch (SQLException e) {
 			JOptionPane.showMessageDialog(null,"Could Not Create Statment","Error",JOptionPane.ERROR_MESSAGE);

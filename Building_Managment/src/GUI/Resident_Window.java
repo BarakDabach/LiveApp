@@ -1531,7 +1531,7 @@ public class Resident_Window {
 			int k = 1;
 			while(rs.next()) {
 				
-				if(!rs.getString("phone").equalsIgnoreCase(Login_Page.getPasswordEntry().getText())) {
+				if(!rs.getString("password").equalsIgnoreCase(Login_Page.getPasswordEntry().getText())) {
 					msgNames[k] = rs.getString("fullname");
 					k++;
 				}
