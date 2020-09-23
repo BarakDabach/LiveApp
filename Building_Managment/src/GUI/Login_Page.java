@@ -161,12 +161,13 @@ public class Login_Page {
 			if(phoneEntry.getText().equalsIgnoreCase(PasswordEntry.getText())) {
 				
 				if(phoneEntry.getText().matches(numRegex)) {
-					rs = driver.sendQuery("select phone,f_Name,l_Name,buildingID from Resident where phone = "+PasswordEntry.getText());
+					rs = driver.sendQuery("select phone,f_Name,l_Name,buildingID,admin from Resident where phone = "+PasswordEntry.getText());
 					
 					while(rs.next()) {
 						buildingIDSQL = rs.getInt("buildingID");
-						if (rs.getString("phone").equalsIgnoreCase(PasswordEntry.getText() )) {
+						if (rs.getString("phone").equalsIgnoreCase(PasswordEntry.getText())) {
 							userName = rs.getString("f_Name")+" "+rs.getString("l_Name");
+							boolean admin = rs.getBoolean("admin");
 							rs = driver.sendQuery("select count(receive) from Message where receive ="+PasswordEntry.getText());
 							while(rs.next()) {
 								
@@ -174,8 +175,15 @@ public class Login_Page {
 								
 								
 							}
-							frmLoginPage.dispose();
-							windowType = "User";
+							//check if the user is Admin
+							if(admin) {
+								frmLoginPage.dispose();
+								windowType = "Admin";
+							}
+							else {
+								frmLoginPage.dispose();
+								windowType = "User";
+							}
 							
 							return;
 						}
@@ -187,6 +195,7 @@ public class Login_Page {
 					alert.errordetlbl.setText("User Is Not Exists");
 					alert.alertFrame.setVisible(true);
 				}
+				
 				
 				else if(phoneEntry.getText().matches(lettersRegex))  {
 					
