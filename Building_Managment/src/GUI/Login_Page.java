@@ -75,7 +75,6 @@ public class Login_Page {
 	private static sqlDriver driver = new sqlDriver();
 	public static  JFrame frmLoginPage;
 	private JLabel lblPhoneNumber;
-	public static JTextField phoneEntry;
 	private JLabel lblLogin;
 	public static JTextField PasswordEntry;
 	private JLabel lblPassword;
@@ -148,6 +147,7 @@ public class Login_Page {
 	private JLabel emailFinishLbl;
 	private JLabel lblPhone;
 	private JLabel phoneNumFinishLbl;
+	public static JTextField phoneEntry;
 	
 	//function that checks if a string contains only numbers
 	
@@ -158,17 +158,47 @@ public class Login_Page {
 			sqlDriver driver = new sqlDriver();
 			driver.connect();
 			
-			if(phoneEntry.getText().equalsIgnoreCase(PasswordEntry.getText())) {
+			
 				
-				if(phoneEntry.getText().matches(numRegex)) {
-					rs = driver.sendQuery("select phone,f_Name,l_Name,buildingID,admin from Resident where phone = "+PasswordEntry.getText());
+			if(phoneEntry.getText().equals("")  == false && PasswordEntry.getText().equals("") == false ) {
+				
+				preStatment = con.prepareStatement("select phone,f_Name,l_Name,buildingID,admin from Resident where phone = ? and password = ?",
+						ResultSet.TYPE_SCROLL_SENSITIVE, 
+                        ResultSet.CONCUR_UPDATABLE);
+				
+				preStatment.setString(1, phoneEntry.getText());
+				preStatment.setString(2, PasswordEntry.getText());
+			
+				rs = preStatment.executeQuery();
+				
+				
+				if(rs.first() == false) {
+					alertMsg alert = new alertMsg();
+					alert.errordetlbl.setText("User Not Exist");
+					alert.alertFrame.setVisible(true);
+					return;
+				}
+				else {
+					preStatment = con.prepareStatement("select phone,f_Name,l_Name,buildingID,admin from Resident where phone = ? and password = ?",
+							ResultSet.TYPE_SCROLL_SENSITIVE, 
+	                        ResultSet.CONCUR_UPDATABLE);
 					
+					preStatment.setString(1, phoneEntry.getText());
+					preStatment.setString(2, PasswordEntry.getText());
+				
+					rs = preStatment.executeQuery();
 					while(rs.next()) {
+						
 						buildingIDSQL = rs.getInt("buildingID");
-						if (rs.getString("phone").equalsIgnoreCase(PasswordEntry.getText())) {
+						
 							userName = rs.getString("f_Name")+" "+rs.getString("l_Name");
 							boolean admin = rs.getBoolean("admin");
-							rs = driver.sendQuery("select count(receive) from Message where receive ="+PasswordEntry.getText());
+							
+							
+							preStatment = con.prepareStatement("select count(receive) from Message where receive = ?");
+							preStatment.setString(1, phoneEntry.getText());
+							
+							rs = preStatment.executeQuery(); 
 							while(rs.next()) {
 								
 								num_of_msg += Integer.toString(rs.getInt(1)) + " Messages";
@@ -185,43 +215,14 @@ public class Login_Page {
 								windowType = "User";
 							}
 							
-							return;
-						}
+						return;
 						
 						
 					
-					}
-					alertMsg alert = new alertMsg();
-					alert.errordetlbl.setText("User Is Not Exists");
-					alert.alertFrame.setVisible(true);
 				}
 				
+			}
 				
-				else if(phoneEntry.getText().matches(lettersRegex))  {
-					
-					
-					preStatment = con.prepareStatement("select userName from Admin where userName = ?");
-					preStatment.setString(1,phoneEntry.getText());
-					rs = preStatment.executeQuery();
-					
-					while(rs.next()) {
-						if (rs.getString("userName").equalsIgnoreCase(PasswordEntry.getText())) {
-							frmLoginPage.dispose();
-							windowType = "Admin";
-							return;
-						}
-					
-					}
-					alertMsg alert = new alertMsg();
-					alert.errordetlbl.setText("Admin Is Not Exists");
-					alert.alertFrame.setVisible(true);
-				}
-				
-				
-				else {
-					
-					
-				}
 				
 				
 			}	
@@ -232,6 +233,7 @@ public class Login_Page {
 			else {
 				
 				alertMsg alert = new alertMsg();
+				alert.errordetlbl.setText("All Fields Must Be fill");
 				alert.alertFrame.setVisible(true);
 				
 			}
@@ -278,10 +280,8 @@ public class Login_Page {
 		frmLoginPage = new JFrame();
 		frmLoginPage.setLocationRelativeTo(null);
 		frmLoginPage.getContentPane().setLocation(143, 0);
-		loginPanel = new JPanel();
 		JLabel loginLabel = new JLabel("Login");
 		JLabel signUpLabel = new JLabel("Sign up");
-		loginPanel.setVisible(true);
 		frmLoginPage.setUndecorated(true);
 		frmLoginPage.getContentPane().setFont(new Font("Yu Gothic UI", Font.PLAIN, 13));
 		
@@ -295,6 +295,114 @@ public class Login_Page {
 		
 		signUpPanel = new JPanel();
 		signUpPanel.setVisible(false);
+		loginPanel = new JPanel();
+		loginPanel.setVisible(true);
+		
+		
+		
+		loginPanel.setBounds(306, 130, 362, 714);
+		frmLoginPage.getContentPane().add(loginPanel);
+		loginPanel.setLayout(null);
+		loginPanel.setBackground(new Color(34, 36, 39));
+		label = new JLabel("");
+		label.setBounds(108, 79, 128, 128);
+		loginPanel.add(label);
+		label.setIcon(new ImageIcon(Login_Page.class.getResource("/Media/user-login.png")));
+		label.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		lblLogin = new JLabel("Login");
+		lblLogin.setBounds(152, 214, 73, 33);
+		loginPanel.add(lblLogin);
+		lblLogin.setForeground(new Color(255, 255, 255));
+		lblLogin.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
+		lblLogin.setBackground(new Color(34, 36, 39));
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(26, 260, 310, 2);
+		loginPanel.add(panel);
+		panel.setBackground(new Color(102, 0, 204));
+		
+		lblPhoneNumber = new JLabel("Phone Number");
+		lblPhoneNumber.setBounds(126, 326, 143, 25);
+		loginPanel.add(lblPhoneNumber);
+		lblPhoneNumber.setBackground(new Color(34, 36, 39));
+		lblPhoneNumber.setForeground(new Color(255, 255, 255));
+		lblPhoneNumber.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblPassword = new JLabel("Password");
+		lblPassword.setBounds(132, 420, 112, 25);
+		loginPanel.add(lblPassword);
+		lblPassword.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPassword.setForeground(new Color(255, 255, 255));
+		lblPassword.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblPassword.setBackground(Color.WHITE);
+		
+		PasswordEntry = new JTextField();
+		PasswordEntry.setCaretColor(new Color(123, 104, 238));
+		PasswordEntry.setBounds(88, 442, 198, 31);
+		loginPanel.add(PasswordEntry);
+		PasswordEntry.setForeground(new Color(255, 255, 255));
+		PasswordEntry.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		PasswordEntry.setSelectionColor(new Color(102, 51, 255));
+		PasswordEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		PasswordEntry.setBackground(new Color(34, 36, 39));
+		PasswordEntry.setBorder(new MatteBorder(0, 0, 3, 0, (Color) new Color(51, 204, 153)));
+		PasswordEntry.setColumns(10);
+		
+		
+		
+		loginButton = new JButton("Login");
+		loginButton.setBounds(88, 527, 198, 41);
+		loginPanel.add(loginButton);
+		loginButton.setForeground(new Color(255, 255, 255));
+		loginButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					handleLoginCheck();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		loginButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+//				btnLogin.setBackground(new Color(46,139,87));
+				loginButton.setBackground(new Color(51, 204, 153));
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				loginButton.setBackground(new Color(34,36,39));
+				
+			}
+		
+		});
+		
+		loginButton.setFocusPainted(false);
+		loginButton.setBackground(new Color(34, 36, 39));
+		loginButton.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		loginButton.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(127, 255, 212)));
+		
+		phoneEntry = new JTextField();
+		phoneEntry.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				handleOnlyDigitsCheck(phoneEntry);
+			}
+		});
+		phoneEntry.setSelectionColor(new Color(102, 51, 255));
+		phoneEntry.setForeground(Color.WHITE);
+		phoneEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		phoneEntry.setColumns(10);
+		phoneEntry.setCaretColor(new Color(123, 104, 238));
+		phoneEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
+		phoneEntry.setBackground(new Color(34, 36, 39));
+		phoneEntry.setAlignmentX(1.0f);
+		phoneEntry.setBounds(88, 353, 198, 31);
+		loginPanel.add(phoneEntry);
 		
 		
 		signUpPanel.setLayout(null);
@@ -929,108 +1037,6 @@ public class Login_Page {
 		label_1.setAlignmentX(1.0f);
 		label_1.setBounds(586, 17, 24, 24);
 		frmLoginPage.getContentPane().add(label_1);
-		
-		
-		
-		loginPanel.setBounds(306, 130, 362, 714);
-		frmLoginPage.getContentPane().add(loginPanel);
-		loginPanel.setLayout(null);
-		loginPanel.setBackground(new Color(34, 36, 39));
-		label = new JLabel("");
-		label.setBounds(108, 79, 128, 128);
-		loginPanel.add(label);
-		label.setIcon(new ImageIcon(Login_Page.class.getResource("/Media/user-login.png")));
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		lblLogin = new JLabel("Login");
-		lblLogin.setBounds(152, 214, 73, 33);
-		loginPanel.add(lblLogin);
-		lblLogin.setForeground(new Color(255, 255, 255));
-		lblLogin.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
-		lblLogin.setBackground(new Color(34, 36, 39));
-		
-		JPanel panel = new JPanel();
-		panel.setBounds(26, 260, 310, 2);
-		loginPanel.add(panel);
-		panel.setBackground(new Color(102, 0, 204));
-		
-		lblPhoneNumber = new JLabel("Phone Number");
-		lblPhoneNumber.setBounds(126, 326, 143, 25);
-		loginPanel.add(lblPhoneNumber);
-		lblPhoneNumber.setBackground(new Color(34, 36, 39));
-		lblPhoneNumber.setForeground(new Color(255, 255, 255));
-		lblPhoneNumber.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		
-		phoneEntry = new JTextField();
-		phoneEntry.setCaretColor(new Color(123, 104, 238));
-		phoneEntry.setBounds(88, 357, 198, 31);
-		loginPanel.add(phoneEntry);
-		phoneEntry.setForeground(new Color(255, 255, 255));
-		phoneEntry.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		phoneEntry.setSelectionColor(new Color(102, 51, 255));
-		phoneEntry.setToolTipText("");
-		phoneEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		phoneEntry.setBackground(new Color(34, 36, 39));
-		phoneEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
-		phoneEntry.setColumns(10);
-		lblPassword = new JLabel("Password");
-		lblPassword.setBounds(132, 420, 112, 25);
-		loginPanel.add(lblPassword);
-		lblPassword.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPassword.setForeground(new Color(255, 255, 255));
-		lblPassword.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblPassword.setBackground(Color.WHITE);
-		
-		PasswordEntry = new JTextField();
-		PasswordEntry.setCaretColor(new Color(123, 104, 238));
-		PasswordEntry.setBounds(88, 442, 198, 31);
-		loginPanel.add(PasswordEntry);
-		PasswordEntry.setForeground(new Color(255, 255, 255));
-		PasswordEntry.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		PasswordEntry.setSelectionColor(new Color(102, 51, 255));
-		PasswordEntry.setToolTipText("");
-		PasswordEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		PasswordEntry.setBackground(new Color(34, 36, 39));
-		PasswordEntry.setBorder(new MatteBorder(0, 0, 3, 0, (Color) new Color(51, 204, 153)));
-		PasswordEntry.setColumns(10);
-		
-		
-		
-		loginButton = new JButton("Login");
-		loginButton.setBounds(88, 527, 198, 41);
-		loginPanel.add(loginButton);
-		loginButton.setForeground(new Color(255, 255, 255));
-		loginButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					handleLoginCheck();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		loginButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-//				btnLogin.setBackground(new Color(46,139,87));
-				loginButton.setBackground(new Color(51, 204, 153));
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				loginButton.setBackground(new Color(34,36,39));
-				
-			}
-		
-		});
-		
-		loginButton.setFocusPainted(false);
-		loginButton.setBackground(new Color(34, 36, 39));
-		loginButton.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		loginButton.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(127, 255, 212)));
 		
 		
 		signUpLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
