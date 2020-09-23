@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 public class addDefectWindow {
 
 	static public JFrame addDefectFrame;
+	static public JFrame addNotificationFrame;
 	static JComboBox defectTypecombo;
 	static JTextArea descTxtField;
 	static JButton btnOpenDefect;

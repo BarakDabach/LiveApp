@@ -79,7 +79,7 @@ public class AddDefect {
 		JLabel label = new JLabel("");
 		label.setBounds(52, 37, 69, 70);
 		panel.add(label);
-		label.setIcon(new ImageIcon(AddDefect.class.getResource("/Media/defectsuccessIcon.png")));
+		label.setIcon(new ImageIcon(AddDefect.class.getResource("/Media/defectsuccescIcon.png")));
 		
 		JButton btnGotIt = new JButton("Got It");
 		btnGotIt.setBounds(0, 138, 448, 53);

@@ -17,8 +17,6 @@ public class Main {
 	
 	public static void main(String[] args) throws InvalidPhoneException, InvalidStringException, InvalidEmailException, InvalidBuisnessNumber {
 		
-		
-	
 		//Starting the login page
 		Login_Page login = new Login_Page();
 		login.frmLoginPage.setVisible(true);

@@ -141,6 +141,7 @@ public class Admin_Window {
 	static TableRowSorter<DefaultTableModel> sorter;
 	static int[] messageIDs;
 	static int[] defectIDs;
+	static int[] notificationIDs;
 	static JLabel msg_lbl;
 	static String[] msgNames;
 	static JLabel totalDefectsLabel;
@@ -480,12 +481,12 @@ public class Admin_Window {
 					
 				}
 				notifications = new String[tableRows][2] ;
-				int[] notificationIDs = new int[tableRows];
+				notificationIDs = new int[tableRows];
 				rs = preStatment.executeQuery();
 				
 				while(rs.next()) {
 					
-					notificationIDs[rs.getRow()-1] = rs.getInt("ID");
+					notificationIDs[rs.getRow()-1] = rs.getInt("id");
 					for(int c = 0; c<2;c++) {
 						
 						
@@ -592,12 +593,6 @@ public class Admin_Window {
 		frmAdminWindow.getContentPane().setLayout(null);
 		frmAdminWindow.setLocationRelativeTo(null);
 						
-
-						Notificationfrm = new JPanel();
-						Notificationfrm.setBorder(null);
-						Notificationfrm.setBounds(new Rectangle(0, 0, 1280, 0));
-						Notificationfrm.setVisible(false);
-						
 						
 						
 						DefectFrm = new JPanel();
@@ -609,6 +604,161 @@ public class Admin_Window {
 							}
 						});
 						DefectFrm.setVisible(false);
+						
+
+						Notificationfrm = new JPanel();
+						Notificationfrm.setBorder(null);
+						Notificationfrm.setBounds(new Rectangle(0, 0, 1280, 0));
+						Notificationfrm.setVisible(false);
+						Notificationfrm.setBackground(new Color(34, 36, 39));
+						Notificationfrm.setBounds(304, 45, 974, 705);
+						frmAdminWindow.getContentPane().add(Notificationfrm);
+						Notificationfrm.setLayout(null);
+						
+						
+						JPanel panel_6 = new JPanel();
+						panel_6.setBorder(null);
+						panel_6.setLayout(null);
+						panel_6.setBackground(new Color(51, 153, 153));
+						panel_6.setBounds(0, 0, 973, 142);
+						Notificationfrm.add(panel_6);
+						
+						lblNotification = new JLabel("Notification");
+						lblNotification.setBounds(32, 32, 464, 49);
+						panel_6.add(lblNotification);
+						lblNotification.setHorizontalTextPosition(SwingConstants.LEFT);
+						lblNotification.setHorizontalAlignment(SwingConstants.LEFT);
+						lblNotification.setForeground(new Color(255, 255, 255));
+						lblNotification.setFont(new Font("Yu Gothic Light", Font.PLAIN, 29));
+						
+						JPanel tablePanelNot = new JPanel();
+						tablePanelNot.setBorder(null);
+						tablePanelNot.setBackground(new Color(34, 36, 39));
+						tablePanelNot.setBounds(41, 268, 887, 249);
+						Notificationfrm.add(tablePanelNot);	
+						tablePanelNot.setLayout(new BorderLayout(0, 0));
+						
+
+						
+						notificationTable = new JTable();		
+						notificationTable.addFocusListener(new FocusAdapter() {
+							@Override
+							public void focusLost(FocusEvent arg0) {
+								
+								if (defectTable.getSelectedRowCount() == 0) {
+										
+										//btnRemoveDefect.setEnabled(false);
+										System.out.println(notificationTable.getSelectedRowCount());
+									}
+
+							}
+						});
+						
+						notificationTable.setBounds(new Rectangle(41, 268, 887, 249));
+						notificationTable.setOpaque(false);
+						notificationTable.setShowGrid(false);
+						notificationTable.setUI(new BasicTableUI());
+						notificationTable.setAutoCreateRowSorter(true);
+						notificationTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+						notificationTable.setFocusTraversalKeysEnabled(false);
+						notificationTable.setBackground(new Color(34, 36, 39));
+						notificationTable.setBorder(null);
+						notificationTable.setRowMargin(10);
+						notificationTable.setForeground(new Color(255, 255, 255));
+						notificationTable.setSelectionForeground(new Color(255, 255, 255));
+						notificationTable.setShowVerticalLines(false);
+						notificationTable.setSelectionBackground(new Color(153, 102, 204));
+						notificationTable.setRequestFocusEnabled(false);
+						notificationTable.setRowHeight(50);
+						notificationTable.setIntercellSpacing(new Dimension(0, 0));
+						notificationTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
+						notificationTable.setGridColor(new Color(0, 0, 0));
+						notificationTable.getTableHeader().setBackground(new Color(34,36,39));
+						notificationTable.getTableHeader().setForeground(new Color(255,255,255));
+						
+								
+								JScrollPane scrollTablePaneNot = new JScrollPane(notificationTable);
+								scrollTablePaneNot.setBorder(null);
+								scrollTablePaneNot.setBackground(new Color(34,36,39));
+								tablePanelNot.add(scrollTablePaneNot, BorderLayout.CENTER);
+								scrollTablePaneNot.setPreferredSize(new Dimension(887, 249));
+								
+								
+								
+								JButton btnRemoveNotification = new JButton("Delete");
+								btnRemoveNotification.setEnabled(false);
+								btnRemoveNotification.setToolTipText("Select a notification");
+								btnRemoveNotification.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										
+										int[]selectedRows2 = notificationTable.getSelectedRows();
+										
+										for(int i = 0; i<selectedRows2.length;i++) {
+											try {
+											preStatment = con.prepareStatement("delete from Notification where id = ?");
+											preStatment.setInt(1,notificationIDs[selectedRows2[i]]);
+											preStatment.executeUpdate();
+										} catch (SQLException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+															       		
+											
+										
+										}
+										
+										addDataNotificationTable();
+									}
+								});
+								btnRemoveNotification.setForeground(new Color(255, 255, 255));
+								btnRemoveNotification.setIcon(null);
+								btnRemoveNotification.setFocusPainted(false);
+								btnRemoveNotification.setBackground(new Color(34,36,39));
+								btnRemoveNotification.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+								btnRemoveNotification.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+								btnRemoveNotification.setBounds(560, 537, 173, 39);
+								
+								Notificationfrm.add(btnRemoveNotification);
+								
+								
+								notificationTable.addFocusListener(new FocusAdapter() {
+									@Override
+									public void focusLost(FocusEvent arg0) {
+										
+										if (notificationTable.getSelectedRowCount() == 0) {
+												
+											btnRemoveNotification.setEnabled(false);
+											}
+
+									}
+								});
+								notificationTable.addMouseListener(new MouseAdapter() {
+									@Override
+									public void mouseClicked(MouseEvent arg0) {
+										
+										btnRemoveNotification.setEnabled(true);
+									}
+								});
+								
+								
+								
+								JButton btnAddNotification = new JButton("Add");
+								btnAddNotification.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										AddNotificationWindow addWindow = new AddNotificationWindow();
+										addWindow.addNotificationFrame.setVisible(true);
+									}
+								});
+								btnAddNotification.setForeground(new Color(255, 255, 255));
+								btnAddNotification.setHorizontalTextPosition(SwingConstants.RIGHT);
+								btnAddNotification.setIcon(null);
+								btnAddNotification.setFocusPainted(false);
+								btnAddNotification.setBackground(new Color(34,36,39));
+								btnAddNotification.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+								btnAddNotification.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+								btnAddNotification.setBounds(755, 537, 173, 39);
+								     
+								Notificationfrm.add(btnAddNotification);
 						
 							   
 						
@@ -673,11 +823,10 @@ public class Admin_Window {
 						btnAddDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
 						btnAddDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
 						btnAddDefect.setBounds(755, 537, 173, 39);
-						
-						
-						       
-						       
+						     
 						DefectFrm.add(btnAddDefect);
+						
+						
 						
 						JButton btnRemoveDefect = new JButton("Remove Defect");
 						btnRemoveDefect.setEnabled(false);
@@ -691,7 +840,7 @@ public class Admin_Window {
 									try {
 									preStatment = con.prepareStatement("delete from Defect where defectID = ?");
 									preStatment.setInt(1,defectIDs[selectedRows[i]]);
-	       			preStatment.executeUpdate();
+									preStatment.executeUpdate();
 								} catch (SQLException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
@@ -809,78 +958,6 @@ public class Admin_Window {
 		
 		tablePanel.add(scrollTablePane, BorderLayout.CENTER);
 		scrollTablePane.setPreferredSize(new Dimension(887, 249));
-						Notificationfrm.setBackground(new Color(34, 36, 39));
-						Notificationfrm.setBounds(304, 45, 974, 705);
-						frmAdminWindow.getContentPane().add(Notificationfrm);
-						Notificationfrm.setLayout(null);
-						
-						
-						JPanel panel_6 = new JPanel();
-						panel_6.setBorder(null);
-						panel_6.setLayout(null);
-						panel_6.setBackground(new Color(51, 153, 153));
-						panel_6.setBounds(0, 0, 973, 142);
-						Notificationfrm.add(panel_6);
-						
-						lblNotification = new JLabel("Notification");
-						lblNotification.setBounds(32, 32, 464, 49);
-						panel_6.add(lblNotification);
-						lblNotification.setHorizontalTextPosition(SwingConstants.LEFT);
-						lblNotification.setHorizontalAlignment(SwingConstants.LEFT);
-						lblNotification.setForeground(new Color(255, 255, 255));
-						lblNotification.setFont(new Font("Yu Gothic Light", Font.PLAIN, 29));
-						
-						JPanel tablePanelNot = new JPanel();
-						tablePanelNot.setBorder(null);
-						tablePanelNot.setBackground(new Color(34, 36, 39));
-						tablePanelNot.setBounds(41, 268, 887, 249);
-						Notificationfrm.add(tablePanelNot);	
-						tablePanelNot.setLayout(new BorderLayout(0, 0));
-						
-
-						
-						notificationTable = new JTable();		
-						notificationTable.addFocusListener(new FocusAdapter() {
-							@Override
-							public void focusLost(FocusEvent arg0) {
-								
-								if (defectTable.getSelectedRowCount() == 0) {
-										
-										//btnRemoveDefect.setEnabled(false);
-										System.out.println(notificationTable.getSelectedRowCount());
-									}
-
-							}
-						});
-						
-						notificationTable.setBounds(new Rectangle(41, 268, 887, 249));
-						notificationTable.setOpaque(false);
-						notificationTable.setShowGrid(false);
-						notificationTable.setUI(new BasicTableUI());
-						notificationTable.setAutoCreateRowSorter(true);
-						notificationTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-						notificationTable.setFocusTraversalKeysEnabled(false);
-						notificationTable.setBackground(new Color(34, 36, 39));
-						notificationTable.setBorder(null);
-						notificationTable.setRowMargin(10);
-						notificationTable.setForeground(new Color(255, 255, 255));
-						notificationTable.setSelectionForeground(new Color(255, 255, 255));
-						notificationTable.setShowVerticalLines(false);
-						notificationTable.setSelectionBackground(new Color(153, 102, 204));
-						notificationTable.setRequestFocusEnabled(false);
-						notificationTable.setRowHeight(50);
-						notificationTable.setIntercellSpacing(new Dimension(0, 0));
-						notificationTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
-						notificationTable.setGridColor(new Color(0, 0, 0));
-						notificationTable.getTableHeader().setBackground(new Color(34,36,39));
-						notificationTable.getTableHeader().setForeground(new Color(255,255,255));
-				
-						
-						JScrollPane scrollTablePaneNot = new JScrollPane(notificationTable);
-						scrollTablePaneNot.setBorder(null);
-						scrollTablePaneNot.setBackground(new Color(34,36,39));
-						tablePanelNot.add(scrollTablePaneNot, BorderLayout.CENTER);
-						scrollTablePaneNot.setPreferredSize(new Dimension(887, 249));
 						
 						
 						open_Frm = new JPanel();
