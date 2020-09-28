@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.sun.corba.se.impl.protocol.giopmsgheaders.Message;
+import com.sun.prism.Image;
 
 import Java_Classes.Building;
 import Java_Classes.Main;
@@ -24,7 +25,11 @@ import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+
 import java.awt.Font;
+import java.awt.Graphics2D;
+
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
@@ -49,6 +54,11 @@ import javax.swing.JButton;
 import java.awt.Component;
 import java.awt.Window.Type;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -62,11 +72,13 @@ import java.awt.Cursor;
 import javax.swing.JToggleButton;
 import javax.swing.JPasswordField;
 import java.awt.Rectangle;
+import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.InputMethodListener;
 import java.awt.event.InputMethodEvent;
 import javax.swing.event.CaretListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.event.CaretEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -141,6 +153,7 @@ public class Login_Page {
 	private JLabel lblAppartmentNumber;
 	private JLabel appNumFinishLbl;
 	public sqlDriver conec = new sqlDriver();
+	public static String userPhoneNumber;
 	private static  String numRegex = "[0-9]+";
 	private static String lettersRegex = "[a-zA-Z]+";
 	private JLabel emaillbl;
@@ -148,8 +161,11 @@ public class Login_Page {
 	private JLabel lblPhone;
 	private JLabel phoneNumFinishLbl;
 	public static JTextField phoneEntry;
+	private JLabel imagePathLbl;
+	private InputStream imageStream;
 	
-	//function that checks if a string contains only numbers
+	
+	
 	
 	public static void handleLoginCheck() throws SQLException {
 
@@ -205,6 +221,8 @@ public class Login_Page {
 								
 								
 							}
+							
+							userPhoneNumber = phoneEntry.getText();
 							//check if the user is Admin
 							if(admin) {
 								frmLoginPage.dispose();
@@ -291,124 +309,445 @@ public class Login_Page {
 		frmLoginPage.setBounds(100, 100, 668, 809);
 		frmLoginPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmLoginPage.getContentPane().setLayout(null);
-		
-		
-		signUpPanel = new JPanel();
-		signUpPanel.setVisible(false);
 		loginPanel = new JPanel();
 		loginPanel.setVisible(true);
 		
 		
-		
-		loginPanel.setBounds(306, 130, 362, 714);
-		frmLoginPage.getContentPane().add(loginPanel);
-		loginPanel.setLayout(null);
-		loginPanel.setBackground(new Color(34, 36, 39));
-		label = new JLabel("");
-		label.setBounds(108, 79, 128, 128);
-		loginPanel.add(label);
-		label.setIcon(new ImageIcon(Login_Page.class.getResource("/Media/user-login.png")));
-		label.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		lblLogin = new JLabel("Login");
-		lblLogin.setBounds(152, 214, 73, 33);
-		loginPanel.add(lblLogin);
-		lblLogin.setForeground(new Color(255, 255, 255));
-		lblLogin.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
-		lblLogin.setBackground(new Color(34, 36, 39));
-		
-		JPanel panel = new JPanel();
-		panel.setBounds(26, 260, 310, 2);
-		loginPanel.add(panel);
-		panel.setBackground(new Color(102, 0, 204));
-		
-		lblPhoneNumber = new JLabel("Phone Number");
-		lblPhoneNumber.setBounds(126, 326, 143, 25);
-		loginPanel.add(lblPhoneNumber);
-		lblPhoneNumber.setBackground(new Color(34, 36, 39));
-		lblPhoneNumber.setForeground(new Color(255, 255, 255));
-		lblPhoneNumber.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblPassword = new JLabel("Password");
-		lblPassword.setBounds(132, 420, 112, 25);
-		loginPanel.add(lblPassword);
-		lblPassword.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPassword.setForeground(new Color(255, 255, 255));
-		lblPassword.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblPassword.setBackground(Color.WHITE);
-		
-		PasswordEntry = new JTextField();
-		PasswordEntry.setCaretColor(new Color(123, 104, 238));
-		PasswordEntry.setBounds(88, 442, 198, 31);
-		loginPanel.add(PasswordEntry);
-		PasswordEntry.setForeground(new Color(255, 255, 255));
-		PasswordEntry.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		PasswordEntry.setSelectionColor(new Color(102, 51, 255));
-		PasswordEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		PasswordEntry.setBackground(new Color(34, 36, 39));
-		PasswordEntry.setBorder(new MatteBorder(0, 0, 3, 0, (Color) new Color(51, 204, 153)));
-		PasswordEntry.setColumns(10);
-		
-		
-		
-		loginButton = new JButton("Login");
-		loginButton.setBounds(88, 527, 198, 41);
-		loginPanel.add(loginButton);
-		loginButton.setForeground(new Color(255, 255, 255));
-		loginButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					handleLoginCheck();
-				} catch (SQLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		});
-		loginButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-//				btnLogin.setBackground(new Color(46,139,87));
-				loginButton.setBackground(new Color(51, 204, 153));
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				loginButton.setBackground(new Color(34,36,39));
-				
-			}
-		
-		});
-		
-		loginButton.setFocusPainted(false);
-		loginButton.setBackground(new Color(34, 36, 39));
-		loginButton.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		loginButton.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(127, 255, 212)));
-		
-		phoneEntry = new JTextField();
-		phoneEntry.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				handleOnlyDigitsCheck(phoneEntry);
-			}
-		});
-		phoneEntry.setSelectionColor(new Color(102, 51, 255));
-		phoneEntry.setForeground(Color.WHITE);
-		phoneEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		phoneEntry.setColumns(10);
-		phoneEntry.setCaretColor(new Color(123, 104, 238));
-		phoneEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
-		phoneEntry.setBackground(new Color(34, 36, 39));
-		phoneEntry.setAlignmentX(1.0f);
-		phoneEntry.setBounds(88, 353, 198, 31);
-		loginPanel.add(phoneEntry);
+		signUpPanel = new JPanel();
+		signUpPanel.setVisible(false);
 		
 		
 		signUpPanel.setLayout(null);
 		signUpPanel.setBackground(new Color(34, 36, 39));
 		signUpPanel.setBounds(306, 130, 362, 677);
 		frmLoginPage.getContentPane().add(signUpPanel);
+		
+		personalInformationPanel = new JPanel();
+		personalInformationPanel.setBackground(new Color(34,36,39));
+		personalInformationPanel.setBounds(10, 17, 340, 660);
+		signUpPanel.add(personalInformationPanel);
+		personalInformationPanel.setLayout(null);
+		
+		stage1Indicator = new JPanel();
+		stage1Indicator.setBounds(12, 75, 100, 4);
+		personalInformationPanel.add(stage1Indicator);
+		stage1Indicator.setBackground(new Color(51, 204, 153));
+		
+		stage2Indicator = new JPanel();
+		stage2Indicator.setBounds(117, 75, 100, 4);
+		personalInformationPanel.add(stage2Indicator);
+		stage2Indicator.setBackground(new Color(102, 0, 204));
+		
+		stage3Indicator = new JPanel();
+		stage3Indicator.setBounds(223, 75, 100, 4);
+		personalInformationPanel.add(stage3Indicator);
+		stage3Indicator.setBackground(new Color(102, 0, 204));
+		
+		label_5 = new JLabel("Phone Number");
+		label_5.setBounds(116, 359, 129, 25);
+		personalInformationPanel.add(label_5);
+		label_5.setForeground(Color.WHITE);
+		label_5.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		label_5.setBackground(new Color(34, 36, 39));
+		
+		signUpPhoneTextField = new JTextField();
+		signUpPhoneTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				handleOnlyDigitsCheck(signUpPhoneTextField);
+			}
+		});
+		signUpPhoneTextField.setBounds(81, 391, 198, 31);
+		personalInformationPanel.add(signUpPhoneTextField);
+		signUpPhoneTextField.setCaretColor(new Color(123, 104, 238));
+		signUpPhoneTextField.setToolTipText("");
+		signUpPhoneTextField.setSelectionColor(new Color(102, 51, 255));
+		signUpPhoneTextField.setForeground(Color.WHITE);
+		signUpPhoneTextField.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		signUpPhoneTextField.setColumns(10);
+		signUpPhoneTextField.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
+		signUpPhoneTextField.setBackground(new Color(34, 36, 39));
+		signUpPhoneTextField.setAlignmentX(1.0f);
+		
+		lblPaswword = new JLabel("Password");
+		lblPaswword.setBounds(140, 437, 80, 25);
+		personalInformationPanel.add(lblPaswword);
+		lblPaswword.setForeground(Color.WHITE);
+		lblPaswword.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblPaswword.setBackground(new Color(34, 36, 39));
+		
+		signUpPasswordTextField = new JPasswordField();
+		signUpPasswordTextField.setBounds(81, 475, 198, 31);
+		personalInformationPanel.add(signUpPasswordTextField);
+		signUpPasswordTextField.setForeground(new Color(255, 255, 255));
+		signUpPasswordTextField.setFont(new Font("Tahoma", Font.PLAIN, 19));
+		signUpPasswordTextField.setSelectionColor(new Color(147, 112, 219));
+		signUpPasswordTextField.setCaretColor(new Color(147, 112, 219));
+		signUpPasswordTextField.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
+		signUpPasswordTextField.setBackground(new Color(34, 36, 39));
+		
+		lblEmail = new JLabel("Email");
+		lblEmail.setBounds(158, 521, 44, 25);
+		personalInformationPanel.add(lblEmail);
+		lblEmail.setForeground(Color.WHITE);
+		lblEmail.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblEmail.setBackground(new Color(34, 36, 39));
+		
+		signUpEmailTextField = new JTextField();
+		signUpEmailTextField.setBounds(81, 551, 198, 31);
+		personalInformationPanel.add(signUpEmailTextField);
+		signUpEmailTextField.setCaretColor(new Color(147, 112, 219));
+		signUpEmailTextField.setToolTipText("");
+		signUpEmailTextField.setSelectionColor(new Color(102, 51, 255));
+		signUpEmailTextField.setForeground(Color.WHITE);
+		signUpEmailTextField.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		signUpEmailTextField.setColumns(10);
+		signUpEmailTextField.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
+		signUpEmailTextField.setBackground(new Color(34, 36, 39));
+		signUpEmailTextField.setAlignmentX(1.0f);
+		
+		firstNameEntry = new JTextField();
+		firstNameEntry.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+				handleOnlyLettersCheck(firstNameEntry);
+			}
+		});
+		
+		
+		
+		firstNameEntry.setToolTipText("");
+		firstNameEntry.setSelectionColor(new Color(102, 51, 255));
+		firstNameEntry.setForeground(Color.WHITE);
+		firstNameEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		firstNameEntry.setColumns(10);
+		firstNameEntry.setCaretColor(new Color(147, 112, 219));
+		firstNameEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
+		firstNameEntry.setBackground(new Color(34, 36, 39));
+		firstNameEntry.setAlignmentX(1.0f);
+		firstNameEntry.setBounds(81, 238, 198, 31);
+		personalInformationPanel.add(firstNameEntry);
+		
+		JLabel lblFirstName = new JLabel("First Name");
+		lblFirstName.setForeground(Color.WHITE);
+		lblFirstName.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblFirstName.setBackground(new Color(34, 36, 39));
+		lblFirstName.setBounds(134, 208, 92, 25);
+		personalInformationPanel.add(lblFirstName);
+		
+		lastNameEntry = new JTextField();
+		lastNameEntry.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				handleOnlyLettersCheck(lastNameEntry);
+			}
+		});
+		lastNameEntry.setToolTipText("");
+		lastNameEntry.setSelectionColor(new Color(102, 51, 255));
+		lastNameEntry.setForeground(Color.WHITE);
+		lastNameEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		lastNameEntry.setColumns(10);
+		lastNameEntry.setCaretColor(new Color(147, 112, 219));
+		lastNameEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
+		lastNameEntry.setBackground(new Color(34, 36, 39));
+		lastNameEntry.setAlignmentX(1.0f);
+		lastNameEntry.setBounds(81, 312, 198, 31);
+		personalInformationPanel.add(lastNameEntry);
+		
+		JLabel lblLastName = new JLabel("Last Name");
+		lblLastName.setForeground(Color.WHITE);
+		lblLastName.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblLastName.setBackground(new Color(34, 36, 39));
+		lblLastName.setBounds(135, 282, 91, 25);
+		personalInformationPanel.add(lblLastName);
+		
+		nextBtnPersonalInf = new JButton("Next");
+		nextBtnPersonalInf.setBounds(102, 606, 156, 41);
+		personalInformationPanel.add(nextBtnPersonalInf);
+		nextBtnPersonalInf.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(firstNameEntry.getText().equals("") || lastNameEntry.getText().equals("") || signUpPhoneTextField.getText().equals("") ||
+						signUpEmailTextField.getText().equals("")|| signUpPasswordTextField.getText().equals("")|| signUpPasswordTextField.getText().equals(" "))
+				{
+					alertMsg alert = new alertMsg();
+					alert.errordetlbl.setText("All Fields must be Filled");
+					alert.alertFrame.setVisible(true);
+				}
+				
+				
+				else if(isEmailValid(signUpEmailTextField)== false ) {
+					alertMsg alert = new alertMsg();
+					alert.errordetlbl.setText("Email Is Not Valid");
+					alert.alertFrame.setVisible(true);
+				}
+				
+				
+				else if(signUpPhoneTextField.getText().length() < 10) {
+					alertMsg alert = new alertMsg();
+					alert.errordetlbl.setText("Phone Number Must Be 10 Digits");
+					alert.alertFrame.setVisible(true);
+				}
+				
+				
+				else if(checkPhoneNumberSQL(signUpPhoneTextField) == false) {
+					alertMsg alert = new alertMsg();
+					alert.errordetlbl.setText("This Phone Number is already Exist");
+					alert.alertFrame.setVisible(true);
+				}
+				
+				else {
+					personalInformationPanel.setVisible(false);
+					buildingInformationPanel.setVisible(true);
+					getCities(cityComboBox);
+					getStreets(streetComboBox);
+					getBuildingNumber(buildingNumberComboBox);
+				}
+			}
+		});
+		nextBtnPersonalInf.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+				nextBtnPersonalInf.setBorder(new MatteBorder(4, 4, 4, 4, (Color) new Color(102, 0, 153)));
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				nextBtnPersonalInf.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+				
+			}
+		
+		});
+		nextBtnPersonalInf.setForeground(Color.WHITE);
+		nextBtnPersonalInf.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		nextBtnPersonalInf.setFocusPainted(false);
+		nextBtnPersonalInf.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+		nextBtnPersonalInf.setBackground(new Color(34,36,39));
+		
+		lblSign = new JLabel("Personal Information");
+		lblSign.setBounds(58, 13, 242, 33);
+		personalInformationPanel.add(lblSign);
+		lblSign.setToolTipText("");
+		lblSign.setForeground(Color.WHITE);
+		lblSign.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
+		lblSign.setBackground(new Color(34, 36, 39));
+		
+		JFileChooser profileImgFileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
+		profileImgFileChooser.setFileFilter(filter);
+		
+		
+		JLabel uploadImageLbl = new JLabel("");
+		uploadImageLbl.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				profileImgFileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+				int result = profileImgFileChooser.showOpenDialog(personalInformationPanel);
+				if(result == JFileChooser.APPROVE_OPTION ) {
+					try {
+						imageStream = new FileInputStream(profileImgFileChooser.getSelectedFile());
+						Thread.sleep(300);
+						uploadImageLbl.setIcon(new ImageIcon(Login_Page.class.getResource("/Media/uploadSuccess.png")));
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+			}
+		});
+	
+		uploadImageLbl.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		uploadImageLbl.setIcon(new ImageIcon(Login_Page.class.getResource("/Media/uploadPicutre.png")));
+		uploadImageLbl.setBounds(150, 141, 54, 54);
+		personalInformationPanel.add(uploadImageLbl);
+		
+		imagePathLbl = new JLabel("Profile Picutre(Optional)");
+		imagePathLbl.setForeground(Color.WHITE);
+		imagePathLbl.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		imagePathLbl.setBackground(new Color(34, 36, 39));
+		imagePathLbl.setBounds(77, 103, 207, 25);
+		personalInformationPanel.add(imagePathLbl);
+		
+		
+		
+		
+		personalInformationPanel.setVisible(true);
+		
+		buildingInformationPanel = new JPanel();
+		buildingInformationPanel.setBounds(10, 17, 340, 647);
+		signUpPanel.add(buildingInformationPanel);
+		buildingInformationPanel.setLayout(null);
+		buildingInformationPanel.setBackground(new Color(34, 36, 39));
+		
+		panel_4 = new JPanel();
+		panel_4.setBackground(new Color(51, 204, 153));
+		panel_4.setBounds(12, 75, 100, 4);
+		buildingInformationPanel.add(panel_4);
+		
+		panel_5 = new JPanel();
+		panel_5.setBackground(new Color(51, 204, 153));
+		panel_5.setBounds(117, 75, 100, 4);
+		buildingInformationPanel.add(panel_5);
+		
+		panel_6 = new JPanel();
+		panel_6.setBackground(new Color(102, 0, 204));
+		panel_6.setBounds(223, 75, 100, 4);
+		buildingInformationPanel.add(panel_6);
+		
+		buildingInfoNextbrn = new JButton("Next");
+		
+		buildingInfoNextbrn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				buildingInformationPanel.setVisible(false);
+				
+				setFinishLblText();
+				finishPanel.setVisible(true);
+				
+			}
+		});
+		buildingInfoNextbrn.setForeground(Color.WHITE);
+		buildingInfoNextbrn.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		buildingInfoNextbrn.setFocusPainted(false);
+		buildingInfoNextbrn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+		buildingInfoNextbrn.setBackground(new Color(102,0,153));
+		buildingInfoNextbrn.setBounds(182, 593, 134, 41);
+		buildingInformationPanel.add(buildingInfoNextbrn);
+		
+		lblBuildingInformation = new JLabel("Building Information");
+		lblBuildingInformation.setToolTipText("");
+		lblBuildingInformation.setForeground(Color.WHITE);
+		lblBuildingInformation.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
+		lblBuildingInformation.setBackground(new Color(34, 36, 39));
+		lblBuildingInformation.setBounds(58, 13, 242, 33);
+		buildingInformationPanel.add(lblBuildingInformation);
+		
+		lblCity = new JLabel("City");
+		lblCity.setBounds(156, 116, 40, 25);
+		buildingInformationPanel.add(lblCity);
+		lblCity.setForeground(Color.WHITE);
+		lblCity.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblCity.setBackground(new Color(34, 36, 39));
+		
+		cityComboBox = new JComboBox();
+		cityComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getStreets(streetComboBox);
+				getBuildingNumber(buildingNumberComboBox);
+			}
+		});
+		cityComboBox.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				
+				
+			}
+		});
+		cityComboBox.setForeground(new Color(255, 255, 255));
+		cityComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
+		cityComboBox.setBounds(77, 144, 198, 22);
+		buildingInformationPanel.add(cityComboBox);
+		cityComboBox.setFocusTraversalKeysEnabled(false);
+		cityComboBox.setFocusable(false);
+		cityComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
+		cityComboBox.setBackground(new Color(34, 36, 39));
+		cityComboBox.setUI(new BasicComboBoxUI());
+		
+		lblStreet = new JLabel("Street");
+		lblStreet.setBounds(146, 183, 60, 25);
+		buildingInformationPanel.add(lblStreet);
+		lblStreet.setForeground(Color.WHITE);
+		lblStreet.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblStreet.setBackground(new Color(34, 36, 39));
+		
+		streetComboBox = new JComboBox();
+		streetComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				getBuildingNumber(buildingNumberComboBox);
+			}
+		});
+		streetComboBox.setForeground(new Color(255, 255, 255));
+		streetComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
+		streetComboBox.setBounds(77, 221, 198, 22);
+		buildingInformationPanel.add(streetComboBox);
+		streetComboBox.setFocusable(false);
+		streetComboBox.setFocusTraversalKeysEnabled(false);
+		streetComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
+		streetComboBox.setBackground(new Color(34, 36, 39));
+		streetComboBox.setUI(new BasicComboBoxUI());
+		
+		lblBuildingNumber = new JLabel("Building Number");
+		lblBuildingNumber.setBounds(100, 273, 153, 25);
+		buildingInformationPanel.add(lblBuildingNumber);
+		lblBuildingNumber.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		lblBuildingNumber.setForeground(Color.WHITE);
+		lblBuildingNumber.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblBuildingNumber.setBackground(new Color(34, 36, 39));
+		
+		buildingNumberComboBox = new JComboBox();
+		buildingNumberComboBox.setForeground(new Color(255, 255, 255));
+		buildingNumberComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
+		buildingNumberComboBox.setBounds(77, 311, 198, 22);
+		buildingInformationPanel.add(buildingNumberComboBox);
+		buildingNumberComboBox.setFocusTraversalKeysEnabled(false);
+		buildingNumberComboBox.setFocusable(false);
+		buildingNumberComboBox.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		buildingNumberComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
+		buildingNumberComboBox.setBackground(new Color(34, 36, 39));
+		buildingNumberComboBox.setUI(new BasicComboBoxUI());
+		
+		buildingInfoBackbtn = new JButton("Back");
+		buildingInfoBackbtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				buildingInformationPanel.setVisible(false);
+				personalInformationPanel.setVisible(true);
+			}
+		});
+		buildingInfoBackbtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				buildingInfoBackbtn.setBorder(new MatteBorder(4,4,4,4, (Color) new Color(102, 0, 153)));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				buildingInfoBackbtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+			}
+		});
+		buildingInfoBackbtn.setForeground(Color.WHITE);
+		buildingInfoBackbtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		buildingInfoBackbtn.setFocusPainted(false);
+		buildingInfoBackbtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+		buildingInfoBackbtn.setBackground(new Color(34,36,39));
+		buildingInfoBackbtn.setBounds(24, 593, 134, 41);
+		buildingInformationPanel.add(buildingInfoBackbtn);
+		
+		JComboBox appratmentNumberComboBox = new JComboBox();
+		appratmentNumberComboBox.setForeground(new Color(255, 255, 255));
+		appratmentNumberComboBox.setUI(new BasicComboBoxUI());
+		appratmentNumberComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
+		appratmentNumberComboBox.setFocusable(false);
+		appratmentNumberComboBox.setFocusTraversalKeysEnabled(false);
+		appratmentNumberComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
+		appratmentNumberComboBox.setBackground(new Color(34, 36, 39));
+		appratmentNumberComboBox.setAlignmentX(1.0f);
+		appratmentNumberComboBox.setBounds(109, 396, 134, 22);
+		buildingInformationPanel.add(appratmentNumberComboBox);
+		
+		JLabel lblAppartmentNumber_1 = new JLabel("Appartment Number");
+		lblAppartmentNumber_1.setForeground(Color.WHITE);
+		lblAppartmentNumber_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblAppartmentNumber_1.setBackground(new Color(34, 36, 39));
+		lblAppartmentNumber_1.setAlignmentX(1.0f);
+		lblAppartmentNumber_1.setBounds(83, 357, 186, 25);
+		buildingInformationPanel.add(lblAppartmentNumber_1);
+		buildingInformationPanel.setVisible(false);
 		
 		finishPanel = new JPanel();
 		finishPanel.setBounds(10, 17, 340, 647);
@@ -468,11 +807,21 @@ public class Login_Page {
 				buildingInformationPanel.setVisible(true);
 			}
 		});
+		backVerfBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				backVerfBtn.setBorder(new MatteBorder(4,4,4,4, (Color) new Color(102, 0, 153)));
+			}
+			@Override
+			public void mouseExited(MouseEvent e) {
+				backVerfBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+			}
+		});
 		backVerfBtn.setForeground(Color.WHITE);
 		backVerfBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
 		backVerfBtn.setFocusPainted(false);
 		backVerfBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
-		backVerfBtn.setBackground(new Color(102, 0, 153));
+		backVerfBtn.setBackground(new Color(34,36,39));
 		backVerfBtn.setBounds(24, 593, 134, 41);
 		finishPanel.add(backVerfBtn);
 		
@@ -582,377 +931,6 @@ public class Login_Page {
 		finishPanel.add(phoneNumFinishLbl);
 		finishPanel.setVisible(false);
 		
-		buildingInformationPanel = new JPanel();
-		buildingInformationPanel.setBounds(10, 17, 340, 647);
-		signUpPanel.add(buildingInformationPanel);
-		buildingInformationPanel.setLayout(null);
-		buildingInformationPanel.setBackground(new Color(34, 36, 39));
-		
-		panel_4 = new JPanel();
-		panel_4.setBackground(new Color(51, 204, 153));
-		panel_4.setBounds(12, 75, 100, 4);
-		buildingInformationPanel.add(panel_4);
-		
-		panel_5 = new JPanel();
-		panel_5.setBackground(new Color(51, 204, 153));
-		panel_5.setBounds(117, 75, 100, 4);
-		buildingInformationPanel.add(panel_5);
-		
-		panel_6 = new JPanel();
-		panel_6.setBackground(new Color(102, 0, 204));
-		panel_6.setBounds(223, 75, 100, 4);
-		buildingInformationPanel.add(panel_6);
-		
-		buildingInfoNextbrn = new JButton("Next");
-		buildingInfoNextbrn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				buildingInformationPanel.setVisible(false);
-				
-				setFinishLblText();
-				finishPanel.setVisible(true);
-				
-			}
-		});
-		buildingInfoNextbrn.setForeground(Color.WHITE);
-		buildingInfoNextbrn.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		buildingInfoNextbrn.setFocusPainted(false);
-		buildingInfoNextbrn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
-		buildingInfoNextbrn.setBackground(new Color(102, 0, 153));
-		buildingInfoNextbrn.setBounds(182, 593, 134, 41);
-		buildingInformationPanel.add(buildingInfoNextbrn);
-		
-		lblBuildingInformation = new JLabel("Building Information");
-		lblBuildingInformation.setToolTipText("");
-		lblBuildingInformation.setForeground(Color.WHITE);
-		lblBuildingInformation.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
-		lblBuildingInformation.setBackground(new Color(34, 36, 39));
-		lblBuildingInformation.setBounds(58, 13, 242, 33);
-		buildingInformationPanel.add(lblBuildingInformation);
-		
-		lblCity = new JLabel("City");
-		lblCity.setBounds(156, 116, 40, 25);
-		buildingInformationPanel.add(lblCity);
-		lblCity.setForeground(Color.WHITE);
-		lblCity.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblCity.setBackground(new Color(34, 36, 39));
-		
-		cityComboBox = new JComboBox();
-		cityComboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				getStreets(streetComboBox);
-				getBuildingNumber(buildingNumberComboBox);
-			}
-		});
-		cityComboBox.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				
-				
-			}
-		});
-		cityComboBox.setForeground(new Color(255, 255, 255));
-		cityComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
-		cityComboBox.setBounds(77, 144, 198, 22);
-		buildingInformationPanel.add(cityComboBox);
-		cityComboBox.setFocusTraversalKeysEnabled(false);
-		cityComboBox.setFocusable(false);
-		cityComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
-		cityComboBox.setBackground(new Color(34, 36, 39));
-		cityComboBox.setUI(new BasicComboBoxUI());
-		
-		lblStreet = new JLabel("Street");
-		lblStreet.setBounds(146, 183, 60, 25);
-		buildingInformationPanel.add(lblStreet);
-		lblStreet.setForeground(Color.WHITE);
-		lblStreet.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblStreet.setBackground(new Color(34, 36, 39));
-		
-		streetComboBox = new JComboBox();
-		streetComboBox.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				getBuildingNumber(buildingNumberComboBox);
-			}
-		});
-		streetComboBox.setForeground(new Color(255, 255, 255));
-		streetComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
-		streetComboBox.setBounds(77, 221, 198, 22);
-		buildingInformationPanel.add(streetComboBox);
-		streetComboBox.setFocusable(false);
-		streetComboBox.setFocusTraversalKeysEnabled(false);
-		streetComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
-		streetComboBox.setBackground(new Color(34, 36, 39));
-		streetComboBox.setUI(new BasicComboBoxUI());
-		
-		lblBuildingNumber = new JLabel("Building Number");
-		lblBuildingNumber.setBounds(100, 273, 153, 25);
-		buildingInformationPanel.add(lblBuildingNumber);
-		lblBuildingNumber.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		lblBuildingNumber.setForeground(Color.WHITE);
-		lblBuildingNumber.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblBuildingNumber.setBackground(new Color(34, 36, 39));
-		
-		buildingNumberComboBox = new JComboBox();
-		buildingNumberComboBox.setForeground(new Color(255, 255, 255));
-		buildingNumberComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
-		buildingNumberComboBox.setBounds(77, 311, 198, 22);
-		buildingInformationPanel.add(buildingNumberComboBox);
-		buildingNumberComboBox.setFocusTraversalKeysEnabled(false);
-		buildingNumberComboBox.setFocusable(false);
-		buildingNumberComboBox.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		buildingNumberComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
-		buildingNumberComboBox.setBackground(new Color(34, 36, 39));
-		buildingNumberComboBox.setUI(new BasicComboBoxUI());
-		
-		buildingInfoBackbtn = new JButton("Back");
-		buildingInfoBackbtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				buildingInformationPanel.setVisible(false);
-				personalInformationPanel.setVisible(true);
-			}
-		});
-		buildingInfoBackbtn.setForeground(Color.WHITE);
-		buildingInfoBackbtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		buildingInfoBackbtn.setFocusPainted(false);
-		buildingInfoBackbtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
-		buildingInfoBackbtn.setBackground(new Color(102, 0, 153));
-		buildingInfoBackbtn.setBounds(24, 593, 134, 41);
-		buildingInformationPanel.add(buildingInfoBackbtn);
-		
-		JComboBox appratmentNumberComboBox = new JComboBox();
-		appratmentNumberComboBox.setForeground(new Color(255, 255, 255));
-		appratmentNumberComboBox.setUI(new BasicComboBoxUI());
-		appratmentNumberComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
-		appratmentNumberComboBox.setFocusable(false);
-		appratmentNumberComboBox.setFocusTraversalKeysEnabled(false);
-		appratmentNumberComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
-		appratmentNumberComboBox.setBackground(new Color(34, 36, 39));
-		appratmentNumberComboBox.setAlignmentX(1.0f);
-		appratmentNumberComboBox.setBounds(109, 396, 134, 22);
-		buildingInformationPanel.add(appratmentNumberComboBox);
-		
-		JLabel lblAppartmentNumber_1 = new JLabel("Appartment Number");
-		lblAppartmentNumber_1.setForeground(Color.WHITE);
-		lblAppartmentNumber_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblAppartmentNumber_1.setBackground(new Color(34, 36, 39));
-		lblAppartmentNumber_1.setAlignmentX(1.0f);
-		lblAppartmentNumber_1.setBounds(83, 357, 186, 25);
-		buildingInformationPanel.add(lblAppartmentNumber_1);
-		buildingInformationPanel.setVisible(false);
-		
-		personalInformationPanel = new JPanel();
-		personalInformationPanel.setBackground(new Color(34,36,39));
-		personalInformationPanel.setBounds(10, 17, 340, 647);
-		signUpPanel.add(personalInformationPanel);
-		personalInformationPanel.setLayout(null);
-		
-		stage1Indicator = new JPanel();
-		stage1Indicator.setBounds(12, 75, 100, 4);
-		personalInformationPanel.add(stage1Indicator);
-		stage1Indicator.setBackground(new Color(51, 204, 153));
-		
-		stage2Indicator = new JPanel();
-		stage2Indicator.setBounds(117, 75, 100, 4);
-		personalInformationPanel.add(stage2Indicator);
-		stage2Indicator.setBackground(new Color(102, 0, 204));
-		
-		stage3Indicator = new JPanel();
-		stage3Indicator.setBounds(223, 75, 100, 4);
-		personalInformationPanel.add(stage3Indicator);
-		stage3Indicator.setBackground(new Color(102, 0, 204));
-		
-		label_5 = new JLabel("Phone Number");
-		label_5.setBounds(109, 300, 143, 25);
-		personalInformationPanel.add(label_5);
-		label_5.setForeground(Color.WHITE);
-		label_5.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		label_5.setBackground(new Color(34, 36, 39));
-		
-		signUpPhoneTextField = new JTextField();
-		signUpPhoneTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				handleOnlyDigitsCheck(signUpPhoneTextField);
-			}
-		});
-		signUpPhoneTextField.setBounds(81, 332, 198, 31);
-		personalInformationPanel.add(signUpPhoneTextField);
-		signUpPhoneTextField.setCaretColor(new Color(123, 104, 238));
-		signUpPhoneTextField.setToolTipText("");
-		signUpPhoneTextField.setSelectionColor(new Color(102, 51, 255));
-		signUpPhoneTextField.setForeground(Color.WHITE);
-		signUpPhoneTextField.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		signUpPhoneTextField.setColumns(10);
-		signUpPhoneTextField.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
-		signUpPhoneTextField.setBackground(new Color(34, 36, 39));
-		signUpPhoneTextField.setAlignmentX(1.0f);
-		
-		lblPaswword = new JLabel("Password");
-		lblPaswword.setBounds(137, 384, 86, 25);
-		personalInformationPanel.add(lblPaswword);
-		lblPaswword.setForeground(Color.WHITE);
-		lblPaswword.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblPaswword.setBackground(new Color(34, 36, 39));
-		
-		signUpPasswordTextField = new JPasswordField();
-		signUpPasswordTextField.setBounds(81, 422, 198, 31);
-		personalInformationPanel.add(signUpPasswordTextField);
-		signUpPasswordTextField.setForeground(new Color(255, 255, 255));
-		signUpPasswordTextField.setFont(new Font("Tahoma", Font.PLAIN, 19));
-		signUpPasswordTextField.setSelectionColor(new Color(147, 112, 219));
-		signUpPasswordTextField.setCaretColor(new Color(147, 112, 219));
-		signUpPasswordTextField.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
-		signUpPasswordTextField.setBackground(new Color(34, 36, 39));
-		
-		lblEmail = new JLabel("Email");
-		lblEmail.setBounds(155, 478, 50, 25);
-		personalInformationPanel.add(lblEmail);
-		lblEmail.setForeground(Color.WHITE);
-		lblEmail.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblEmail.setBackground(new Color(34, 36, 39));
-		
-		signUpEmailTextField = new JTextField();
-		signUpEmailTextField.setBounds(81, 508, 198, 31);
-		personalInformationPanel.add(signUpEmailTextField);
-		signUpEmailTextField.setCaretColor(new Color(147, 112, 219));
-		signUpEmailTextField.setToolTipText("");
-		signUpEmailTextField.setSelectionColor(new Color(102, 51, 255));
-		signUpEmailTextField.setForeground(Color.WHITE);
-		signUpEmailTextField.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		signUpEmailTextField.setColumns(10);
-		signUpEmailTextField.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
-		signUpEmailTextField.setBackground(new Color(34, 36, 39));
-		signUpEmailTextField.setAlignmentX(1.0f);
-		
-		firstNameEntry = new JTextField();
-		firstNameEntry.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				
-				handleOnlyLettersCheck(firstNameEntry);
-			}
-		});
-		
-		
-		
-		firstNameEntry.setToolTipText("");
-		firstNameEntry.setSelectionColor(new Color(102, 51, 255));
-		firstNameEntry.setForeground(Color.WHITE);
-		firstNameEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		firstNameEntry.setColumns(10);
-		firstNameEntry.setCaretColor(new Color(147, 112, 219));
-		firstNameEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
-		firstNameEntry.setBackground(new Color(34, 36, 39));
-		firstNameEntry.setAlignmentX(1.0f);
-		firstNameEntry.setBounds(81, 146, 198, 31);
-		personalInformationPanel.add(firstNameEntry);
-		
-		JLabel lblFirstName = new JLabel("First Name");
-		lblFirstName.setForeground(Color.WHITE);
-		lblFirstName.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblFirstName.setBackground(new Color(34, 36, 39));
-		lblFirstName.setBounds(131, 116, 99, 25);
-		personalInformationPanel.add(lblFirstName);
-		
-		lastNameEntry = new JTextField();
-		lastNameEntry.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				handleOnlyLettersCheck(lastNameEntry);
-			}
-		});
-		lastNameEntry.setToolTipText("");
-		lastNameEntry.setSelectionColor(new Color(102, 51, 255));
-		lastNameEntry.setForeground(Color.WHITE);
-		lastNameEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
-		lastNameEntry.setColumns(10);
-		lastNameEntry.setCaretColor(new Color(147, 112, 219));
-		lastNameEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
-		lastNameEntry.setBackground(new Color(34, 36, 39));
-		lastNameEntry.setAlignmentX(1.0f);
-		lastNameEntry.setBounds(81, 237, 198, 31);
-		personalInformationPanel.add(lastNameEntry);
-		
-		JLabel lblLastName = new JLabel("Last Name");
-		lblLastName.setForeground(Color.WHITE);
-		lblLastName.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblLastName.setBackground(new Color(34, 36, 39));
-		lblLastName.setBounds(132, 207, 97, 25);
-		personalInformationPanel.add(lblLastName);
-		
-		nextBtnPersonalInf = new JButton("Next");
-		nextBtnPersonalInf.setBounds(102, 593, 156, 41);
-		personalInformationPanel.add(nextBtnPersonalInf);
-		nextBtnPersonalInf.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				if(firstNameEntry.getText().equals("") || lastNameEntry.getText().equals("") || signUpPhoneTextField.getText().equals("") ||
-						signUpEmailTextField.getText().equals("")|| signUpPasswordTextField.getText().equals("")|| signUpPasswordTextField.getText().equals(" "))
-				{
-					alertMsg alert = new alertMsg();
-					alert.errordetlbl.setText("All Fields must be Filled");
-					alert.alertFrame.setVisible(true);
-				}
-				
-				
-				else if(isEmailValid(signUpEmailTextField)== false ) {
-					alertMsg alert = new alertMsg();
-					alert.errordetlbl.setText("Email Is Not Valid");
-					alert.alertFrame.setVisible(true);
-				}
-				
-				
-				else if(signUpPhoneTextField.getText().length() < 10) {
-					alertMsg alert = new alertMsg();
-					alert.errordetlbl.setText("Phone Number Must Be 10 Digits");
-					alert.alertFrame.setVisible(true);
-				}
-				
-				
-				else if(checkPhoneNumberSQL(signUpPhoneTextField) == false) {
-					alertMsg alert = new alertMsg();
-					alert.errordetlbl.setText("This Phone Number is already Exist");
-					alert.alertFrame.setVisible(true);
-				}
-				
-				else {
-					personalInformationPanel.setVisible(false);
-					buildingInformationPanel.setVisible(true);
-					getCities(cityComboBox);
-					getStreets(streetComboBox);
-					getBuildingNumber(buildingNumberComboBox);
-				}
-			}
-		});
-		nextBtnPersonalInf.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-
-				nextBtnPersonalInf.setBackground(new Color(51, 204, 153));
-				
-			}
-			
-			@Override
-			public void mouseExited(MouseEvent e) {
-				nextBtnPersonalInf.setBackground(new Color(102,0,153));
-				
-			}
-		
-		});
-		nextBtnPersonalInf.setForeground(Color.WHITE);
-		nextBtnPersonalInf.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		nextBtnPersonalInf.setFocusPainted(false);
-		nextBtnPersonalInf.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
-		nextBtnPersonalInf.setBackground(new Color(102, 0, 153));
-		
-		lblSign = new JLabel("Personal Information");
-		lblSign.setBounds(58, 13, 242, 33);
-		personalInformationPanel.add(lblSign);
-		lblSign.setToolTipText("");
-		lblSign.setForeground(Color.WHITE);
-		lblSign.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
-		lblSign.setBackground(new Color(34, 36, 39));
-		
 		label_2 = new JLabel("");
 		label_2.setHorizontalAlignment(SwingConstants.CENTER);
 		label_2.setBounds(109, 41, 128, 128);
@@ -960,8 +938,109 @@ public class Login_Page {
 		
 		
 		
+		loginPanel.setBounds(306, 130, 362, 714);
+		frmLoginPage.getContentPane().add(loginPanel);
+		loginPanel.setLayout(null);
+		loginPanel.setBackground(new Color(34, 36, 39));
+		label = new JLabel("");
+		label.setBounds(108, 79, 128, 128);
+		loginPanel.add(label);
+		label.setIcon(new ImageIcon(Login_Page.class.getResource("/Media/user-login.png")));
+		label.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		personalInformationPanel.setVisible(true);
+		lblLogin = new JLabel("Login");
+		lblLogin.setBounds(152, 214, 73, 33);
+		loginPanel.add(lblLogin);
+		lblLogin.setForeground(new Color(255, 255, 255));
+		lblLogin.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
+		lblLogin.setBackground(new Color(34, 36, 39));
+		
+		JPanel panel = new JPanel();
+		panel.setBounds(26, 260, 310, 2);
+		loginPanel.add(panel);
+		panel.setBackground(new Color(102, 0, 204));
+		
+		lblPhoneNumber = new JLabel("Phone Number");
+		lblPhoneNumber.setBounds(126, 326, 143, 25);
+		loginPanel.add(lblPhoneNumber);
+		lblPhoneNumber.setBackground(new Color(34, 36, 39));
+		lblPhoneNumber.setForeground(new Color(255, 255, 255));
+		lblPhoneNumber.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblPassword = new JLabel("Password");
+		lblPassword.setBounds(132, 420, 112, 25);
+		loginPanel.add(lblPassword);
+		lblPassword.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		lblPassword.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPassword.setForeground(new Color(255, 255, 255));
+		lblPassword.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblPassword.setBackground(Color.WHITE);
+		
+		PasswordEntry = new JTextField();
+		PasswordEntry.setCaretColor(new Color(123, 104, 238));
+		PasswordEntry.setBounds(88, 442, 198, 31);
+		loginPanel.add(PasswordEntry);
+		PasswordEntry.setForeground(new Color(255, 255, 255));
+		PasswordEntry.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		PasswordEntry.setSelectionColor(new Color(102, 51, 255));
+		PasswordEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		PasswordEntry.setBackground(new Color(34, 36, 39));
+		PasswordEntry.setBorder(new MatteBorder(0, 0, 3, 0, (Color) new Color(51, 204, 153)));
+		PasswordEntry.setColumns(10);
+		
+		
+		
+		loginButton = new JButton("Login");
+		loginButton.setBounds(88, 527, 198, 41);
+		loginPanel.add(loginButton);
+		loginButton.setForeground(new Color(255, 255, 255));
+		loginButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					handleLoginCheck();
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		});
+		loginButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+//				btnLogin.setBackground(new Color(46,139,87));
+				loginButton.setBackground(new Color(51, 204, 153));
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				loginButton.setBackground(new Color(34,36,39));
+				
+			}
+		
+		});
+		
+		loginButton.setFocusPainted(false);
+		loginButton.setBackground(new Color(34, 36, 39));
+		loginButton.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		loginButton.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(127, 255, 212)));
+		
+		phoneEntry = new JTextField();
+		phoneEntry.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				handleOnlyDigitsCheck(phoneEntry);
+			}
+		});
+		phoneEntry.setSelectionColor(new Color(102, 51, 255));
+		phoneEntry.setForeground(Color.WHITE);
+		phoneEntry.setFont(new Font("Yu Gothic UI", Font.PLAIN, 19));
+		phoneEntry.setColumns(10);
+		phoneEntry.setCaretColor(new Color(123, 104, 238));
+		phoneEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
+		phoneEntry.setBackground(new Color(34, 36, 39));
+		phoneEntry.setAlignmentX(1.0f);
+		phoneEntry.setBounds(88, 353, 198, 31);
+		loginPanel.add(phoneEntry);
 		JLabel closeIcon = new JLabel("");
 		closeIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		closeIcon.addMouseListener(new MouseAdapter() {
@@ -1105,15 +1184,31 @@ public class Login_Page {
 			while(rs.next()) {
 				BuildingID = rs.getInt(1);
 			}
+			if(imageStream != null) {
+				preStatment.setBlob(7,imageStream);
+				
+				preStatment = con.prepareStatement("insert into Resident(f_Name,l_Name,email,phone,buildingID,password,image)"
+						+ " values(?,?,?,?,?,?,?)");
+				preStatment.setString(1, firstNameEntry.getText());
+				preStatment.setString(2, lastNameEntry.getText());
+				preStatment.setString(3,signUpEmailTextField.getText());
+				preStatment.setString(4,signUpPhoneTextField.getText());			
+				preStatment.setInt(5,BuildingID);
+				preStatment.setString(6,signUpPasswordTextField.getText());
+				preStatment.setBlob(7,imageStream);
+			}
 			
-			preStatment = con.prepareStatement("insert into Resident(f_Name,l_Name,email,phone,buildingID,password)"
-					+ " values(?,?,?,?,?,?)");
-			preStatment.setString(1, firstNameEntry.getText());
-			preStatment.setString(2, lastNameEntry.getText());
-			preStatment.setString(3,signUpEmailTextField.getText());
-			preStatment.setString(4,signUpPhoneTextField.getText());			
-			preStatment.setInt(5,BuildingID);
-			preStatment.setString(6,signUpPasswordTextField.getText());
+			else {	
+				preStatment = con.prepareStatement("insert into Resident(f_Name,l_Name,email,phone,buildingID,password)"
+						+ " values(?,?,?,?,?,?)");
+				preStatment.setString(1, firstNameEntry.getText());
+				preStatment.setString(2, lastNameEntry.getText());
+				preStatment.setString(3,signUpEmailTextField.getText());
+				preStatment.setString(4,signUpPhoneTextField.getText());			
+				preStatment.setInt(5,BuildingID);
+				preStatment.setString(6,signUpPasswordTextField.getText());
+			}
+		
 			preStatment.executeUpdate();
 			
 			
@@ -1143,7 +1238,7 @@ public class Login_Page {
 					frmLoginPage.dispose();
 					windowType = "User";
 					PasswordEntry.setText(signUpPasswordTextField.getText());
-					
+					userPhoneNumber = signUpPasswordTextField.getText();
 					return;
 			
 				
@@ -1349,8 +1444,4 @@ public class Login_Page {
 		
 		streetComboBox.setModel(new DefaultComboBoxModel(streets.toArray(new String[0])));
 	}
-	
-	
-
-		
 }

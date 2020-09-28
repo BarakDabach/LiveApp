@@ -25,11 +25,13 @@ import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -79,6 +81,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
@@ -96,6 +99,7 @@ import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
+import java.io.IOException;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.FocusAdapter;
@@ -120,6 +124,7 @@ public class Resident_Window {
 	private static JTextArea messagefield;
 	private static String[] enumVal ;
 	static JPanel[] panels;
+	private JLabel userProfileImage;
 	static JButton[] tabButtons;
 	private static JTable defectTable;
 	private static JTable messageTable;
@@ -141,9 +146,8 @@ public class Resident_Window {
 	static JLabel msg_lbl;
 	static String[] msgNames;
 	static JLabel totalDefectsLabel;
-	
-	
-	
+	static String userPhoneNumber = Login_Page.userPhoneNumber;
+	private static JTextArea notificationsTextBox;
 	public static void setPanel(JPanel currentPanel) {
 		panels  = new JPanel[]{DefectFrm,open_Frm,ResidentsFrm,Aboutfrm,inboxFrm,sendMessageFrm};
 		
@@ -181,9 +185,37 @@ public class Resident_Window {
 	 * Launch the application.
 	 */
 
-		
+
 		 
+	public static void getNotifications() {
 		
+		try {
+			String notifications = "No Upcoming Events...";
+			preStatment = con.prepareStatement("select message, EXTRACT(DAY FROM date) , EXTRACT(MONTH FROM date) from Notification where BuildingID = ? "
+					+ "and EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURDATE() ) ",ResultSet.TYPE_SCROLL_SENSITIVE, 
+                    ResultSet.CONCUR_UPDATABLE);
+			preStatment.setInt(1,buildingIDSQL);
+			
+			rs = preStatment.executeQuery();
+			if(rs.first() == true) {
+				notifications = "";
+				notifications += rs.getString(2) + "/" + rs.getString(3) + " " + rs.getString(1) + "\n\n";
+				while(rs.next()) {
+					
+					notifications += rs.getString(2) + "/" + rs.getString(3) + " " + rs.getString(1) + "\n\n";
+				}
+				
+				notificationsTextBox.setText(notifications);
+			}
+			
+						
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 		
 	
 	
@@ -288,6 +320,37 @@ public class Resident_Window {
 	}
 	
 	
+	public void getResidentPicture() {
+		
+		try {
+			preStatment = con.prepareStatement("select image from Resident where phone = ?");
+			preStatment.setString(1,userPhoneNumber);
+			rs = preStatment.executeQuery();
+			while(rs.next()) {
+				if(rs.getBinaryStream("image") != null) {
+					BufferedImage imageRetrived;
+					try {
+						
+						imageRetrived = ImageIO.read(rs.getBinaryStream("image"));
+						ImageIcon retrivedIcon = resizeImageIocn(new ImageIcon(imageRetrived),userProfileImage.getWidth(),userProfileImage.getHeight());
+						
+						userProfileImage.setIcon(retrivedIcon);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
 	//adding the residents names to the list of residents.
 	
 	public static  void getResidetnsNames() {
@@ -565,20 +628,10 @@ public class Resident_Window {
 		lblBuildingStatus.setBounds(32, 79, 308, 34);
 		panel_3.add(lblBuildingStatus);
 		
-		JScrollPane notificationRubrik = new JScrollPane();
+		JPanel notificationRubrik = new JPanel();
+		
 		notificationRubrik.setBorder(null);
-		notificationRubrik.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		notificationRubrik.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		notificationRubrik.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				notificationRubrik.setBackground(new Color(86,70,119));
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				notificationRubrik.setBackground(new Color(152,102,204));
-			}
-		});
+
 		notificationRubrik.setBackground(new Color(153, 102, 204));
 		notificationRubrik.setBounds(116, 155, 743, 211);
 		open_Frm.add(notificationRubrik);
@@ -589,26 +642,22 @@ public class Resident_Window {
 		label_4.setBounds(12, 13, 64, 64);
 		notificationRubrik.add(label_4);
 		
-		JLabel lblElectrictyStoppesFor = new JLabel("Electricty Stoppes for One Hour");
-		lblElectrictyStoppesFor.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblElectrictyStoppesFor.setHorizontalAlignment(SwingConstants.LEFT);
-		lblElectrictyStoppesFor.setForeground(Color.WHITE);
-		lblElectrictyStoppesFor.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblElectrictyStoppesFor.setBounds(22, 86, 308, 34);
-		notificationRubrik.add(lblElectrictyStoppesFor);
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBorder(null);
+		scrollPane_1.setBounds(22, 90, 721, 121);
+		notificationRubrik.add(scrollPane_1);
+		
+		notificationsTextBox = new JTextArea();
+		notificationsTextBox.setBorder(null);
+		scrollPane_1.setViewportView(notificationsTextBox);
+		notificationsTextBox.setEditable(false);
+		notificationsTextBox.setForeground(Color.WHITE);
+		notificationsTextBox.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		notificationsTextBox.setBackground(new Color(153,102,204));
 		
 		JPanel messagesRubrik = new JPanel();
 		messagesRubrik.setBorder(null);
-		messagesRubrik.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				messagesRubrik.setBackground(new Color(86,70,119));
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				messagesRubrik.setBackground(new Color(152,102,204));
-			}
-		});
+
 		messagesRubrik.setBackground(new Color(153, 102, 204));
 		messagesRubrik.setBounds(116, 379, 407, 130);
 		open_Frm.add(messagesRubrik);
@@ -630,16 +679,7 @@ public class Resident_Window {
 		JPanel defectRubrik = new JPanel();
 		defectRubrik.setBorder(null);
 		defectRubrik.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		defectRubrik.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				defectRubrik.setBackground(new Color(86,70,119));
-			}
-			@Override
-			public void mouseExited(MouseEvent e) {
-				defectRubrik.setBackground(new Color(152,102,204));
-			}
-		});
+
 		defectRubrik.setBackground(new Color(153, 102, 204));
 		defectRubrik.setBounds(535, 379, 324, 130);
 		open_Frm.add(defectRubrik);
@@ -1152,10 +1192,10 @@ public class Resident_Window {
 			aboutTab.setBounds(0, 586, 304, 63);
 			tabFrm.add(aboutTab);
 			
-			JLabel label = new JLabel("");
-			label.setBounds(112, 103, 64, 64);
-			tabFrm.add(label);
-			label.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
+			userProfileImage = new JLabel("");
+			userProfileImage.setBounds(112, 103, 64, 64);
+			tabFrm.add(userProfileImage);
+			userProfileImage.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
 			
 			sendMessageFrm = new JPanel();
 			sendMessageFrm.setBackground(new Color(34,36,39));
@@ -1558,8 +1598,14 @@ public class Resident_Window {
 
 		
        
-       
-       
+	       getResidentPicture();
+	       getNotifications();
 		
+	}
+	
+	private ImageIcon resizeImageIocn(ImageIcon srcImg, int w, int h){
+		java.awt.Image image = srcImg.getImage(); // transform it 
+		java.awt.Image newimg = image.getScaledInstance(w, h,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
+		return  new ImageIcon(newimg);  // transform it back
 	}
 }
