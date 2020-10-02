@@ -18,6 +18,7 @@ import SQL.sqlDriver;
 import javafx.scene.control.ComboBox;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JButton;
@@ -60,6 +61,7 @@ import javax.swing.DefaultListModel;
 import java.awt.ComponentOrientation;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.TableUI;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollPaneUI;
@@ -99,7 +101,11 @@ import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.FocusAdapter;
@@ -115,6 +121,7 @@ public class Resident_Window {
 	private static JPanel Aboutfrm;
 	private static JPanel inboxFrm;
 	private static JPanel sendMessageFrm;
+	private static JPanel accountFrm;
 	private static JButton buildingCommitteTab;
 	private static JButton HomeTab;
 	private static JButton DefectTab;
@@ -151,8 +158,11 @@ public class Resident_Window {
 	private static JTextArea notificationsTextBox;
 	private JButton deleteMsgBtn;
 	private JButton sendMessagebtn;
+	private JLabel accountUserImageIcon;
+	private InputStream imageStream;
+	
 	public static void setPanel(JPanel currentPanel) {
-		panels  = new JPanel[]{DefectFrm,open_Frm,HouseCommitteFrm,Aboutfrm,inboxFrm,sendMessageFrm};
+		panels  = new JPanel[]{DefectFrm,open_Frm,HouseCommitteFrm,Aboutfrm,inboxFrm,sendMessageFrm,accountFrm};
 		
 		for(int i = 0;i<panels.length;i++) {
 			if(panels[i].equals(currentPanel)) {
@@ -208,9 +218,9 @@ public class Resident_Window {
 					notifications += rs.getString(2) + "/" + rs.getString(3) + " " + rs.getString(1) + "\n\n";
 				}
 				
-				notificationsTextBox.setText(notifications);
+				
 			}
-			
+			notificationsTextBox.setText(notifications);
 						
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -338,6 +348,7 @@ public class Resident_Window {
 						ImageIcon retrivedIcon = resizeImageIocn(new ImageIcon(imageRetrived),userProfileImage.getWidth(),userProfileImage.getHeight());
 						
 						userProfileImage.setIcon(retrivedIcon);
+						accountUserImageIcon.setIcon(retrivedIcon);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -569,6 +580,356 @@ public class Resident_Window {
 		Aboutfrm.setVisible(false);
 					
 					
+					
+					sendMessageFrm = new JPanel();
+					sendMessageFrm.setVisible(false);
+					sendMessageFrm.addMouseMotionListener(new MouseMotionAdapter() {
+						@Override
+						public void mouseMoved(MouseEvent e) {
+					
+							if(messagefield.getText().length() > 0 && list.isSelectionEmpty() == false   ) 
+							{
+								
+								sendMessagebtn.setEnabled(true);
+							}
+							else {
+								sendMessagebtn.setEnabled(false);
+							}
+						}
+					});
+					sendMessageFrm.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						sendMessagebtn.setEnabled(false);
+						list.clearSelection();
+					}
+								});
+					
+					
+					accountFrm = new JPanel();
+					accountFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+					accountFrm.setVisible(false);
+					accountFrm.setBackground(new Color(34, 36, 39));
+					accountFrm.setBounds(304, 45, 974, 705);
+					frmUserWindow.getContentPane().add(accountFrm);
+					accountFrm.setLayout(null);
+					
+					JPanel panel_7 = new JPanel();
+					panel_7.setLayout(null);
+					panel_7.setBorder(null);
+					panel_7.setBackground(new Color(51, 153, 153));
+					panel_7.setBounds(0, 0, 973, 142);
+					accountFrm.add(panel_7);
+					
+					JLabel lblManageYourAccount = new JLabel("Manage Your Account");
+					lblManageYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblManageYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
+					lblManageYourAccount.setForeground(Color.WHITE);
+					lblManageYourAccount.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+					lblManageYourAccount.setBounds(32, 32, 257, 34);
+					panel_7.add(lblManageYourAccount);
+					
+					JLabel lblEditYourAccount = new JLabel("Edit Your Account Details");
+					lblEditYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblEditYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
+					lblEditYourAccount.setForeground(Color.WHITE);
+					lblEditYourAccount.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+					lblEditYourAccount.setBounds(32, 79, 248, 34);
+					panel_7.add(lblEditYourAccount);
+					
+					JButton updatePersonalDetailsBtn = new JButton("Update Personal Detais");
+					updatePersonalDetailsBtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+							UpdateResidnetPersonalDetailsWindow updateWindow = new UpdateResidnetPersonalDetailsWindow(userPhoneNumber);
+							updateWindow.frame.setVisible(true);
+						}
+					});
+					updatePersonalDetailsBtn.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							updatePersonalDetailsBtn.setBackground(new Color(0, 204, 153));
+						}
+						@Override
+						public void mouseExited(MouseEvent e) {
+							updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
+						}
+					});
+					updatePersonalDetailsBtn.setForeground(new Color(255, 255, 255));
+					updatePersonalDetailsBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					updatePersonalDetailsBtn.setFocusPainted(false);
+					updatePersonalDetailsBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 204, 153)));
+					updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
+					updatePersonalDetailsBtn.setBounds(60, 294, 244, 122);
+					accountFrm.add(updatePersonalDetailsBtn);
+					
+					JButton updateBuildingDetaisBtn = new JButton("Update Building Detais");
+					updateBuildingDetaisBtn.setForeground(new Color(255, 255, 255));
+					updateBuildingDetaisBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					updateBuildingDetaisBtn.setFocusPainted(false);
+					updateBuildingDetaisBtn.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							updateBuildingDetaisBtn.setBackground(new Color(102, 102, 153));
+						}
+						@Override
+						public void mouseExited(MouseEvent e) {
+							updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
+						}
+					});
+					updateBuildingDetaisBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 102, 153)));
+					updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
+					updateBuildingDetaisBtn.setBounds(364, 294, 244, 122);
+					accountFrm.add(updateBuildingDetaisBtn);
+					
+					JButton deleteAccountBtn = new JButton("Delete Your Account");
+					deleteAccountBtn.setForeground(new Color(255, 255, 255));
+					deleteAccountBtn.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							deleteAccountBtn.setBackground(new Color(204, 102, 102));
+						}
+						@Override
+						public void mouseExited(MouseEvent e) {
+							deleteAccountBtn.setBackground(new Color(34, 36, 39));
+						}
+					});
+					deleteAccountBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					deleteAccountBtn.setFocusPainted(false);
+					deleteAccountBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
+					deleteAccountBtn.setBackground(new Color(34, 36, 39));
+					deleteAccountBtn.setBounds(668, 294, 244, 122);
+					accountFrm.add(deleteAccountBtn);
+					JFileChooser profileImgFileChooser = new JFileChooser();
+					FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
+					profileImgFileChooser.setFileFilter(filter);
+					JPanel panel_8 = new JPanel();
+					panel_8.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							profileImgFileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+							int result = profileImgFileChooser.showOpenDialog(panel_8);
+							if(result == JFileChooser.APPROVE_OPTION ) {
+								try {
+									imageStream = new FileInputStream(profileImgFileChooser.getSelectedFile());
+									
+									
+									preStatment = con.prepareStatement("UPDATE  Resident SET image = ? where phone = ?");
+									preStatment.setBlob(1, imageStream);
+									preStatment.setString(2, userPhoneNumber);
+									
+									preStatment.executeUpdate();
+									
+									getResidentPicture();
+
+								} catch (FileNotFoundException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (SQLException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} 
+								
+							}
+							
+						}
+					});
+					panel_8.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+					panel_8.setBackground(new Color(34,36,39));
+					panel_8.setBounds(453, 165, 97, 105);
+					accountFrm.add(panel_8);
+					panel_8.setLayout(null);
+					
+					accountUserImageIcon = new JLabel("");
+					accountUserImageIcon.setBounds(0, 0, 64, 64);
+					panel_8.add(accountUserImageIcon);
+					accountUserImageIcon.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
+					
+					JLabel label = new JLabel("");
+					label.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/edit.png")));
+					label.setBounds(59, 55, 25, 25);
+					panel_8.add(label);
+					sendMessageFrm.setBounds(304, 45, 974, 705);
+					frmUserWindow.getContentPane().add(sendMessageFrm);
+					sendMessageFrm.setBackground(new Color(34,36,39));
+					sendMessageFrm.setLayout(null);
+					
+					JPanel panel_1 = new JPanel();
+					panel_1.setBounds(0, 0, 973, 142);
+					sendMessageFrm.add(panel_1);
+					panel_1.setLayout(null);
+					panel_1.setBorder(null);
+					panel_1.setBackground(new Color(51, 153, 153));
+					
+					JLabel lblResidents = new JLabel("Send a Message");
+					lblResidents.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblResidents.setHorizontalAlignment(SwingConstants.LEFT);
+					lblResidents.setForeground(Color.WHITE);
+					lblResidents.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+					lblResidents.setBounds(32, 32, 252, 34);
+					panel_1.add(lblResidents);
+					
+					JLabel lblHereYouCan = new JLabel("Send a Message to Your Neibhoor/Neibhoors");
+					lblHereYouCan.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblHereYouCan.setHorizontalAlignment(SwingConstants.LEFT);
+					lblHereYouCan.setForeground(Color.WHITE);
+					lblHereYouCan.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+					lblHereYouCan.setBounds(32, 79, 393, 34);
+					panel_1.add(lblHereYouCan);
+					list = new JList(new String[]{"",""}) ;
+					
+					list.setForeground(Color.WHITE);
+					list.setBounds(new Rectangle(0, 0, 300, 300));
+					list.setAlignmentX(Component.RIGHT_ALIGNMENT);
+					list.setRequestFocusEnabled(false);
+					list.setValueIsAdjusting(true);
+					list.setFocusable(false);
+					list.setFocusTraversalKeysEnabled(false);
+					list.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+					list.setSelectionForeground(new Color(255, 255, 255));
+					list.setSelectionBackground(new Color(153, 51, 204));
+					list.setBorder(null);
+					list.setBackground(new Color(34,36,39));
+					
+					list.setSelectedIndex(0);
+					
+					list.setBounds(23, 101, 260, 144);
+					JScrollPane scrollPane = new JScrollPane(list);
+					scrollPane.setRequestFocusEnabled(false);
+					scrollPane.setUI(new BasicScrollPaneUI());
+					scrollPane.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+					scrollPane.setBounds(73, 169, 260, 205);
+					sendMessageFrm.add(scrollPane);
+					
+					scrollPane.setFocusTraversalKeysEnabled(false);
+					scrollPane.setFocusable(false);
+					
+					sendMessagebtn = new JButton("Send");
+					sendMessagebtn.setFocusable(false);
+					sendMessagebtn.setVerifyInputWhenFocusTarget(false);
+					sendMessagebtn.setRolloverEnabled(false);
+					sendMessagebtn.setRequestFocusEnabled(false);
+					sendMessagebtn.setBounds(776, 638, 153, 39);
+					sendMessageFrm.add(sendMessagebtn);
+					sendMessagebtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							if (list.getSelectedValuesList().size() == 0) {
+								alertMsg  msgalert = new alertMsg();
+								msgalert.errordetlbl.setText("You Must Select A Resident");
+								msgalert.alertFrame.setVisible(true);
+							}
+							
+							
+							else {
+								
+								
+								if(messagefield.getText().equals("")) {
+									alertMsg msgalt = new alertMsg();
+									alertMsg.errordetlbl.setText("Message Field Is Empty");
+									msgalt.alertFrame.setVisible(true);;
+								}
+								
+								
+								
+								else {
+								
+								for(int i = 0;i<list.getSelectedValuesList().size();i++) {
+									try {
+										
+										preStatment = con.prepareStatement("select phone from Resident where f_Name = ? and"
+												+ " l_Name = ? and buildingID = ? ");
+										String[]name = ((String)list.getSelectedValuesList().get(i)).split(" ");
+										preStatment.setString(1,name[0]);
+										preStatment.setString(2,name[1]);
+										preStatment.setInt(3,buildingIDSQL);
+										
+										rs = preStatment.executeQuery();
+										String msgrec = "";
+										while(rs.next()) {
+											msgrec = rs.getString("phone");
+										}
+										
+										preStatment = con.prepareStatement("insert into Message(sender,receive,content)"
+												+ " values(?,?,?)");
+										preStatment.setString(1, Login_Page.phoneEntry.getText());
+										preStatment.setString(2, msgrec);
+										preStatment.setString(3,messagefield.getText());
+										preStatment.executeUpdate();
+									} catch (SQLException e1) {
+										e1.printStackTrace();
+									}
+									
+								}
+								AddMsg msgalt = new AddMsg();
+								msgalt.alertFrame.setVisible(true);
+								messagefield.setText("");
+							}
+							}
+						}
+					});
+					sendMessagebtn.setForeground(new Color(255, 255, 255));
+					sendMessagebtn.setHorizontalTextPosition(SwingConstants.RIGHT);
+					sendMessagebtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+					sendMessagebtn.setFocusPainted(false);
+					sendMessagebtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
+					sendMessagebtn.setBackground(new Color(34,36,39));
+					
+					JLabel lblWriteAMessage = new JLabel("Compose");
+					lblWriteAMessage.setBounds(73, 385, 143, 22);
+					sendMessageFrm.add(lblWriteAMessage);
+					lblWriteAMessage.setForeground(new Color(255, 255, 255));
+					lblWriteAMessage.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+					
+					JButton clearMessageBtn = new JButton("Clear");
+					clearMessageBtn.setFocusable(false);
+					clearMessageBtn.setVerifyInputWhenFocusTarget(false);
+					clearMessageBtn.setRolloverEnabled(false);
+					clearMessageBtn.setRequestFocusEnabled(false);
+					clearMessageBtn.setBounds(73, 638, 68, 39);
+					sendMessageFrm.add(clearMessageBtn);
+					clearMessageBtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							messagefield.setText("");
+						}
+					});
+					clearMessageBtn.setForeground(new Color(255, 255, 255));
+					clearMessageBtn.setIconTextGap(0);
+					clearMessageBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
+					clearMessageBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+					clearMessageBtn.setFocusPainted(false);
+					clearMessageBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
+					clearMessageBtn.setBackground(new Color(34,36,39));
+					
+					messagefield = new JTextArea();
+					messagefield.setFocusTraversalKeysEnabled(false);
+					messagefield.setLineWrap(true);
+					messagefield.addKeyListener(new KeyAdapter() {
+						@Override
+						public void keyReleased(KeyEvent e) {
+							if(messagefield.getText().length()> 0  && list.isSelectionEmpty() == false) {
+								sendMessagebtn.setEnabled(true);
+							}
+							
+							else {
+								sendMessagebtn.setEnabled(false);
+							}
+						}
+					});
+					messagefield.setDisabledTextColor(new Color(153, 51, 204));
+					messagefield.setCaretColor(new Color(255, 255, 255));
+					messagefield.setBackground(new Color(34,36,39));
+					messagefield.setForeground(Color.WHITE);
+					messagefield.setBounds(73, 412, 857, 213);
+					sendMessageFrm.add(messagefield);
+					messagefield.setSelectionColor(new Color(153, 153, 204));
+					messagefield.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+					messagefield.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+					
+					JTextArea textArea = new JTextArea();
+					textArea.setBounds(231, 654, 204, 15);
+					sendMessageFrm.add(textArea);
+		
+					
 					open_Frm = new JPanel();
 					open_Frm.setBorder(null);
 					open_Frm.setBounds(new Rectangle(0, 0, 1280, 0));
@@ -609,12 +970,8 @@ public class Resident_Window {
 							open_Frm.add(notificationRubrik);
 							notificationRubrik.setLayout(null);
 							
-							JLabel label_4 = new JLabel("");
-							label_4.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/alert.png")));
-							label_4.setBounds(12, 13, 64, 64);
-							notificationRubrik.add(label_4);
-							
 							JScrollPane scrollPane_1 = new JScrollPane();
+							
 							scrollPane_1.setBorder(null);
 							scrollPane_1.setBounds(22, 90, 721, 121);
 							notificationRubrik.add(scrollPane_1);
@@ -626,6 +983,11 @@ public class Resident_Window {
 							notificationsTextBox.setForeground(Color.WHITE);
 							notificationsTextBox.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 							notificationsTextBox.setBackground(new Color(153,102,204));
+							
+							JLabel label_4 = new JLabel("");
+							label_4.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/alert.png")));
+							label_4.setBounds(12, 13, 64, 64);
+							notificationRubrik.add(label_4);
 							
 							JPanel messagesRubrik = new JPanel();
 							messagesRubrik.setBorder(null);
@@ -734,6 +1096,14 @@ public class Resident_Window {
 					
 					JComboBox sortDefects = new JComboBox();
 					enumVal = new String[Defect_Status.values().length+1];
+					Defect_Status[]defectsVal = Defect_Status.values();
+					
+					enumVal[0] = "";
+					for(int i = 1;i<enumVal.length;i++) {
+						
+						enumVal[i] = defectsVal[i-1].toString();
+						
+					}
 					sortDefects.setModel(new DefaultComboBoxModel(enumVal));
 					sortDefects.setVerifyInputWhenFocusTarget(false);
 					sortDefects.setOpaque(false);
@@ -1115,212 +1485,6 @@ public class Resident_Window {
 		label_1.setBounds(254, 354, 69, 64);
 		Aboutfrm.add(label_1);
 		
-		Defect_Status[]defectsVal = Defect_Status.values();
-		
-		enumVal[0] = "";
-		for(int i = 1;i<enumVal.length;i++) {
-			
-			enumVal[i] = defectsVal[i-1].toString();
-			
-		}
-		
-		sendMessageFrm = new JPanel();
-		sendMessageFrm.addMouseMotionListener(new MouseMotionAdapter() {
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				System.out.println(frmUserWindow.getComponentZOrder(sendMessageFrm));
-				if(messagefield.getText().length() > 0 && list.isSelectionEmpty() == false   ) 
-				{
-					
-					sendMessagebtn.setEnabled(true);
-				}
-				else {
-					sendMessagebtn.setEnabled(false);
-				}
-			}
-		});
-		sendMessageFrm.addMouseListener(new MouseAdapter() {
-		@Override
-		public void mouseClicked(MouseEvent e) {
-			sendMessagebtn.setEnabled(false);
-			list.clearSelection();
-		}
-					});
-		sendMessageFrm.setBounds(304, 45, 974, 705);
-		frmUserWindow.getContentPane().add(sendMessageFrm);
-		sendMessageFrm.setBackground(new Color(34,36,39));
-		sendMessageFrm.setLayout(null);
-		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(0, 0, 973, 142);
-		sendMessageFrm.add(panel_1);
-		panel_1.setLayout(null);
-		panel_1.setBorder(null);
-		panel_1.setBackground(new Color(51, 153, 153));
-		
-		JLabel lblResidents = new JLabel("Send a Message");
-		lblResidents.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblResidents.setHorizontalAlignment(SwingConstants.LEFT);
-		lblResidents.setForeground(Color.WHITE);
-		lblResidents.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-		lblResidents.setBounds(32, 32, 252, 34);
-		panel_1.add(lblResidents);
-		
-		JLabel lblHereYouCan = new JLabel("Send a Message to Your Neibhoor/Neibhoors");
-		lblHereYouCan.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblHereYouCan.setHorizontalAlignment(SwingConstants.LEFT);
-		lblHereYouCan.setForeground(Color.WHITE);
-		lblHereYouCan.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblHereYouCan.setBounds(32, 79, 393, 34);
-		panel_1.add(lblHereYouCan);
-		list = new JList(new String[]{"",""}) ;
-		
-		list.setForeground(Color.WHITE);
-		list.setBounds(new Rectangle(0, 0, 300, 300));
-		list.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		list.setRequestFocusEnabled(false);
-		list.setValueIsAdjusting(true);
-		list.setFocusable(false);
-		list.setFocusTraversalKeysEnabled(false);
-		list.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		list.setSelectionForeground(new Color(255, 255, 255));
-		list.setSelectionBackground(new Color(153, 51, 204));
-		list.setBorder(null);
-		list.setBackground(new Color(34,36,39));
-		
-		list.setSelectedIndex(0);
-		
-		list.setBounds(23, 101, 260, 144);
-		JScrollPane scrollPane = new JScrollPane(list);
-		scrollPane.setRequestFocusEnabled(false);
-		scrollPane.setUI(new BasicScrollPaneUI());
-		scrollPane.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		scrollPane.setBounds(73, 169, 260, 205);
-		sendMessageFrm.add(scrollPane);
-		
-		scrollPane.setFocusTraversalKeysEnabled(false);
-		scrollPane.setFocusable(false);
-		
-		sendMessagebtn = new JButton("Send");
-		sendMessagebtn.setFocusable(false);
-		sendMessagebtn.setVerifyInputWhenFocusTarget(false);
-		sendMessagebtn.setRolloverEnabled(false);
-		sendMessagebtn.setRequestFocusEnabled(false);
-		sendMessagebtn.setBounds(776, 638, 153, 39);
-		sendMessageFrm.add(sendMessagebtn);
-		sendMessagebtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (list.getSelectedValuesList().size() == 0) {
-					alertMsg  msgalert = new alertMsg();
-					msgalert.errordetlbl.setText("You Must Select A Resident");
-					msgalert.alertFrame.setVisible(true);
-				}
-				
-				
-				else {
-					
-					
-					if(messagefield.getText().equals("")) {
-						alertMsg msgalt = new alertMsg();
-						alertMsg.errordetlbl.setText("Message Field Is Empty");
-						msgalt.alertFrame.setVisible(true);;
-					}
-					
-					
-					
-					else {
-					
-					for(int i = 0;i<list.getSelectedValuesList().size();i++) {
-						try {
-							
-							preStatment = con.prepareStatement("select phone from Resident where f_Name = ? and"
-									+ " l_Name = ? and buildingID = ? ");
-							String[]name = ((String)list.getSelectedValuesList().get(i)).split(" ");
-							preStatment.setString(1,name[0]);
-							preStatment.setString(2,name[1]);
-							preStatment.setInt(3,buildingIDSQL);
-							
-							rs = preStatment.executeQuery();
-							String msgrec = "";
-							while(rs.next()) {
-								msgrec = rs.getString("phone");
-							}
-							
-							preStatment = con.prepareStatement("insert into Message(sender,receive,content)"
-									+ " values(?,?,?)");
-							preStatment.setString(1, Login_Page.phoneEntry.getText());
-							preStatment.setString(2, msgrec);
-							preStatment.setString(3,messagefield.getText());
-							preStatment.executeUpdate();
-						} catch (SQLException e1) {
-							e1.printStackTrace();
-						}
-						
-					}
-					AddMsg msgalt = new AddMsg();
-					msgalt.alertFrame.setVisible(true);
-					messagefield.setText("");
-				}
-				}
-			}
-		});
-		sendMessagebtn.setForeground(new Color(255, 255, 255));
-		sendMessagebtn.setHorizontalTextPosition(SwingConstants.RIGHT);
-		sendMessagebtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		sendMessagebtn.setFocusPainted(false);
-		sendMessagebtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
-		sendMessagebtn.setBackground(new Color(34,36,39));
-		
-		JLabel lblWriteAMessage = new JLabel("Compose");
-		lblWriteAMessage.setBounds(73, 385, 143, 22);
-		sendMessageFrm.add(lblWriteAMessage);
-		lblWriteAMessage.setForeground(new Color(255, 255, 255));
-		lblWriteAMessage.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		
-		JButton clearMessageBtn = new JButton("Clear");
-		clearMessageBtn.setFocusable(false);
-		clearMessageBtn.setVerifyInputWhenFocusTarget(false);
-		clearMessageBtn.setRolloverEnabled(false);
-		clearMessageBtn.setRequestFocusEnabled(false);
-		clearMessageBtn.setBounds(73, 638, 68, 39);
-		sendMessageFrm.add(clearMessageBtn);
-		clearMessageBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				messagefield.setText("");
-			}
-		});
-		clearMessageBtn.setForeground(new Color(255, 255, 255));
-		clearMessageBtn.setIconTextGap(0);
-		clearMessageBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
-		clearMessageBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		clearMessageBtn.setFocusPainted(false);
-		clearMessageBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
-		clearMessageBtn.setBackground(new Color(34,36,39));
-		
-		messagefield = new JTextArea();
-		messagefield.setRequestFocusEnabled(false);
-		messagefield.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				if(messagefield.getText().length()> 0  && list.isSelectionEmpty() == false) {
-					sendMessagebtn.setEnabled(true);
-				}
-				
-				else {
-					sendMessagebtn.setEnabled(false);
-				}
-			}
-		});
-		messagefield.setDisabledTextColor(new Color(153, 51, 204));
-		messagefield.setCaretColor(new Color(255, 255, 255));
-		messagefield.setBackground(new Color(34,36,39));
-		messagefield.setForeground(new Color(255,255,255));
-		messagefield.setBounds(73, 412, 857, 213);
-		sendMessageFrm.add(messagefield);
-		messagefield.setSelectionColor(new Color(153, 153, 204));
-		messagefield.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		messagefield.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		
 		JPanel tabFrm = new JPanel();
 		tabFrm.setBounds(new Rectangle(0, 0, 1280, 0));
 		tabFrm.setBorder(new MatteBorder(0, 0, 0, 0, (Color) new Color(0, 0, 0)));
@@ -1418,6 +1582,21 @@ public class Resident_Window {
 			HomeTab.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 			HomeTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					preStatment = con.prepareStatement("select CONCAT(`f_Name` , ' ', `l_Name`) as fullname from Resident where phone = ?");
+					preStatment.setString(1,userPhoneNumber);
+					rs = preStatment.executeQuery();
+					while(rs.next()) {
+						lblWelcomeBack.setText("Welcome Back " + rs.getString(1));
+					}
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+
+				getNumOfDefects();
+				getNotifications();
 				setPanel(open_Frm);
 				setTabColorGray(HomeTab);
 				
@@ -1518,11 +1697,14 @@ public class Resident_Window {
 			panel.setBounds(20, 83, 140, 2);
 			tabFrm.add(panel);
 			
+			
 			accountTab = new JButton("Account");
 			accountTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/user.png")));
 			accountTab.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					getResidentPicture();
 					setTabColorGray(accountTab);
+					setPanel(accountFrm);
 				}
 			});
 			accountTab.setRequestFocusEnabled(false);
