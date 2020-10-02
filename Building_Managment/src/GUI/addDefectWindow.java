@@ -30,6 +30,7 @@ import javax.swing.border.LineBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
+import java.awt.Component;
 
 public class addDefectWindow {
 
@@ -96,16 +97,6 @@ public class addDefectWindow {
 		addDefectFrame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
-		JLabel lblAddADefect = new JLabel("Report a Defect");
-		lblAddADefect.setBounds(210, 26, 189, 87);
-		panel_1.add(lblAddADefect);
-		lblAddADefect.setHorizontalTextPosition(SwingConstants.CENTER);
-		lblAddADefect.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAddADefect.setVerticalTextPosition(SwingConstants.BOTTOM);
-		lblAddADefect.setForeground(new Color(255, 255, 255));
-		lblAddADefect.setIcon(new ImageIcon(addDefectWindow.class.getResource("/Media/addDefectIcon.png")));
-		lblAddADefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		
 		descTxtField = new JTextArea();
 		descTxtField.setBounds(154, 309, 304, 127);
 		panel_1.add(descTxtField);
@@ -133,7 +124,8 @@ public class addDefectWindow {
 		lblType.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
 		
 		defectTypecombo = new JComboBox();
-		defectTypecombo.setBounds(329, 205, 136, 26);
+		defectTypecombo.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		defectTypecombo.setBounds(329, 205, 136, 22);
 		panel_1.add(defectTypecombo);
 		defectTypecombo.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
 		defectTypecombo.setFocusable(false);
@@ -203,7 +195,8 @@ public class addDefectWindow {
 		btnOpenDefect.setBackground(new Color(34,36,39));
 		
 		defectStatusCombo = new JComboBox();
-		defectStatusCombo.setBounds(149, 205, 136, 26);
+		defectStatusCombo.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		defectStatusCombo.setBounds(149, 205, 136, 22);
 		panel_1.add(defectStatusCombo);
 		defectStatusCombo.setModel(new DefaultComboBoxModel(Defect_Status.values()));
 		defectStatusCombo.setRequestFocusEnabled(false);
@@ -225,9 +218,20 @@ public class addDefectWindow {
 		lblStatus.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
 		
 		panel = new JPanel();
-		panel.setBounds(149, 126, 310, 2);
+		panel.setBounds(3, 56, 618, 102);
 		panel_1.add(panel);
 		panel.setBackground(new Color(102, 0, 204));
+		panel.setLayout(null);
+		
+		JLabel lblAddADefect = new JLabel("Report a Defect");
+		lblAddADefect.setBounds(245, 5, 130, 93);
+		panel.add(lblAddADefect);
+		lblAddADefect.setHorizontalTextPosition(SwingConstants.CENTER);
+		lblAddADefect.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAddADefect.setVerticalTextPosition(SwingConstants.BOTTOM);
+		lblAddADefect.setForeground(new Color(255, 255, 255));
+		lblAddADefect.setIcon(new ImageIcon(addDefectWindow.class.getResource("/Media/addDefectIcon.png")));
+		lblAddADefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		
 		closeLabel = new JLabel("");
 		closeLabel.setBounds(588, 13, 24, 24);

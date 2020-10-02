@@ -85,7 +85,7 @@ public class UpdateResidnetPersonalDetailsWindow {
 		frame.setLocationRelativeTo(null);
 		frame.getContentPane().setBackground(new Color(34,36,39));
 		frame.setUndecorated(true);
-		frame.setBounds(100, 100, 556, 640);
+		frame.setBounds(100, 100, 480, 640);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -107,7 +107,7 @@ public class UpdateResidnetPersonalDetailsWindow {
 		});
 		panel.setBorder(new MatteBorder(3, 3, 3, 3, (Color) new Color(0, 204, 102)));
 		panel.setBackground(new Color(34,36,39));
-		panel.setBounds(0, 0, 556, 640);
+		panel.setBounds(0, 0, 480, 640);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -118,7 +118,7 @@ public class UpdateResidnetPersonalDetailsWindow {
 				frame.dispose();
 			}
 		});
-		closeIcon.setBounds(512, 13, 32, 32);
+		closeIcon.setBounds(436, 13, 32, 32);
 		panel.add(closeIcon);
 		closeIcon.setHorizontalAlignment(SwingConstants.CENTER);
 		closeIcon.setIconTextGap(0);
@@ -128,7 +128,7 @@ public class UpdateResidnetPersonalDetailsWindow {
 		label_2.setForeground(Color.WHITE);
 		label_2.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		label_2.setBackground(new Color(34, 36, 39));
-		label_2.setBounds(232, 156, 92, 25);
+		label_2.setBounds(198, 156, 92, 25);
 		panel.add(label_2);
 		
 		firstNameEntry = new JTextField();
@@ -147,14 +147,14 @@ public class UpdateResidnetPersonalDetailsWindow {
 		firstNameEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
 		firstNameEntry.setBackground(new Color(34, 36, 39));
 		firstNameEntry.setAlignmentX(1.0f);
-		firstNameEntry.setBounds(154, 186, 249, 31);
+		firstNameEntry.setBounds(120, 186, 249, 31);
 		panel.add(firstNameEntry);
 		
 		JLabel label_3 = new JLabel("Last Name");
 		label_3.setForeground(Color.WHITE);
 		label_3.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		label_3.setBackground(new Color(34, 36, 39));
-		label_3.setBounds(233, 230, 91, 25);
+		label_3.setBounds(199, 230, 91, 25);
 		panel.add(label_3);
 		
 		lastNameEntry = new JTextField();
@@ -173,14 +173,14 @@ public class UpdateResidnetPersonalDetailsWindow {
 		lastNameEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
 		lastNameEntry.setBackground(new Color(34, 36, 39));
 		lastNameEntry.setAlignmentX(1.0f);
-		lastNameEntry.setBounds(154, 254, 249, 31);
+		lastNameEntry.setBounds(120, 254, 249, 31);
 		panel.add(lastNameEntry);
 		
 		JLabel label_4 = new JLabel("Phone Number");
 		label_4.setForeground(Color.WHITE);
 		label_4.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		label_4.setBackground(new Color(34, 36, 39));
-		label_4.setBounds(214, 301, 129, 25);
+		label_4.setBounds(180, 301, 129, 25);
 		panel.add(label_4);
 		
 		phoneNumberEntry = new JTextField();
@@ -199,14 +199,14 @@ public class UpdateResidnetPersonalDetailsWindow {
 		phoneNumberEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
 		phoneNumberEntry.setBackground(new Color(34, 36, 39));
 		phoneNumberEntry.setAlignmentX(1.0f);
-		phoneNumberEntry.setBounds(154, 333, 249, 31);
+		phoneNumberEntry.setBounds(120, 333, 249, 31);
 		panel.add(phoneNumberEntry);
 		
 		JLabel label_5 = new JLabel("Password");
 		label_5.setForeground(Color.WHITE);
 		label_5.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		label_5.setBackground(new Color(34, 36, 39));
-		label_5.setBounds(238, 379, 80, 25);
+		label_5.setBounds(204, 379, 80, 25);
 		panel.add(label_5);
 		
 		passwordEntry = new JPasswordField();
@@ -216,14 +216,14 @@ public class UpdateResidnetPersonalDetailsWindow {
 		passwordEntry.setCaretColor(new Color(147, 112, 219));
 		passwordEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
 		passwordEntry.setBackground(new Color(34, 36, 39));
-		passwordEntry.setBounds(154, 417, 249, 31);
+		passwordEntry.setBounds(120, 417, 249, 31);
 		panel.add(passwordEntry);
 		
 		JLabel label_6 = new JLabel("Email");
 		label_6.setForeground(Color.WHITE);
 		label_6.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		label_6.setBackground(new Color(34, 36, 39));
-		label_6.setBounds(256, 463, 44, 25);
+		label_6.setBounds(222, 463, 44, 25);
 		panel.add(label_6);
 		
 		emailEntry = new JTextField();
@@ -236,18 +236,18 @@ public class UpdateResidnetPersonalDetailsWindow {
 		emailEntry.setBorder(new MatteBorder(0, 0, 2, 0, (Color) new Color(51, 204, 153)));
 		emailEntry.setBackground(new Color(34, 36, 39));
 		emailEntry.setAlignmentX(1.0f);
-		emailEntry.setBounds(154, 493, 249, 31);
+		emailEntry.setBounds(120, 493, 249, 31);
 		panel.add(emailEntry);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(null);
-		panel_1.setBackground(new Color(0, 255, 153));
-		panel_1.setBounds(4, 67, 548, 64);
+		panel_1.setBackground(new Color(51, 153, 102));
+		panel_1.setBounds(4, 67, 472, 64);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
 		JLabel lblUpdatePersonalInformation = new JLabel("Update Personal Information");
-		lblUpdatePersonalInformation.setBounds(101, 13, 331, 33);
+		lblUpdatePersonalInformation.setBounds(75, 13, 331, 33);
 		panel_1.add(lblUpdatePersonalInformation);
 		lblUpdatePersonalInformation.setToolTipText("");
 		lblUpdatePersonalInformation.setForeground(Color.WHITE);
@@ -260,19 +260,51 @@ public class UpdateResidnetPersonalDetailsWindow {
 				
 				try {
 					
-					preStatment = con.prepareStatement("UPDATE  Resident SET f_Name = ? , l_name = ? , email = ? , phone = ?   where phone = ?");
-					preStatment.setString(1, firstNameEntry.getText());
-					preStatment.setString(2, lastNameEntry.getText());
-					preStatment.setString(3, emailEntry.getText());
-					preStatment.setString(4, phoneNumberEntry.getText());
-					preStatment.setString(5, userPhoneNumber);
-					preStatment.executeUpdate();
 					
-					Resident_Window.userPhoneNumber = phoneNumberEntry.getText();
-					userPhoneNumber = phoneNumberEntry.getText();
-					frame.dispose();
+					preStatment = con.prepareStatement("SELECT phone from Resident  where phone = ?");
+					preStatment.setString(1, phoneNumberEntry.getText());
+					rs = preStatment.executeQuery();
 					
+					if(rs.next() == true && userPhoneNumber.equals(phoneNumberEntry.getText()) == false) {
+						UpdatedDetailsFailed failed = new UpdatedDetailsFailed();
+						failed.alertFrame.setVisible(true);
+					}
+					
+					else {
+						preStatment = con.prepareStatement("UPDATE  Resident SET f_Name = ? , l_name = ? , email = ? , phone = ?   where phone = ?");
+						preStatment.setString(1, firstNameEntry.getText());
+						preStatment.setString(2, lastNameEntry.getText());
+						preStatment.setString(3, emailEntry.getText());
+						preStatment.setString(4, phoneNumberEntry.getText());
+						preStatment.setString(5, userPhoneNumber);
+						preStatment.executeUpdate();
+						
+						preStatment = con.prepareStatement("UPDATE  Message SET sender = ?  where sender = ?");
+						preStatment.setString(1,phoneNumberEntry.getText());
+						preStatment.setString(2, userPhoneNumber);
+						preStatment.executeUpdate();
+						
+						
+						preStatment = con.prepareStatement("UPDATE  Message SET receive = ?  where receive = ?");
+						preStatment.setString(1,phoneNumberEntry.getText());
+						preStatment.setString(2, userPhoneNumber);
+						preStatment.executeUpdate();
+						
+						
+						Resident_Window.userPhoneNumber = phoneNumberEntry.getText();
+						userPhoneNumber = phoneNumberEntry.getText();
+						
+						UpdatedDetailsSuccess success = new UpdatedDetailsSuccess();
+						success.alertFrame.setVisible(true);
+						frame.dispose();
+			
+					}
+					
+					
+					
+								
 				}catch(SQLException e1) {
+					
 					
 				}
 			}
@@ -284,7 +316,7 @@ public class UpdateResidnetPersonalDetailsWindow {
 		updateDetailsBtn.setFocusPainted(false);
 		updateDetailsBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 204, 153)));
 		updateDetailsBtn.setBackground(new Color(34, 36, 39));
-		updateDetailsBtn.setBounds(154, 569, 249, 42);
+		updateDetailsBtn.setBounds(120, 569, 249, 42);
 		panel.add(updateDetailsBtn);
 	}
 	

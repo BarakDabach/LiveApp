@@ -117,8 +117,8 @@ public class alertMsg {
 		alertFrame.getContentPane().add(lblDetailsAreIncorrect);
 		
 		JLabel label = new JLabel("");
-		label.setIcon(new ImageIcon(alertMsg.class.getResource("/Media/userDetailsIcon.png")));
-		label.setBounds(16, 34, 60, 60);
+		label.setIcon(new ImageIcon(alertMsg.class.getResource("/Media/userImg1.png")));
+		label.setBounds(26, 21, 68, 64);
 		alertFrame.getContentPane().add(label);
 		alertFrame.setLocationRelativeTo(null);
 	}

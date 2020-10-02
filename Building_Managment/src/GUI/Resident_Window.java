@@ -247,7 +247,7 @@ public class Resident_Window {
 		try {
 			preStatment = con.prepareStatement("select messageID,sender,receive,content,date from Message where receive = ?");
 			
-			preStatment.setString(1,Login_Page.phoneEntry.getText());
+			preStatment.setString(1,userPhoneNumber);
 			
 			rs = preStatment.executeQuery();
 			
@@ -637,7 +637,7 @@ public class Resident_Window {
 					lblEditYourAccount.setBounds(32, 79, 248, 34);
 					panel_7.add(lblEditYourAccount);
 					
-					JButton updatePersonalDetailsBtn = new JButton("Update Personal Detais");
+					JButton updatePersonalDetailsBtn = new JButton("Update Personal Details");
 					updatePersonalDetailsBtn.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							
@@ -851,7 +851,7 @@ public class Resident_Window {
 										
 										preStatment = con.prepareStatement("insert into Message(sender,receive,content)"
 												+ " values(?,?,?)");
-										preStatment.setString(1, Login_Page.phoneEntry.getText());
+										preStatment.setString(1, userPhoneNumber);
 										preStatment.setString(2, msgrec);
 										preStatment.setString(3,messagefield.getText());
 										preStatment.executeUpdate();
@@ -924,10 +924,6 @@ public class Resident_Window {
 					messagefield.setSelectionColor(new Color(153, 153, 204));
 					messagefield.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 					messagefield.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-					
-					JTextArea textArea = new JTextArea();
-					textArea.setBounds(231, 654, 204, 15);
-					sendMessageFrm.add(textArea);
 		
 					
 					open_Frm = new JPanel();
@@ -1528,7 +1524,7 @@ public class Resident_Window {
 		//			
 		//		});
 				
-		buildingCommitteTab = new JButton("Building Committee");
+		buildingCommitteTab = new JButton("Payment");
 		buildingCommitteTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/credit-card.png")));
 		buildingCommitteTab.setIconTextGap(10);
 		buildingCommitteTab.setRequestFocusEnabled(false);
@@ -1721,6 +1717,7 @@ public class Resident_Window {
 			tabFrm.add(accountTab);
 			
 			aboutTab = new JButton("About");
+			aboutTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/information.png")));
 			aboutTab.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					setPanel(Aboutfrm);
@@ -1728,7 +1725,7 @@ public class Resident_Window {
 				}
 			});
 			aboutTab.setRequestFocusEnabled(false);
-			aboutTab.setIconTextGap(30);
+			aboutTab.setIconTextGap(10);
 			aboutTab.setForeground(Color.WHITE);
 			aboutTab.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
 			aboutTab.setFocusTraversalKeysEnabled(false);

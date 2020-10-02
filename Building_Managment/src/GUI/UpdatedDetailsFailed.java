@@ -24,16 +24,15 @@ import java.awt.Window.Type;
 import javax.swing.border.MatteBorder;
 import javax.swing.JPanel;
 
-public class AddDefect {
+public class UpdatedDetailsFailed {
 
 	public JFrame alertFrame;
-	public static JLabel defectaddlbl;
 
 
 	/**
 	 * Create the application.
 	 */
-	public AddDefect() {
+	public UpdatedDetailsFailed() {
 		initialize();
 	}
 
@@ -60,16 +59,8 @@ public class AddDefect {
 		alertFrame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		defectaddlbl = new JLabel("Defect Reported ");
-		defectaddlbl.setBounds(153, 56, 159, 36);
-		panel.add(defectaddlbl);
-		defectaddlbl.setForeground(new Color(255, 255, 255));
-		defectaddlbl.setIconTextGap(30);
-		defectaddlbl.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		defectaddlbl.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JLabel lblDetailsAreIncorrect = new JLabel("Well Done!");
-		lblDetailsAreIncorrect.setBounds(162, 13, 128, 36);
+		JLabel lblDetailsAreIncorrect = new JLabel("Phone Number Already Exist");
+		lblDetailsAreIncorrect.setBounds(90, 13, 273, 36);
 		panel.add(lblDetailsAreIncorrect);
 		lblDetailsAreIncorrect.setForeground(new Color(255, 255, 255));
 		lblDetailsAreIncorrect.setFont(new Font("Yu Gothic UI", Font.BOLD, 20));
@@ -78,9 +69,9 @@ public class AddDefect {
 		
 		JLabel label = new JLabel("");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
-		label.setBounds(52, 37, 71, 70);
+		label.setBounds(191, 55, 71, 70);
 		panel.add(label);
-		label.setIcon(new ImageIcon(AddDefect.class.getResource("/Media/uploadSuccess.png")));
+		label.setIcon(new ImageIcon(UpdatedDetailsFailed.class.getResource("/Media/wrongNumber.png")));
 		
 		JButton btnGotIt = new JButton("Got It");
 		btnGotIt.setBounds(0, 138, 448, 53);
@@ -89,8 +80,7 @@ public class AddDefect {
 		btnGotIt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				alertFrame.dispose();
-				addDefectWindow.addDefectFrame.dispose();
-				Resident_Window.addDataDefectTable();
+				
 			}
 		});
 		btnGotIt.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
