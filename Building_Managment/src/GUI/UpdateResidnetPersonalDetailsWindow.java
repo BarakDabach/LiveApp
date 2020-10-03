@@ -239,21 +239,6 @@ public class UpdateResidnetPersonalDetailsWindow {
 		emailEntry.setBounds(120, 493, 249, 31);
 		panel.add(emailEntry);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(null);
-		panel_1.setBackground(new Color(51, 153, 102));
-		panel_1.setBounds(4, 67, 472, 64);
-		panel.add(panel_1);
-		panel_1.setLayout(null);
-		
-		JLabel lblUpdatePersonalInformation = new JLabel("Update Personal Information");
-		lblUpdatePersonalInformation.setBounds(75, 13, 331, 33);
-		panel_1.add(lblUpdatePersonalInformation);
-		lblUpdatePersonalInformation.setToolTipText("");
-		lblUpdatePersonalInformation.setForeground(Color.WHITE);
-		lblUpdatePersonalInformation.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
-		lblUpdatePersonalInformation.setBackground(new Color(34, 36, 39));
-		
 		updateDetailsBtn = new JButton("Update Personal Detalis");
 		updateDetailsBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -318,6 +303,14 @@ public class UpdateResidnetPersonalDetailsWindow {
 		updateDetailsBtn.setBackground(new Color(34, 36, 39));
 		updateDetailsBtn.setBounds(120, 569, 249, 42);
 		panel.add(updateDetailsBtn);
+		
+		JLabel lblUpdatePersonalInformation = new JLabel("Update Personal Information");
+		lblUpdatePersonalInformation.setBounds(79, 75, 331, 33);
+		panel.add(lblUpdatePersonalInformation);
+		lblUpdatePersonalInformation.setToolTipText("");
+		lblUpdatePersonalInformation.setForeground(Color.WHITE);
+		lblUpdatePersonalInformation.setFont(new Font("Yu Gothic UI", Font.BOLD, 25));
+		lblUpdatePersonalInformation.setBackground(new Color(34, 36, 39));
 	}
 	
 	protected void handleOnlyLettersCheck(JTextField textField) {

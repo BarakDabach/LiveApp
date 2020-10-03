@@ -664,6 +664,12 @@ public class Resident_Window {
 					accountFrm.add(updatePersonalDetailsBtn);
 					
 					JButton updateBuildingDetaisBtn = new JButton("Update Building Detais");
+					updateBuildingDetaisBtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							UpdateResidnetBuildinglDetailsWindow buildingUpdate = new UpdateResidnetBuildinglDetailsWindow(buildingIDSQL, userPhoneNumber);
+							buildingUpdate.frame.setVisible(true);
+						}
+					});
 					updateBuildingDetaisBtn.setForeground(new Color(255, 255, 255));
 					updateBuildingDetaisBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
 					updateBuildingDetaisBtn.setFocusPainted(false);
