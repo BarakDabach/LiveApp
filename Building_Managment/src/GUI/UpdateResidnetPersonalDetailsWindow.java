@@ -281,6 +281,13 @@ public class UpdateResidnetPersonalDetailsWindow {
 						preStatment.setString(2, userPhoneNumber);
 						preStatment.executeUpdate();
 						
+						preStatment = con.prepareStatement("UPDATE  Defect SET opendBy = ?  where opendBy = ?");
+						preStatment.setString(1,phoneNumberEntry.getText());
+						preStatment.setString(2, userPhoneNumber);
+						preStatment.executeUpdate();
+						
+						
+						
 						
 						Resident_Window.userPhoneNumber = phoneNumberEntry.getText();
 						userPhoneNumber = phoneNumberEntry.getText();
