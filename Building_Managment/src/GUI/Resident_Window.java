@@ -580,6 +580,54 @@ public class Resident_Window {
 		Aboutfrm.setVisible(false);
 					
 					
+					accountFrm = new JPanel();
+					accountFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+					accountFrm.setVisible(false);
+					
+
+					  msgNames = new String[3];
+				       try {
+				       
+						preStatment = con.prepareStatement("select CONCAT(`f_Name` , ' ', `l_Name`) as fullname,phone,password from Resident where buildingID = ?");
+						preStatment.setInt(1,buildingIDSQL);
+						rs = preStatment.executeQuery();
+						int i = -1;
+						while(rs.next()) {
+								i++;
+						}
+						
+						msgNames = new String[i+1];
+						msgNames[0] = "";
+						rs = preStatment.executeQuery();
+						int k = 1;
+						while(rs.next()) {
+							
+							if(!rs.getString("password").equalsIgnoreCase(Login_Page.getPasswordEntry().getText())) {
+								msgNames[k] = rs.getString("fullname");
+								k++;
+							}
+							
+					}
+						
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+								e.printStackTrace();
+							}		
+			
+					
+					
+					inboxFrm = new JPanel();
+					inboxFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+					inboxFrm.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							deleteMsgBtn.setEnabled(false);
+							messageTable.clearSelection();
+						}
+					});
+					inboxFrm.setVisible(false);
+					
+					
 					
 					sendMessageFrm = new JPanel();
 					sendMessageFrm.setVisible(false);
@@ -604,157 +652,6 @@ public class Resident_Window {
 						list.clearSelection();
 					}
 								});
-					
-					
-					accountFrm = new JPanel();
-					accountFrm.setBounds(new Rectangle(0, 0, 1280, 0));
-					accountFrm.setVisible(false);
-					accountFrm.setBackground(new Color(34, 36, 39));
-					accountFrm.setBounds(304, 45, 974, 705);
-					frmUserWindow.getContentPane().add(accountFrm);
-					accountFrm.setLayout(null);
-					
-					JPanel panel_7 = new JPanel();
-					panel_7.setLayout(null);
-					panel_7.setBorder(null);
-					panel_7.setBackground(new Color(51, 153, 153));
-					panel_7.setBounds(0, 0, 973, 142);
-					accountFrm.add(panel_7);
-					
-					JLabel lblManageYourAccount = new JLabel("Manage Your Account");
-					lblManageYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblManageYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
-					lblManageYourAccount.setForeground(Color.WHITE);
-					lblManageYourAccount.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-					lblManageYourAccount.setBounds(32, 32, 257, 34);
-					panel_7.add(lblManageYourAccount);
-					
-					JLabel lblEditYourAccount = new JLabel("Edit Your Account Details");
-					lblEditYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblEditYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
-					lblEditYourAccount.setForeground(Color.WHITE);
-					lblEditYourAccount.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-					lblEditYourAccount.setBounds(32, 79, 248, 34);
-					panel_7.add(lblEditYourAccount);
-					
-					JButton updatePersonalDetailsBtn = new JButton("Update Personal Details");
-					updatePersonalDetailsBtn.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							
-							UpdateResidnetPersonalDetailsWindow updateWindow = new UpdateResidnetPersonalDetailsWindow(userPhoneNumber);
-							updateWindow.frame.setVisible(true);
-						}
-					});
-					updatePersonalDetailsBtn.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseEntered(MouseEvent e) {
-							updatePersonalDetailsBtn.setBackground(new Color(0, 204, 153));
-						}
-						@Override
-						public void mouseExited(MouseEvent e) {
-							updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
-						}
-					});
-					updatePersonalDetailsBtn.setForeground(new Color(255, 255, 255));
-					updatePersonalDetailsBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-					updatePersonalDetailsBtn.setFocusPainted(false);
-					updatePersonalDetailsBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 204, 153)));
-					updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
-					updatePersonalDetailsBtn.setBounds(60, 294, 244, 122);
-					accountFrm.add(updatePersonalDetailsBtn);
-					
-					JButton updateBuildingDetaisBtn = new JButton("Update Building Detais");
-					updateBuildingDetaisBtn.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							UpdateResidnetBuildinglDetailsWindow buildingUpdate = new UpdateResidnetBuildinglDetailsWindow(buildingIDSQL, userPhoneNumber);
-							buildingUpdate.frame.setVisible(true);
-						}
-					});
-					updateBuildingDetaisBtn.setForeground(new Color(255, 255, 255));
-					updateBuildingDetaisBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-					updateBuildingDetaisBtn.setFocusPainted(false);
-					updateBuildingDetaisBtn.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseEntered(MouseEvent e) {
-							updateBuildingDetaisBtn.setBackground(new Color(102, 102, 153));
-						}
-						@Override
-						public void mouseExited(MouseEvent e) {
-							updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
-						}
-					});
-					updateBuildingDetaisBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 102, 153)));
-					updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
-					updateBuildingDetaisBtn.setBounds(364, 294, 244, 122);
-					accountFrm.add(updateBuildingDetaisBtn);
-					
-					JButton deleteAccountBtn = new JButton("Delete Your Account");
-					deleteAccountBtn.setForeground(new Color(255, 255, 255));
-					deleteAccountBtn.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseEntered(MouseEvent e) {
-							deleteAccountBtn.setBackground(new Color(204, 102, 102));
-						}
-						@Override
-						public void mouseExited(MouseEvent e) {
-							deleteAccountBtn.setBackground(new Color(34, 36, 39));
-						}
-					});
-					deleteAccountBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-					deleteAccountBtn.setFocusPainted(false);
-					deleteAccountBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
-					deleteAccountBtn.setBackground(new Color(34, 36, 39));
-					deleteAccountBtn.setBounds(668, 294, 244, 122);
-					accountFrm.add(deleteAccountBtn);
-					JFileChooser profileImgFileChooser = new JFileChooser();
-					FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
-					profileImgFileChooser.setFileFilter(filter);
-					JPanel panel_8 = new JPanel();
-					panel_8.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							profileImgFileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-							int result = profileImgFileChooser.showOpenDialog(panel_8);
-							if(result == JFileChooser.APPROVE_OPTION ) {
-								try {
-									imageStream = new FileInputStream(profileImgFileChooser.getSelectedFile());
-									
-									
-									preStatment = con.prepareStatement("UPDATE  Resident SET image = ? where phone = ?");
-									preStatment.setBlob(1, imageStream);
-									preStatment.setString(2, userPhoneNumber);
-									
-									preStatment.executeUpdate();
-									
-									getResidentPicture();
-
-								} catch (FileNotFoundException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								} catch (SQLException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								} 
-								
-							}
-							
-						}
-					});
-					panel_8.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-					panel_8.setBackground(new Color(34,36,39));
-					panel_8.setBounds(453, 165, 97, 105);
-					accountFrm.add(panel_8);
-					panel_8.setLayout(null);
-					
-					accountUserImageIcon = new JLabel("");
-					accountUserImageIcon.setBounds(0, 0, 64, 64);
-					panel_8.add(accountUserImageIcon);
-					accountUserImageIcon.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
-					
-					JLabel label = new JLabel("");
-					label.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/edit.png")));
-					label.setBounds(59, 55, 25, 25);
-					panel_8.add(label);
 					sendMessageFrm.setBounds(304, 45, 974, 705);
 					frmUserWindow.getContentPane().add(sendMessageFrm);
 					sendMessageFrm.setBackground(new Color(34,36,39));
@@ -930,6 +827,312 @@ public class Resident_Window {
 					messagefield.setSelectionColor(new Color(153, 153, 204));
 					messagefield.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 					messagefield.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+					
+		
+		
+		
+		
+				
+				
+				
+				
+					inboxFrm.setBackground(new Color(34, 36, 39));
+					inboxFrm.setBounds(304, 45, 974, 705);
+					frmUserWindow.getContentPane().add(inboxFrm);
+					inboxFrm.setLayout(null);
+					
+					messageTable = new JTable();
+					messageTable.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							deleteMsgBtn.setEnabled(true);
+						}
+					});
+					messageTable.addMouseMotionListener(new MouseMotionAdapter() {
+						@Override
+						public void mouseMoved(MouseEvent e) {
+							if(messageTable.getSelectedRowCount() > 0) {
+								deleteMsgBtn.setEnabled(true);
+							}
+							else {
+								deleteMsgBtn.setEnabled(false);
+							}
+						}
+					});
+					messageTable.setOpaque(false);
+					messageTable.setShowGrid(false);
+					messageTable.setUI(new BasicTableUI());
+					messageTable.setAutoCreateRowSorter(true);
+					messageTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+					messageTable.setFocusTraversalKeysEnabled(false);
+					messageTable.setBackground(new Color(34, 36, 39));
+					messageTable.setBorder(null);
+					messageTable.setRowMargin(10);
+					messageTable.setForeground(new Color(255, 255, 255));
+					messageTable.setSelectionForeground(new Color(255, 255, 255));
+					messageTable.setShowVerticalLines(false);
+					messageTable.setSelectionBackground(new Color(153, 102, 204));
+					messageTable.setRequestFocusEnabled(false);
+					messageTable.setRowHeight(50);
+					messageTable.setIntercellSpacing(new Dimension(0, 0));
+					
+
+					messageTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
+					messageTable.setGridColor(new Color(0, 0, 0));
+					messageTable.getTableHeader().setBackground(new Color(34,36,39));
+					messageTable.getTableHeader().setForeground(new Color(255,255,255));
+					messageTable.setBounds(18, 108, 508, 347);
+					messageTable.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+					
+					JScrollPane tablePanelmessage = new JScrollPane(messageTable);
+					tablePanelmessage.setForeground(Color.WHITE);
+					tablePanelmessage.setAutoscrolls(true);
+					tablePanelmessage.setBackground(new Color(34,36,39));
+					tablePanelmessage.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+					tablePanelmessage.setBorder(null);
+					tablePanelmessage.setBounds(new Rectangle(42, 245, 886, 272));
+					inboxFrm.add(tablePanelmessage, BorderLayout.CENTER);
+					
+					JComboBox sortInbox = new JComboBox();
+					sortInbox.setUI(new BasicComboBoxUI());
+					sortInbox.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+	
+	            sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) messageTable.getModel());
+						RowFilter<DefaultTableModel, Object> rf  = RowFilter.regexFilter(sortInbox.getSelectedItem().toString(),messageTable.getColumnModel().getColumnIndex("sender"));
+	            sorter.setRowFilter(rf);
+	            messageTable.setRowSorter(sorter);
+						}
+					});
+					sortInbox.setModel(new DefaultComboBoxModel(msgNames));
+					sortInbox.setRequestFocusEnabled(false);
+					sortInbox.setLightWeightPopupEnabled(false);
+					sortInbox.setForeground(Color.WHITE);
+					sortInbox.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
+					sortInbox.setFocusable(false);
+					sortInbox.setFocusTraversalKeysEnabled(false);
+					sortInbox.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+					sortInbox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102,255,204)));
+					sortInbox.setBackground(new Color(34,36,39));
+					sortInbox.setAlignmentY(1.0f);
+					sortInbox.setAlignmentX(1.0f);
+					sortInbox.setBounds(381, 182, 148, 22);
+					inboxFrm.add(sortInbox);
+					
+					JLabel label_3 = new JLabel("Sort By:");
+					label_3.setForeground(new Color(255, 255, 255));
+					label_3.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
+					label_3.setBounds(431, 155, 61, 22);
+					inboxFrm.add(label_3);
+					
+					deleteMsgBtn = new JButton("Delete");
+					deleteMsgBtn.setEnabled(false);
+					deleteMsgBtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+							
+							
+							int currentmsgnum = messageIDs.length;
+							int[]selectedRows = messageTable.getSelectedRows();
+							
+							for(int i = 0; i<selectedRows.length;i++) {
+								try {
+						preStatment = con.prepareStatement("delete from Message where messageID = ?");
+						preStatment.setInt(1,messageIDs[selectedRows[i]]);
+		       			preStatment.executeUpdate();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+												       		
+								
+							
+							}
+							
+							addMsgTable();
+							currentmsgnum -= selectedRows.length;
+							
+							msg_lbl.setText("You Have "+currentmsgnum+ " Messages" );
+						}
+					});
+					
+					deleteMsgBtn.setForeground(new Color(255, 255, 255));
+					deleteMsgBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+					deleteMsgBtn.setFocusPainted(false);
+					deleteMsgBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
+					deleteMsgBtn.setBackground(new Color(34,36,39));
+					deleteMsgBtn.setBounds(814, 530, 114, 38);
+					inboxFrm.add(deleteMsgBtn);
+					
+					JPanel panel_2 = new JPanel();
+					panel_2.setLayout(null);
+					panel_2.setBorder(null);
+					panel_2.setBackground(new Color(51, 153, 153));
+					panel_2.setBounds(0, 0, 973, 142);
+					inboxFrm.add(panel_2);
+					
+					JLabel lblInbox = new JLabel("Inbox");
+					lblInbox.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblInbox.setHorizontalAlignment(SwingConstants.LEFT);
+					lblInbox.setForeground(Color.WHITE);
+					lblInbox.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+					lblInbox.setBounds(32, 32, 230, 34);
+					panel_2.add(lblInbox);
+					
+					JLabel lblMessagesFromOther = new JLabel("Messages From Other Residents");
+					lblMessagesFromOther.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblMessagesFromOther.setHorizontalAlignment(SwingConstants.LEFT);
+					lblMessagesFromOther.setForeground(Color.WHITE);
+					lblMessagesFromOther.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+					lblMessagesFromOther.setBounds(32, 79, 350, 34);
+					panel_2.add(lblMessagesFromOther);
+					accountFrm.setBackground(new Color(34, 36, 39));
+					accountFrm.setBounds(304, 45, 974, 705);
+					frmUserWindow.getContentPane().add(accountFrm);
+					accountFrm.setLayout(null);
+					
+					JPanel panel_7 = new JPanel();
+					panel_7.setLayout(null);
+					panel_7.setBorder(null);
+					panel_7.setBackground(new Color(51, 153, 153));
+					panel_7.setBounds(0, 0, 973, 142);
+					accountFrm.add(panel_7);
+					
+					JLabel lblManageYourAccount = new JLabel("Manage Your Account");
+					lblManageYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblManageYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
+					lblManageYourAccount.setForeground(Color.WHITE);
+					lblManageYourAccount.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+					lblManageYourAccount.setBounds(32, 32, 257, 34);
+					panel_7.add(lblManageYourAccount);
+					
+					JLabel lblEditYourAccount = new JLabel("Edit Your Account Details");
+					lblEditYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblEditYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
+					lblEditYourAccount.setForeground(Color.WHITE);
+					lblEditYourAccount.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+					lblEditYourAccount.setBounds(32, 79, 248, 34);
+					panel_7.add(lblEditYourAccount);
+					
+					JButton updatePersonalDetailsBtn = new JButton("Update Personal Details");
+					updatePersonalDetailsBtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+							UpdateResidnetPersonalDetailsWindow updateWindow = new UpdateResidnetPersonalDetailsWindow(userPhoneNumber);
+							updateWindow.frame.setVisible(true);
+						}
+					});
+					updatePersonalDetailsBtn.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							updatePersonalDetailsBtn.setBackground(new Color(0, 204, 153));
+						}
+						@Override
+						public void mouseExited(MouseEvent e) {
+							updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
+						}
+					});
+					updatePersonalDetailsBtn.setForeground(new Color(255, 255, 255));
+					updatePersonalDetailsBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					updatePersonalDetailsBtn.setFocusPainted(false);
+					updatePersonalDetailsBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 204, 153)));
+					updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
+					updatePersonalDetailsBtn.setBounds(60, 294, 244, 122);
+					accountFrm.add(updatePersonalDetailsBtn);
+					
+					JButton updateBuildingDetaisBtn = new JButton("Update Building Detais");
+					updateBuildingDetaisBtn.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							UpdateResidnetBuildinglDetailsWindow buildingUpdate = new UpdateResidnetBuildinglDetailsWindow(buildingIDSQL, userPhoneNumber);
+							buildingUpdate.frame.setVisible(true);
+						}
+					});
+					updateBuildingDetaisBtn.setForeground(new Color(255, 255, 255));
+					updateBuildingDetaisBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					updateBuildingDetaisBtn.setFocusPainted(false);
+					updateBuildingDetaisBtn.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							updateBuildingDetaisBtn.setBackground(new Color(102, 102, 153));
+						}
+						@Override
+						public void mouseExited(MouseEvent e) {
+							updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
+						}
+					});
+					updateBuildingDetaisBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 102, 153)));
+					updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
+					updateBuildingDetaisBtn.setBounds(364, 294, 244, 122);
+					accountFrm.add(updateBuildingDetaisBtn);
+					
+					JButton deleteAccountBtn = new JButton("Delete Your Account");
+					deleteAccountBtn.setForeground(new Color(255, 255, 255));
+					deleteAccountBtn.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseEntered(MouseEvent e) {
+							deleteAccountBtn.setBackground(new Color(204, 102, 102));
+						}
+						@Override
+						public void mouseExited(MouseEvent e) {
+							deleteAccountBtn.setBackground(new Color(34, 36, 39));
+						}
+					});
+					deleteAccountBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					deleteAccountBtn.setFocusPainted(false);
+					deleteAccountBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
+					deleteAccountBtn.setBackground(new Color(34, 36, 39));
+					deleteAccountBtn.setBounds(668, 294, 244, 122);
+					accountFrm.add(deleteAccountBtn);
+					JFileChooser profileImgFileChooser = new JFileChooser();
+					FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
+					profileImgFileChooser.setFileFilter(filter);
+					JPanel panel_8 = new JPanel();
+					panel_8.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							profileImgFileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+							int result = profileImgFileChooser.showOpenDialog(panel_8);
+							if(result == JFileChooser.APPROVE_OPTION ) {
+								try {
+									imageStream = new FileInputStream(profileImgFileChooser.getSelectedFile());
+									
+									
+									preStatment = con.prepareStatement("UPDATE  Resident SET image = ? where phone = ?");
+									preStatment.setBlob(1, imageStream);
+									preStatment.setString(2, userPhoneNumber);
+									
+									preStatment.executeUpdate();
+									
+									getResidentPicture();
+
+								} catch (FileNotFoundException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} catch (SQLException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								} 
+								
+							}
+							
+						}
+					});
+					panel_8.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+					panel_8.setBackground(new Color(34,36,39));
+					panel_8.setBounds(453, 165, 97, 105);
+					accountFrm.add(panel_8);
+					panel_8.setLayout(null);
+					
+					accountUserImageIcon = new JLabel("");
+					accountUserImageIcon.setBounds(0, 0, 64, 64);
+					panel_8.add(accountUserImageIcon);
+					accountUserImageIcon.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
+					
+					JLabel label = new JLabel("");
+					label.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/edit.png")));
+					label.setBounds(59, 55, 25, 25);
+					panel_8.add(label);
 		
 					
 					open_Frm = new JPanel();
@@ -1238,209 +1441,6 @@ public class Resident_Window {
 		tablePanel.add(scrollTablePane, BorderLayout.CENTER);
 		scrollTablePane.setPreferredSize(new Dimension(887, 249));
 					
-
-					
-					
-					
-					inboxFrm = new JPanel();
-					inboxFrm.setBounds(new Rectangle(0, 0, 1280, 0));
-					inboxFrm.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							deleteMsgBtn.setEnabled(false);
-							messageTable.clearSelection();
-						}
-					});
-					inboxFrm.setVisible(false);
-					
-		
-		
-		
-		
-				
-				
-				
-				
-					inboxFrm.setBackground(new Color(34, 36, 39));
-					inboxFrm.setBounds(304, 45, 974, 705);
-					frmUserWindow.getContentPane().add(inboxFrm);
-					inboxFrm.setLayout(null);
-					
-					messageTable = new JTable();
-					messageTable.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							deleteMsgBtn.setEnabled(true);
-						}
-					});
-					messageTable.addMouseMotionListener(new MouseMotionAdapter() {
-						@Override
-						public void mouseMoved(MouseEvent e) {
-							if(messageTable.getSelectedRowCount() > 0) {
-								deleteMsgBtn.setEnabled(true);
-							}
-							else {
-								deleteMsgBtn.setEnabled(false);
-							}
-						}
-					});
-					messageTable.setOpaque(false);
-					messageTable.setShowGrid(false);
-					messageTable.setUI(new BasicTableUI());
-					messageTable.setAutoCreateRowSorter(true);
-					messageTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-					messageTable.setFocusTraversalKeysEnabled(false);
-					messageTable.setBackground(new Color(34, 36, 39));
-					messageTable.setBorder(null);
-					messageTable.setRowMargin(10);
-					messageTable.setForeground(new Color(255, 255, 255));
-					messageTable.setSelectionForeground(new Color(255, 255, 255));
-					messageTable.setShowVerticalLines(false);
-					messageTable.setSelectionBackground(new Color(153, 102, 204));
-					messageTable.setRequestFocusEnabled(false);
-					messageTable.setRowHeight(50);
-					messageTable.setIntercellSpacing(new Dimension(0, 0));
-					
-
-					messageTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
-					messageTable.setGridColor(new Color(0, 0, 0));
-					messageTable.getTableHeader().setBackground(new Color(34,36,39));
-					messageTable.getTableHeader().setForeground(new Color(255,255,255));
-					messageTable.setBounds(18, 108, 508, 347);
-					messageTable.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-					
-					JScrollPane tablePanelmessage = new JScrollPane(messageTable);
-					tablePanelmessage.setForeground(Color.WHITE);
-					tablePanelmessage.setAutoscrolls(true);
-					tablePanelmessage.setBackground(new Color(34,36,39));
-					tablePanelmessage.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-					tablePanelmessage.setBorder(null);
-					tablePanelmessage.setBounds(new Rectangle(42, 245, 886, 272));
-					inboxFrm.add(tablePanelmessage, BorderLayout.CENTER);
-					
-					JComboBox sortInbox = new JComboBox();
-					sortInbox.setUI(new BasicComboBoxUI());
-					sortInbox.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							
-	
-	            sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) messageTable.getModel());
-						RowFilter<DefaultTableModel, Object> rf  = RowFilter.regexFilter(sortInbox.getSelectedItem().toString(),messageTable.getColumnModel().getColumnIndex("sender"));
-	            sorter.setRowFilter(rf);
-	            messageTable.setRowSorter(sorter);
-						}
-					});
-					
-					  msgNames = new String[3];
-				       try {
-				       
-						preStatment = con.prepareStatement("select CONCAT(`f_Name` , ' ', `l_Name`) as fullname,phone,password from Resident where buildingID = ?");
-						preStatment.setInt(1,buildingIDSQL);
-						rs = preStatment.executeQuery();
-						int i = -1;
-						while(rs.next()) {
-								i++;
-						}
-						
-						msgNames = new String[i+1];
-						msgNames[0] = "";
-						rs = preStatment.executeQuery();
-						int k = 1;
-						while(rs.next()) {
-							
-							if(!rs.getString("password").equalsIgnoreCase(Login_Page.getPasswordEntry().getText())) {
-								msgNames[k] = rs.getString("fullname");
-								k++;
-							}
-							
-					}
-						
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-								e.printStackTrace();
-							}		
-							   sortInbox.setModel(new DefaultComboBoxModel(msgNames));
-							   sortInbox.setRequestFocusEnabled(false);
-							   sortInbox.setLightWeightPopupEnabled(false);
-							   sortInbox.setForeground(Color.WHITE);
-							   sortInbox.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-							   sortInbox.setFocusable(false);
-							   sortInbox.setFocusTraversalKeysEnabled(false);
-							   sortInbox.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-							   sortInbox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102,255,204)));
-							   sortInbox.setBackground(new Color(34,36,39));
-							   sortInbox.setAlignmentY(1.0f);
-							   sortInbox.setAlignmentX(1.0f);
-							   sortInbox.setBounds(381, 182, 148, 22);
-							   inboxFrm.add(sortInbox);
-							   
-							   JLabel label_3 = new JLabel("Sort By:");
-							   label_3.setForeground(new Color(255, 255, 255));
-							   label_3.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-							   label_3.setBounds(431, 155, 61, 22);
-							   inboxFrm.add(label_3);
-							   
-							   deleteMsgBtn = new JButton("Delete");
-							   deleteMsgBtn.setEnabled(false);
-							   deleteMsgBtn.addActionListener(new ActionListener() {
-							   	public void actionPerformed(ActionEvent e) {
-							   		
-							   		
-							   		
-							   		int currentmsgnum = messageIDs.length;
-							   		int[]selectedRows = messageTable.getSelectedRows();
-							   		
-							   		for(int i = 0; i<selectedRows.length;i++) {
-							   			try {
-						preStatment = con.prepareStatement("delete from Message where messageID = ?");
-						preStatment.setInt(1,messageIDs[selectedRows[i]]);
-		       			preStatment.executeUpdate();
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-							   							       		
-							   			
-							   		
-							   		}
-							   		
-							   		addMsgTable();
-							   		currentmsgnum -= selectedRows.length;
-							   		
-							   		msg_lbl.setText("You Have "+currentmsgnum+ " Messages" );
-							   	}
-							   });
-							   
-							   deleteMsgBtn.setForeground(new Color(255, 255, 255));
-							   deleteMsgBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-							   deleteMsgBtn.setFocusPainted(false);
-							   deleteMsgBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
-							   deleteMsgBtn.setBackground(new Color(34,36,39));
-							   deleteMsgBtn.setBounds(814, 530, 114, 38);
-							   inboxFrm.add(deleteMsgBtn);
-							   
-							   JPanel panel_2 = new JPanel();
-							   panel_2.setLayout(null);
-							   panel_2.setBorder(null);
-							   panel_2.setBackground(new Color(51, 153, 153));
-							   panel_2.setBounds(0, 0, 973, 142);
-							   inboxFrm.add(panel_2);
-							   
-							   JLabel lblInbox = new JLabel("Inbox");
-							   lblInbox.setHorizontalTextPosition(SwingConstants.LEFT);
-							   lblInbox.setHorizontalAlignment(SwingConstants.LEFT);
-							   lblInbox.setForeground(Color.WHITE);
-							   lblInbox.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-							   lblInbox.setBounds(32, 32, 230, 34);
-							   panel_2.add(lblInbox);
-							   
-							   JLabel lblMessagesFromOther = new JLabel("Messages From Other Residents");
-							   lblMessagesFromOther.setHorizontalTextPosition(SwingConstants.LEFT);
-							   lblMessagesFromOther.setHorizontalAlignment(SwingConstants.LEFT);
-							   lblMessagesFromOther.setForeground(Color.WHITE);
-							   lblMessagesFromOther.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-							   lblMessagesFromOther.setBounds(32, 79, 350, 34);
-							   panel_2.add(lblMessagesFromOther);
 					
 					
 					
