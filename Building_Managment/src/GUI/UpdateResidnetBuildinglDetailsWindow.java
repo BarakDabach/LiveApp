@@ -54,7 +54,7 @@ public class UpdateResidnetBuildinglDetailsWindow {
 		this.buildingNumber = buildingNumber;
 		this.phoneNumber = phoneNumber;
 		initialize();
-		getCities(cityComboBox);
+		
 
 		getCurrentUserBuildingDetails();
 		
@@ -101,6 +101,9 @@ public class UpdateResidnetBuildinglDetailsWindow {
 				try {
 					int newBuildingID = buildingNumber;
 					 preStatment = con.prepareStatement("select buildingID from Building where city = ? and streetName = ? and buildingNumber = ?");
+					 preStatment.setString(1,cityComboBox.getSelectedItem().toString());
+					 preStatment.setString(2,streetComboBox.getSelectedItem().toString());
+					 preStatment.setString(3,buildingNumberComboBox.getSelectedItem().toString());
 					 
 					 rs = preStatment.executeQuery();
 					 while (rs.next()) {
@@ -113,12 +116,7 @@ public class UpdateResidnetBuildinglDetailsWindow {
 						preStatment.setInt(1,newBuildingID );
 						preStatment.setString(2, phoneNumber);
 						preStatment.executeUpdate();
-						
 
-						
-
-						
-						
 						Resident_Window.buildingIDSQL = newBuildingID;
 						
 						
@@ -133,7 +131,7 @@ public class UpdateResidnetBuildinglDetailsWindow {
 								
 				}catch(SQLException e1) {
 					
-					
+					System.out.println(e1.getMessage());
 				}
 			}
 		});
@@ -276,19 +274,37 @@ public class UpdateResidnetBuildinglDetailsWindow {
 	protected void getCurrentUserBuildingDetails() {
 		
 		try {
+			getCities(cityComboBox);
 			preStatment = con.prepareStatement("select * from Building where buildingID = ?" );
 			preStatment.setInt(1,buildingNumber);
 			rs = preStatment.executeQuery();
 			
 			while(rs.next()) {
-				
 				cityComboBox.setSelectedItem(rs.getString("city"));
-				
-				getStreets(streetComboBox);
+			}
+			
+			getStreets(streetComboBox);
+			preStatment = con.prepareStatement("select * from Building where buildingID = ?" );
+			preStatment.setInt(1,buildingNumber);
+			rs = preStatment.executeQuery();
+			
+			while(rs.next()) {
 				streetComboBox.setSelectedItem(rs.getString("streetName"));
-				getBuildingNumber(buildingNumberComboBox);
+			}
+			
+			
+			
+			getBuildingNumber(buildingNumberComboBox);
+			preStatment = con.prepareStatement("select * from Building where buildingID = ?" );
+			preStatment.setInt(1,buildingNumber);
+			rs = preStatment.executeQuery();
+			
+			while(rs.next()) {
 				buildingNumberComboBox.setSelectedItem(Integer.toString(rs.getInt("buildingNumber")));
 			}
+			
+			
+			
 		}
 		catch(SQLException e1) {
 			
