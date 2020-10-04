@@ -41,7 +41,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
@@ -88,6 +90,7 @@ import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.RowFilter;
 import javax.swing.JTextArea;
 import java.awt.ScrollPane;
@@ -111,6 +114,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.MouseMotionAdapter;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
 
 public class Resident_Window {
 
@@ -133,6 +138,7 @@ public class Resident_Window {
 	private static String[] enumVal ;
 	static JPanel[] panels;
 	private JLabel userProfileImage;
+	private JLabel lblTotalFor;
 	static JButton[] tabButtons;
 	private static JTable defectTable;
 	private static JTable messageTable;
@@ -160,6 +166,8 @@ public class Resident_Window {
 	private JButton sendMessagebtn;
 	private JLabel accountUserImageIcon;
 	private InputStream imageStream;
+	protected int buildingFee;
+	private static JList unpayedmonthsList;
 	
 	public static void setPanel(JPanel currentPanel) {
 		panels  = new JPanel[]{DefectFrm,open_Frm,HouseCommitteFrm,Aboutfrm,inboxFrm,sendMessageFrm,accountFrm};
@@ -652,6 +660,199 @@ public class Resident_Window {
 						list.clearSelection();
 					}
 								});
+					
+					
+					HouseCommitteFrm = new JPanel();
+					HouseCommitteFrm.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							
+							unpayedmonthsList.clearSelection();
+							lblTotalFor.setText("");
+						}
+					});
+					HouseCommitteFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+					HouseCommitteFrm.setVisible(false);
+					
+					       
+					       
+					       
+					HouseCommitteFrm.setBackground(new Color(34, 36, 39));
+					HouseCommitteFrm.setBounds(304, 45, 974, 705);
+					frmUserWindow.getContentPane().add(HouseCommitteFrm);
+					HouseCommitteFrm.setLayout(null);
+					
+					JPanel panel_6 = new JPanel();
+					panel_6.setLayout(null);
+					panel_6.setBorder(null);
+					panel_6.setBackground(new Color(51, 153, 153));
+					panel_6.setBounds(0, 0, 973, 142);
+					HouseCommitteFrm.add(panel_6);
+					
+					JLabel lblBuilding = new JLabel("Building Committe");
+					lblBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblBuilding.setHorizontalAlignment(SwingConstants.LEFT);
+					lblBuilding.setForeground(Color.WHITE);
+					lblBuilding.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+					lblBuilding.setBounds(32, 32, 230, 34);
+					panel_6.add(lblBuilding);
+					
+					JLabel lblPayYourBuilding = new JLabel("Pay Your Building Committe Fee");
+					lblPayYourBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblPayYourBuilding.setHorizontalAlignment(SwingConstants.LEFT);
+					lblPayYourBuilding.setForeground(Color.WHITE);
+					lblPayYourBuilding.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+					lblPayYourBuilding.setBounds(32, 79, 350, 34);
+					panel_6.add(lblPayYourBuilding);
+					
+					JLabel lblMonths = new JLabel("Unpayed Months");
+					lblMonths.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblMonths.setHorizontalAlignment(SwingConstants.LEFT);
+					lblMonths.setForeground(Color.WHITE);
+					lblMonths.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					lblMonths.setBounds(415, 195, 143, 34);
+					HouseCommitteFrm.add(lblMonths);
+					
+					JButton btnPay = new JButton("Pay");
+					btnPay.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							
+							List<String> selectedMonths = unpayedmonthsList.getSelectedValuesList();
+							if(selectedMonths.size() >0) {
+								try {
+									preStatment = con.prepareStatement("UPDATE ComitteePayments SET amount = ? where phone = ? and month = ? and year = ? and buildingID = ?;");
+									preStatment.setInt(1,selectedMonths.size() * buildingFee );
+									preStatment.setString(2,userPhoneNumber );
+									for(String month : selectedMonths) {
+										if(month.equals("Januray") == true) {
+											preStatment.setInt(3,1);
+										}
+										else if(month.equals("Feburary") == true) {
+											preStatment.setInt(3,2);
+										}
+										
+										else if(month.equals("March") == true) {
+											preStatment.setInt(3,3);
+										}
+										
+										else if(month.equals("April") == true) {
+											preStatment.setInt(3,4);
+										}
+										
+										else if(month.equals("May") == true) {
+											preStatment.setInt(3,5);
+										}
+										
+										else if(month.equals("June") == true) {
+											preStatment.setInt(3,6);
+										}
+										
+										else if(month.equals("July") == true) {
+											preStatment.setInt(3,7);
+										}
+										
+										else if(month.equals("August") == true) {
+											preStatment.setInt(3,8);
+										}
+										
+										else if(month.equals("September") == true) {
+											preStatment.setInt(3,9);
+										}
+										
+										else if(month.equals("October") == true) {
+											preStatment.setInt(3,10);
+										}
+										
+										else if(month.equals("November") == true) {
+											preStatment.setInt(3,11);
+										}
+										
+										else {
+											preStatment.setInt(3,12);
+										
+										}
+									}
+									
+									preStatment.setInt(4,Calendar.getInstance().get(Calendar.YEAR));
+									preStatment.setInt(5,buildingIDSQL);
+									preStatment.executeUpdate();
+									
+									payedSuccess payed = new payedSuccess();
+									payed.alertFrame.setVisible(true);
+									unpayedmonthsList.clearSelection();
+									lblTotalFor.setText("");
+									getPayedMonths();
+								}
+									catch(Exception e1) {
+										System.out.println(e1.getMessage());
+									}
+										
+								}	
+							}
+							
+							
+							
+						
+					});
+					btnPay.setVerifyInputWhenFocusTarget(false);
+					btnPay.setRolloverEnabled(false);
+					btnPay.setRequestFocusEnabled(false);
+					btnPay.setHorizontalTextPosition(SwingConstants.RIGHT);
+					btnPay.setForeground(Color.WHITE);
+					btnPay.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+					btnPay.setFocusable(false);
+					btnPay.setFocusPainted(false);
+					btnPay.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
+					btnPay.setBackground(new Color(34, 36, 39));
+					btnPay.setBounds(396, 616, 180, 39);
+					HouseCommitteFrm.add(btnPay);
+					
+					JScrollPane scrollPane_2 = new JScrollPane();
+					scrollPane_2.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+					scrollPane_2.setBounds(376, 242, 221, 310);
+					HouseCommitteFrm.add(scrollPane_2);
+					
+					unpayedmonthsList = new JList();
+					unpayedmonthsList.addListSelectionListener(new ListSelectionListener() {
+						public void valueChanged(ListSelectionEvent e) {
+							int numOfMonth = unpayedmonthsList.getSelectedValuesList().size();
+							
+							if(numOfMonth == 0) {
+								lblTotalFor.setText("");
+							}
+							
+							else if(numOfMonth == 1) {
+								lblTotalFor.setText("Total "+Integer.toString(buildingFee)+"NIS for 1 month");
+							}
+							
+							else {
+								lblTotalFor.setText("Total "+Integer.toString(buildingFee*numOfMonth)+"NIS for "+Integer.toString(numOfMonth) +" months");
+							}
+							
+						}
+					});
+					unpayedmonthsList.setRequestFocusEnabled(false);
+					unpayedmonthsList.setFocusTraversalKeysEnabled(false);
+					unpayedmonthsList.setSelectionBackground(new Color(153, 102, 153));
+					unpayedmonthsList.setForeground(new Color(255, 255, 255));
+					unpayedmonthsList.setBackground(new Color(34,36,39));
+					unpayedmonthsList.setBorder(null);
+					unpayedmonthsList.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+					unpayedmonthsList.setLocation(405, 0);
+					scrollPane_2.setViewportView(unpayedmonthsList);
+					
+					lblTotalFor = new JLabel("");
+					lblTotalFor.setHorizontalTextPosition(SwingConstants.LEFT);
+					lblTotalFor.setHorizontalAlignment(SwingConstants.LEFT);
+					lblTotalFor.setForeground(Color.WHITE);
+					lblTotalFor.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+					lblTotalFor.setBounds(386, 565, 276, 34);
+					HouseCommitteFrm.add(lblTotalFor);
+					
+					JLabel label_6 = new JLabel("");
+					label_6.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/payIcon.png")));
+					label_6.setBounds(84, 165, 128, 128);
+					HouseCommitteFrm.add(label_6);
 					sendMessageFrm.setBounds(304, 45, 974, 705);
 					frmUserWindow.getContentPane().add(sendMessageFrm);
 					sendMessageFrm.setBackground(new Color(34,36,39));
@@ -1238,42 +1439,6 @@ public class Resident_Window {
 											totalDefectsLabel.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 					
 					
-					HouseCommitteFrm = new JPanel();
-					HouseCommitteFrm.setBounds(new Rectangle(0, 0, 1280, 0));
-					HouseCommitteFrm.setVisible(false);
-					
-					       
-					       
-					       
-					HouseCommitteFrm.setBackground(new Color(34, 36, 39));
-					HouseCommitteFrm.setBounds(304, 45, 974, 705);
-					frmUserWindow.getContentPane().add(HouseCommitteFrm);
-					HouseCommitteFrm.setLayout(null);
-					
-					JPanel panel_6 = new JPanel();
-					panel_6.setLayout(null);
-					panel_6.setBorder(null);
-					panel_6.setBackground(new Color(51, 153, 153));
-					panel_6.setBounds(0, 0, 973, 142);
-					HouseCommitteFrm.add(panel_6);
-					
-					JLabel lblBuilding = new JLabel("Building Committe");
-					lblBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblBuilding.setHorizontalAlignment(SwingConstants.LEFT);
-					lblBuilding.setForeground(Color.WHITE);
-					lblBuilding.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-					lblBuilding.setBounds(32, 32, 230, 34);
-					panel_6.add(lblBuilding);
-					
-					JLabel lblPayYourBuilding = new JLabel("Pay Your Building Committe Fee");
-					lblPayYourBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblPayYourBuilding.setHorizontalAlignment(SwingConstants.LEFT);
-					lblPayYourBuilding.setForeground(Color.WHITE);
-					lblPayYourBuilding.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-					lblPayYourBuilding.setBounds(32, 79, 350, 34);
-					panel_6.add(lblPayYourBuilding);
-					
-					
 					
 					DefectFrm = new JPanel();
 					DefectFrm.setBounds(new Rectangle(0, 0, 1280, 0));
@@ -1549,9 +1714,23 @@ public class Resident_Window {
 		buildingCommitteTab.setBounds(0, 270, 304, 63);
 		buildingCommitteTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					preStatment = con.prepareStatement("select comitteeAmount from Building where buildingID = ?");	
+					preStatment.setInt(1,buildingIDSQL);
+					
+					rs = preStatment.executeQuery();
+					
+					while(rs.next()) {
+						buildingFee = rs.getInt(1);
+					}
+				}
+				catch(Exception e1) {
+					System.out.println(e1.getMessage());
+				}
 				
 				setPanel(HouseCommitteFrm);
 				setTabColorGray(buildingCommitteTab);
+				getPayedMonths();
 				
 			}
 		});
@@ -1797,6 +1976,101 @@ public class Resident_Window {
 		
 	}
 	
+	protected void getPayedMonths() {
+
+		 ArrayList<String> unpayedMonths = new ArrayList<>();
+		 ArrayList<String> payedMonths = new ArrayList<>();
+		
+		try {
+			preStatment = con.prepareStatement("select month , amount from ComitteePayments where phone = ? and buildingID = ? and year = ?");
+			preStatment.setString(1,userPhoneNumber);
+			preStatment.setInt(2,buildingIDSQL);
+			preStatment.setString(3,Integer.toString(Calendar.getInstance().get(Calendar.YEAR)));
+			
+			rs = preStatment.executeQuery();
+			
+		
+			while(rs.next()) {
+				if(rs.getInt("amount") > 0) {
+					payedMonths.add(Integer.toString(rs.getInt("month")));
+				}
+				else {
+					unpayedMonths.add(Integer.toString(rs.getInt("month")));
+				}
+			}
+			
+			String[] list = unpayedMonths.toArray(new String[0]);
+			DefaultListModel model = new DefaultListModel();
+			
+			for(int i = 0 ; i< unpayedMonths.size(); i++) {
+				if(list[i].equals("1") == true) {
+					model.add(i,"Januray");
+				}
+				else if(list[i].equals("2") == true) {
+					model.add(i,"Feburary");
+				}
+				
+				else if(list[i].equals("3") == true) {
+					model.add(i,"March");
+				}
+				
+				else if(list[i].equals("4") == true) {
+					model.add(i,"April");
+				}
+				
+				else if(list[i].equals("5") == true) {
+					model.add(i,"May");
+				}
+				
+				else if(list[i].equals("6") == true) {
+					model.add(i,"June");
+				}
+				
+				else if(list[i].equals("7") == true) {
+					model.add(i,"July");
+				}
+				
+				else if(list[i].equals("8") == true) {
+					model.add(i,"August");
+				}
+				
+				else if(list[i].equals("9") == true) {
+					model.add(i,"September");
+				}
+				
+				else if(list[i].equals("10") == true) {
+					model.add(i,"October");
+				}
+				
+				else if(list[i].equals("11") == true) {
+					model.add(i,"November");
+				}
+				
+				else {
+					model.add(i,"December");
+				}
+				
+			}
+			
+			
+			
+			
+			unpayedmonthsList.setModel(model);
+			
+			
+			
+			
+			
+		}
+		catch(SQLException e1) {
+			System.out.println(e1.getMessage());
+		}
+		
+		
+		
+		
+	}
+
 	private ImageIcon resizeImageIocn(ImageIcon srcImg, int w, int h){
 		java.awt.Image image = srcImg.getImage(); // transform it 
 		java.awt.Image newimg = image.getScaledInstance(w, h,  java.awt.Image.SCALE_SMOOTH); // scale it the smooth way  
