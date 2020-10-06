@@ -153,7 +153,7 @@ public class Admin_Window {
 	static JLabel totalDefectsLabel;
 	private static JTextArea notificationsTextBox;
 	static String userPhoneNumber = Login_Page.userPhoneNumber;
-	protected int buildingFee;
+	public static int buildingFee;
 
 	public static void setPanel(JPanel currentPanel) {
 		panels = new JPanel[] { DefectFrm, open_Frm, Notificationfrm, paymentsFrm, sendMessageFrm, Aboutfrm,
@@ -765,7 +765,6 @@ public class Admin_Window {
 				catch(Exception e1) {
 					System.out.println(e1.getMessage());
 				}
-				
 				payWindow payWindow = new payWindow();
 				payWindow.payFrame.setVisible(true);
 				payWindow.getPayedMonths();
