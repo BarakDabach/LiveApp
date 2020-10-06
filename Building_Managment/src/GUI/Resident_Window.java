@@ -615,6 +615,16 @@ public class Resident_Window {
 							}		
 			
 					
+				       
+						enumVal = new String[Defect_Status.values().length+1];
+						Defect_Status[]defectsVal = Defect_Status.values();
+						
+						enumVal[0] = "";
+						for(int i = 1;i<enumVal.length;i++) {
+							
+							enumVal[i] = defectsVal[i-1].toString();
+							
+						}
 					
 					inboxFrm = new JPanel();
 					inboxFrm.setBounds(new Rectangle(0, 0, 1280, 0));
@@ -654,32 +664,6 @@ public class Resident_Window {
 								});
 					
 					
-					HouseCommitteFrm = new JPanel();
-					HouseCommitteFrm.addMouseMotionListener(new MouseMotionAdapter() {
-						@Override
-						public void mouseMoved(MouseEvent e) {
-							if(unpayedmonthsList.getSelectedValuesList().size() == 0) {
-								btnPay.setEnabled(false);
-							}
-							else {
-								btnPay.setEnabled(true);
-							}
-						}
-					});
-					HouseCommitteFrm.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							
-							unpayedmonthsList.clearSelection();
-							btnPay.setEnabled(false);
-							
-							lblTotalFor.setText("");
-						}
-					});
-					HouseCommitteFrm.setBounds(new Rectangle(0, 0, 1280, 0));
-					HouseCommitteFrm.setVisible(false);
-					
-					
 					accountFrm = new JPanel();
 					accountFrm.setBounds(new Rectangle(0, 0, 1280, 0));
 					accountFrm.setVisible(false);
@@ -687,6 +671,374 @@ public class Resident_Window {
 					Aboutfrm = new JPanel();
 					Aboutfrm.setBounds(new Rectangle(0, 0, 1280, 0));
 					Aboutfrm.setVisible(false);
+		
+		
+		
+		DefectFrm = new JPanel();
+		DefectFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		DefectFrm.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				defectTable.clearSelection();
+			}
+		});
+		DefectFrm.setVisible(false);
+		
+		
+		HouseCommitteFrm = new JPanel();
+		HouseCommitteFrm.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+				if(unpayedmonthsList.getSelectedValuesList().size() == 0) {
+					btnPay.setEnabled(false);
+				}
+				else {
+					btnPay.setEnabled(true);
+				}
+			}
+		});
+		HouseCommitteFrm.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				unpayedmonthsList.clearSelection();
+				btnPay.setEnabled(false);
+				
+				lblTotalFor.setText("");
+			}
+		});
+		HouseCommitteFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		HouseCommitteFrm.setVisible(false);
+		
+		       
+		       
+		       
+		HouseCommitteFrm.setBackground(new Color(34, 36, 39));
+		HouseCommitteFrm.setBounds(304, 45, 974, 705);
+		frmUserWindow.getContentPane().add(HouseCommitteFrm);
+		HouseCommitteFrm.setLayout(null);
+		
+		JPanel panel_6 = new JPanel();
+		panel_6.setLayout(null);
+		panel_6.setBorder(null);
+		panel_6.setBackground(new Color(51, 153, 153));
+		panel_6.setBounds(0, 0, 973, 142);
+		HouseCommitteFrm.add(panel_6);
+		
+		JLabel lblBuilding = new JLabel("Building Committe");
+		lblBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblBuilding.setHorizontalAlignment(SwingConstants.LEFT);
+		lblBuilding.setForeground(Color.WHITE);
+		lblBuilding.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+		lblBuilding.setBounds(32, 32, 230, 34);
+		panel_6.add(lblBuilding);
+		
+		JLabel lblPayYourBuilding = new JLabel("Pay Your Building Committe Fee");
+		lblPayYourBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblPayYourBuilding.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPayYourBuilding.setForeground(Color.WHITE);
+		lblPayYourBuilding.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblPayYourBuilding.setBounds(32, 79, 350, 34);
+		panel_6.add(lblPayYourBuilding);
+		
+		JLabel lblMonths = new JLabel("Unpayed Months");
+		lblMonths.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblMonths.setHorizontalAlignment(SwingConstants.LEFT);
+		lblMonths.setForeground(Color.WHITE);
+		lblMonths.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+		lblMonths.setBounds(415, 195, 143, 34);
+		HouseCommitteFrm.add(lblMonths);
+		
+		btnPay = new JButton("Pay");
+		btnPay.setEnabled(false);
+		btnPay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				List<String> selectedMonths = unpayedmonthsList.getSelectedValuesList();
+				if(selectedMonths.size() >0) {
+					try {
+						
+						for(String month : selectedMonths) {
+							
+							preStatment = con.prepareStatement("INSERT into ComitteePayments(amount,phone,month,year,buildingID) values(?,?,?,?,?)");
+							preStatment.setInt(1,buildingFee );
+							preStatment.setString(2,userPhoneNumber );
+							
+							if(month.equals("Januray") == true) {
+								preStatment.setInt(3,1);
+							}
+							else if(month.equals("Feburary") == true) {
+								preStatment.setInt(3,2);
+							}
+							
+							else if(month.equals("March") == true) {
+								preStatment.setInt(3,3);
+							}
+							
+							else if(month.equals("April") == true) {
+								preStatment.setInt(3,4);
+							}
+							
+							else if(month.equals("May") == true) {
+								preStatment.setInt(3,5);
+							}
+							
+							else if(month.equals("June") == true) {
+								preStatment.setInt(3,6);
+							}
+							
+							else if(month.equals("July") == true) {
+								preStatment.setInt(3,7);
+							}
+							
+							else if(month.equals("August") == true) {
+								preStatment.setInt(3,8);
+							}
+							
+							else if(month.equals("September") == true) {
+								preStatment.setInt(3,9);
+							}
+							
+							else if(month.equals("October") == true) {
+								preStatment.setInt(3,10);
+							}
+							
+							else if(month.equals("November") == true) {
+								preStatment.setInt(3,11);
+							}
+							
+							else {
+								preStatment.setInt(3,12);
+							
+							}
+							
+							preStatment.setInt(4,Calendar.getInstance().get(Calendar.YEAR));
+							preStatment.setInt(5,buildingIDSQL);
+							preStatment.executeUpdate();
+						}
+						
+						
+						
+						payedSuccess payed = new payedSuccess();
+						payed.alertFrame.setVisible(true);
+						unpayedmonthsList.clearSelection();
+						lblTotalFor.setText("");
+						getPayedMonths();
+					}
+						catch(Exception e1) {
+							System.out.println(e1.getMessage());
+						}
+							
+					}	
+				}
+				
+				
+				
+			
+		});
+		btnPay.setVerifyInputWhenFocusTarget(false);
+		btnPay.setRolloverEnabled(false);
+		btnPay.setRequestFocusEnabled(false);
+		btnPay.setHorizontalTextPosition(SwingConstants.RIGHT);
+		btnPay.setForeground(Color.WHITE);
+		btnPay.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+		btnPay.setFocusable(false);
+		btnPay.setFocusPainted(false);
+		btnPay.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
+		btnPay.setBackground(new Color(34, 36, 39));
+		btnPay.setBounds(396, 616, 180, 39);
+		HouseCommitteFrm.add(btnPay);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
+		scrollPane_2.setBounds(376, 242, 221, 310);
+		HouseCommitteFrm.add(scrollPane_2);
+		
+		unpayedmonthsList = new JList();
+		unpayedmonthsList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				btnPay.setEnabled(true);
+				int numOfMonth = unpayedmonthsList.getSelectedValuesList().size();
+				
+				if(numOfMonth == 0) {
+					lblTotalFor.setText("");
+				}
+				
+				else if(numOfMonth == 1) {
+					lblTotalFor.setText("Total "+Integer.toString(buildingFee)+"NIS for 1 month");
+				}
+				
+				else {
+					lblTotalFor.setText("Total "+Integer.toString(buildingFee*numOfMonth)+"NIS for "+Integer.toString(numOfMonth) +" months");
+				}
+				
+			}
+		});
+		unpayedmonthsList.setRequestFocusEnabled(false);
+		unpayedmonthsList.setFocusTraversalKeysEnabled(false);
+		unpayedmonthsList.setSelectionBackground(new Color(153, 102, 153));
+		unpayedmonthsList.setForeground(new Color(255, 255, 255));
+		unpayedmonthsList.setBackground(new Color(34,36,39));
+		unpayedmonthsList.setBorder(null);
+		unpayedmonthsList.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		unpayedmonthsList.setLocation(405, 0);
+		scrollPane_2.setViewportView(unpayedmonthsList);
+		
+		lblTotalFor = new JLabel("");
+		lblTotalFor.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblTotalFor.setHorizontalAlignment(SwingConstants.LEFT);
+		lblTotalFor.setForeground(Color.WHITE);
+		lblTotalFor.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+		lblTotalFor.setBounds(386, 565, 276, 34);
+		HouseCommitteFrm.add(lblTotalFor);
+		
+		JLabel label_6 = new JLabel("");
+		label_6.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/payIcon.png")));
+		label_6.setBounds(84, 165, 128, 128);
+		HouseCommitteFrm.add(label_6);
+		
+		
+			   
+		
+		
+		
+		
+		DefectFrm.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
+		DefectFrm.setRequestFocusEnabled(false);
+		DefectFrm.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		DefectFrm.setBounds(304, 45, 974, 705);
+		DefectFrm.setBackground(new Color(34,36,39));
+		frmUserWindow.getContentPane().add(DefectFrm);
+		DefectFrm.setLayout(null);
+		
+		JComboBox sortDefects = new JComboBox();
+		sortDefects.setModel(new DefaultComboBoxModel(enumVal));
+		sortDefects.setVerifyInputWhenFocusTarget(false);
+		sortDefects.setOpaque(false);
+		sortDefects.setBackground(new Color(34,36,39));
+		sortDefects.setUI(new BasicComboBoxUI());
+		sortDefects.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				
+				sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) defectTable.getModel());
+				RowFilter<DefaultTableModel, Object> rf  = RowFilter.regexFilter(sortDefects.getSelectedItem().toString(),defectTable.getColumnModel().getColumnIndex("Status"));
+				sorter.setRowFilter(rf);
+        
+				defectTable.setRowSorter(sorter);
+			}
+		});
+		sortDefects.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+		sortDefects.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		sortDefects.setLightWeightPopupEnabled(false);
+		sortDefects.setFocusTraversalKeysEnabled(false);
+		sortDefects.setFocusable(false);
+		sortDefects.setForeground(Color.WHITE);
+		sortDefects.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		
+		((JLabel)sortDefects.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
+		sortDefects.setRequestFocusEnabled(false);
+		sortDefects.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		sortDefects.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
+		sortDefects.setBounds(434, 212, 148, 22);
+		
+		
+		sortDefects.setForeground(Color.WHITE);
+		DefectFrm.add(sortDefects);
+		
+		JButton btnAddDefect = new JButton("Report a Defect");
+		btnAddDefect.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addDefectWindow addWindow = new addDefectWindow();
+				addWindow.addDefectFrame.setVisible(true);
+			}
+		});
+		btnAddDefect.setForeground(new Color(255, 255, 255));
+		btnAddDefect.setHorizontalTextPosition(SwingConstants.RIGHT);
+		btnAddDefect.setIcon(null);
+		btnAddDefect.setFocusPainted(false);
+		btnAddDefect.setBackground(new Color(34,36,39));
+		btnAddDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+		btnAddDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
+		btnAddDefect.setBounds(755, 537, 173, 39);
+		
+		
+		       
+		       
+		DefectFrm.add(btnAddDefect);
+		
+		JLabel lblSortBy = new JLabel("Sort By:");
+		lblSortBy.setForeground(new Color(255, 255, 255));
+		lblSortBy.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+		lblSortBy.setBounds(477, 177, 67, 22);
+		DefectFrm.add(lblSortBy);
+		
+		JPanel panel_5 = new JPanel();
+		panel_5.setBounds(0, 0, 973, 142);
+		DefectFrm.add(panel_5);
+		panel_5.setLayout(null);
+		panel_5.setBorder(null);
+		panel_5.setBackground(new Color(51, 153, 153));
+		
+		JLabel lblDefects = new JLabel("Defects");
+		lblDefects.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblDefects.setHorizontalAlignment(SwingConstants.LEFT);
+		lblDefects.setForeground(Color.WHITE);
+		lblDefects.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+		lblDefects.setBounds(32, 32, 94, 34);
+		panel_5.add(lblDefects);
+		
+		JLabel lblViewAndOpen = new JLabel("View/ Open Defects in Your Building");
+		lblViewAndOpen.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblViewAndOpen.setHorizontalAlignment(SwingConstants.LEFT);
+		lblViewAndOpen.setForeground(Color.WHITE);
+		lblViewAndOpen.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblViewAndOpen.setBounds(32, 79, 350, 34);
+		panel_5.add(lblViewAndOpen);
+		
+		JPanel tablePanel = new JPanel();
+		tablePanel.setBorder(null);
+		tablePanel.setBackground(new Color(34, 36, 39));
+		tablePanel.setBounds(41, 268, 887, 249);
+		DefectFrm.add(tablePanel);	
+		tablePanel.setLayout(new BorderLayout(0, 0));
+		
+
+		defectTable = new JTable();		
+		
+
+							
+							defectTable.setBounds(new Rectangle(41, 268, 887, 249));
+							defectTable.setOpaque(false);
+							defectTable.setShowGrid(false);
+							defectTable.setUI(new BasicTableUI());
+							defectTable.setAutoCreateRowSorter(true);
+							defectTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+							defectTable.setFocusTraversalKeysEnabled(false);
+							defectTable.setBackground(new Color(34, 36, 39));
+							defectTable.setBorder(null);
+							defectTable.setRowMargin(10);
+							defectTable.setForeground(new Color(255, 255, 255));
+							defectTable.setSelectionForeground(new Color(255, 255, 255));
+							defectTable.setShowVerticalLines(false);
+							defectTable.setSelectionBackground(new Color(153, 102, 204));
+							defectTable.setRequestFocusEnabled(false);
+							defectTable.setRowHeight(50);
+							defectTable.setIntercellSpacing(new Dimension(0, 0));
+							
+
+							defectTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
+							defectTable.setGridColor(new Color(0, 0, 0));
+							defectTable.getTableHeader().setBackground(new Color(34,36,39));
+							defectTable.getTableHeader().setForeground(new Color(255,255,255));
+							
+							
+		JScrollPane scrollTablePane = new JScrollPane(defectTable);
+		scrollTablePane.setBorder(null);
+		scrollTablePane.setBackground(new Color(34,36,39));
+		
+		tablePanel.add(scrollTablePane, BorderLayout.CENTER);
+		scrollTablePane.setPreferredSize(new Dimension(887, 249));
 					
 					
 					
@@ -888,193 +1240,6 @@ public class Resident_Window {
 					label.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/edit.png")));
 					label.setBounds(59, 55, 25, 25);
 					panel_8.add(label);
-					
-					       
-					       
-					       
-					HouseCommitteFrm.setBackground(new Color(34, 36, 39));
-					HouseCommitteFrm.setBounds(304, 45, 974, 705);
-					frmUserWindow.getContentPane().add(HouseCommitteFrm);
-					HouseCommitteFrm.setLayout(null);
-					
-					JPanel panel_6 = new JPanel();
-					panel_6.setLayout(null);
-					panel_6.setBorder(null);
-					panel_6.setBackground(new Color(51, 153, 153));
-					panel_6.setBounds(0, 0, 973, 142);
-					HouseCommitteFrm.add(panel_6);
-					
-					JLabel lblBuilding = new JLabel("Building Committe");
-					lblBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblBuilding.setHorizontalAlignment(SwingConstants.LEFT);
-					lblBuilding.setForeground(Color.WHITE);
-					lblBuilding.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-					lblBuilding.setBounds(32, 32, 230, 34);
-					panel_6.add(lblBuilding);
-					
-					JLabel lblPayYourBuilding = new JLabel("Pay Your Building Committe Fee");
-					lblPayYourBuilding.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblPayYourBuilding.setHorizontalAlignment(SwingConstants.LEFT);
-					lblPayYourBuilding.setForeground(Color.WHITE);
-					lblPayYourBuilding.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-					lblPayYourBuilding.setBounds(32, 79, 350, 34);
-					panel_6.add(lblPayYourBuilding);
-					
-					JLabel lblMonths = new JLabel("Unpayed Months");
-					lblMonths.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblMonths.setHorizontalAlignment(SwingConstants.LEFT);
-					lblMonths.setForeground(Color.WHITE);
-					lblMonths.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-					lblMonths.setBounds(415, 195, 143, 34);
-					HouseCommitteFrm.add(lblMonths);
-					
-					btnPay = new JButton("Pay");
-					btnPay.setEnabled(false);
-					btnPay.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							
-							List<String> selectedMonths = unpayedmonthsList.getSelectedValuesList();
-							if(selectedMonths.size() >0) {
-								try {
-									
-									for(String month : selectedMonths) {
-										
-										preStatment = con.prepareStatement("INSERT into ComitteePayments(amount,phone,month,year,buildingID) values(?,?,?,?,?)");
-										preStatment.setInt(1,buildingFee );
-										preStatment.setString(2,userPhoneNumber );
-										
-										if(month.equals("Januray") == true) {
-											preStatment.setInt(3,1);
-										}
-										else if(month.equals("Feburary") == true) {
-											preStatment.setInt(3,2);
-										}
-										
-										else if(month.equals("March") == true) {
-											preStatment.setInt(3,3);
-										}
-										
-										else if(month.equals("April") == true) {
-											preStatment.setInt(3,4);
-										}
-										
-										else if(month.equals("May") == true) {
-											preStatment.setInt(3,5);
-										}
-										
-										else if(month.equals("June") == true) {
-											preStatment.setInt(3,6);
-										}
-										
-										else if(month.equals("July") == true) {
-											preStatment.setInt(3,7);
-										}
-										
-										else if(month.equals("August") == true) {
-											preStatment.setInt(3,8);
-										}
-										
-										else if(month.equals("September") == true) {
-											preStatment.setInt(3,9);
-										}
-										
-										else if(month.equals("October") == true) {
-											preStatment.setInt(3,10);
-										}
-										
-										else if(month.equals("November") == true) {
-											preStatment.setInt(3,11);
-										}
-										
-										else {
-											preStatment.setInt(3,12);
-										
-										}
-										
-										preStatment.setInt(4,Calendar.getInstance().get(Calendar.YEAR));
-										preStatment.setInt(5,buildingIDSQL);
-										preStatment.executeUpdate();
-									}
-									
-									
-									
-									payedSuccess payed = new payedSuccess();
-									payed.alertFrame.setVisible(true);
-									unpayedmonthsList.clearSelection();
-									lblTotalFor.setText("");
-									getPayedMonths();
-								}
-									catch(Exception e1) {
-										System.out.println(e1.getMessage());
-									}
-										
-								}	
-							}
-							
-							
-							
-						
-					});
-					btnPay.setVerifyInputWhenFocusTarget(false);
-					btnPay.setRolloverEnabled(false);
-					btnPay.setRequestFocusEnabled(false);
-					btnPay.setHorizontalTextPosition(SwingConstants.RIGHT);
-					btnPay.setForeground(Color.WHITE);
-					btnPay.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-					btnPay.setFocusable(false);
-					btnPay.setFocusPainted(false);
-					btnPay.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
-					btnPay.setBackground(new Color(34, 36, 39));
-					btnPay.setBounds(396, 616, 180, 39);
-					HouseCommitteFrm.add(btnPay);
-					
-					JScrollPane scrollPane_2 = new JScrollPane();
-					scrollPane_2.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 0, 153)));
-					scrollPane_2.setBounds(376, 242, 221, 310);
-					HouseCommitteFrm.add(scrollPane_2);
-					
-					unpayedmonthsList = new JList();
-					unpayedmonthsList.addListSelectionListener(new ListSelectionListener() {
-						public void valueChanged(ListSelectionEvent e) {
-							btnPay.setEnabled(true);
-							int numOfMonth = unpayedmonthsList.getSelectedValuesList().size();
-							
-							if(numOfMonth == 0) {
-								lblTotalFor.setText("");
-							}
-							
-							else if(numOfMonth == 1) {
-								lblTotalFor.setText("Total "+Integer.toString(buildingFee)+"NIS for 1 month");
-							}
-							
-							else {
-								lblTotalFor.setText("Total "+Integer.toString(buildingFee*numOfMonth)+"NIS for "+Integer.toString(numOfMonth) +" months");
-							}
-							
-						}
-					});
-					unpayedmonthsList.setRequestFocusEnabled(false);
-					unpayedmonthsList.setFocusTraversalKeysEnabled(false);
-					unpayedmonthsList.setSelectionBackground(new Color(153, 102, 153));
-					unpayedmonthsList.setForeground(new Color(255, 255, 255));
-					unpayedmonthsList.setBackground(new Color(34,36,39));
-					unpayedmonthsList.setBorder(null);
-					unpayedmonthsList.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-					unpayedmonthsList.setLocation(405, 0);
-					scrollPane_2.setViewportView(unpayedmonthsList);
-					
-					lblTotalFor = new JLabel("");
-					lblTotalFor.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblTotalFor.setHorizontalAlignment(SwingConstants.LEFT);
-					lblTotalFor.setForeground(Color.WHITE);
-					lblTotalFor.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
-					lblTotalFor.setBounds(386, 565, 276, 34);
-					HouseCommitteFrm.add(lblTotalFor);
-					
-					JLabel label_6 = new JLabel("");
-					label_6.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/payIcon.png")));
-					label_6.setBounds(84, 165, 128, 128);
-					HouseCommitteFrm.add(label_6);
 					sendMessageFrm.setBounds(304, 45, 974, 705);
 					frmUserWindow.getContentPane().add(sendMessageFrm);
 					sendMessageFrm.setBackground(new Color(34,36,39));
@@ -1516,174 +1681,7 @@ public class Resident_Window {
 											totalDefectsLabel.setHorizontalAlignment(SwingConstants.LEFT);
 											totalDefectsLabel.setForeground(Color.WHITE);
 											totalDefectsLabel.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-					
-					
-					
-					DefectFrm = new JPanel();
-					DefectFrm.setBounds(new Rectangle(0, 0, 1280, 0));
-					DefectFrm.addMouseListener(new MouseAdapter() {
-						@Override
-						public void mouseClicked(MouseEvent e) {
-							defectTable.clearSelection();
-						}
-					});
-					DefectFrm.setVisible(false);
-					
-					
-						   
-					
-					
-					
-					
-					DefectFrm.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-					DefectFrm.setRequestFocusEnabled(false);
-					DefectFrm.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-					DefectFrm.setBounds(304, 45, 974, 705);
-					DefectFrm.setBackground(new Color(34,36,39));
-					frmUserWindow.getContentPane().add(DefectFrm);
-					DefectFrm.setLayout(null);
-					
-					JComboBox sortDefects = new JComboBox();
-					enumVal = new String[Defect_Status.values().length+1];
-					Defect_Status[]defectsVal = Defect_Status.values();
-					
-					enumVal[0] = "";
-					for(int i = 1;i<enumVal.length;i++) {
-						
-						enumVal[i] = defectsVal[i-1].toString();
-						
-					}
-					sortDefects.setModel(new DefaultComboBoxModel(enumVal));
-					sortDefects.setVerifyInputWhenFocusTarget(false);
-					sortDefects.setOpaque(false);
-					sortDefects.setBackground(new Color(34,36,39));
-					sortDefects.setUI(new BasicComboBoxUI());
-					sortDefects.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							
-							
-							sorter = new TableRowSorter<DefaultTableModel>((DefaultTableModel) defectTable.getModel());
-							RowFilter<DefaultTableModel, Object> rf  = RowFilter.regexFilter(sortDefects.getSelectedItem().toString(),defectTable.getColumnModel().getColumnIndex("Status"));
-							sorter.setRowFilter(rf);
-        
-							defectTable.setRowSorter(sorter);
-						}
-					});
-					sortDefects.setAlignmentY(Component.BOTTOM_ALIGNMENT);
-					sortDefects.setAlignmentX(Component.RIGHT_ALIGNMENT);
-					sortDefects.setLightWeightPopupEnabled(false);
-					sortDefects.setFocusTraversalKeysEnabled(false);
-					sortDefects.setFocusable(false);
-					sortDefects.setForeground(Color.WHITE);
-					sortDefects.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-					
-					((JLabel)sortDefects.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-					sortDefects.setRequestFocusEnabled(false);
-					sortDefects.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-					sortDefects.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-					sortDefects.setBounds(434, 212, 148, 22);
-					
-					
-					sortDefects.setForeground(Color.WHITE);
-					DefectFrm.add(sortDefects);
-					
-					JButton btnAddDefect = new JButton("Report a Defect");
-					btnAddDefect.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							addDefectWindow addWindow = new addDefectWindow();
-							addWindow.addDefectFrame.setVisible(true);
-						}
-					});
-					btnAddDefect.setForeground(new Color(255, 255, 255));
-					btnAddDefect.setHorizontalTextPosition(SwingConstants.RIGHT);
-					btnAddDefect.setIcon(null);
-					btnAddDefect.setFocusPainted(false);
-					btnAddDefect.setBackground(new Color(34,36,39));
-					btnAddDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-					btnAddDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
-					btnAddDefect.setBounds(755, 537, 173, 39);
-					
-					
-					       
-					       
-					DefectFrm.add(btnAddDefect);
-					
-					JLabel lblSortBy = new JLabel("Sort By:");
-					lblSortBy.setForeground(new Color(255, 255, 255));
-					lblSortBy.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
-					lblSortBy.setBounds(477, 177, 67, 22);
-					DefectFrm.add(lblSortBy);
-					
-					JPanel panel_5 = new JPanel();
-					panel_5.setBounds(0, 0, 973, 142);
-					DefectFrm.add(panel_5);
-					panel_5.setLayout(null);
-					panel_5.setBorder(null);
-					panel_5.setBackground(new Color(51, 153, 153));
-					
-					JLabel lblDefects = new JLabel("Defects");
-					lblDefects.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblDefects.setHorizontalAlignment(SwingConstants.LEFT);
-					lblDefects.setForeground(Color.WHITE);
-					lblDefects.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-					lblDefects.setBounds(32, 32, 94, 34);
-					panel_5.add(lblDefects);
-					
-					JLabel lblViewAndOpen = new JLabel("View/ Open Defects in Your Building");
-					lblViewAndOpen.setHorizontalTextPosition(SwingConstants.LEFT);
-					lblViewAndOpen.setHorizontalAlignment(SwingConstants.LEFT);
-					lblViewAndOpen.setForeground(Color.WHITE);
-					lblViewAndOpen.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-					lblViewAndOpen.setBounds(32, 79, 350, 34);
-					panel_5.add(lblViewAndOpen);
-					
-					JPanel tablePanel = new JPanel();
-					tablePanel.setBorder(null);
-					tablePanel.setBackground(new Color(34, 36, 39));
-					tablePanel.setBounds(41, 268, 887, 249);
-					DefectFrm.add(tablePanel);	
-					tablePanel.setLayout(new BorderLayout(0, 0));
-					
 
-					defectTable = new JTable();		
-					
-						
-						
-						
-						
-						
-										
-										defectTable.setBounds(new Rectangle(41, 268, 887, 249));
-										defectTable.setOpaque(false);
-										defectTable.setShowGrid(false);
-										defectTable.setUI(new BasicTableUI());
-										defectTable.setAutoCreateRowSorter(true);
-										defectTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-										defectTable.setFocusTraversalKeysEnabled(false);
-										defectTable.setBackground(new Color(34, 36, 39));
-										defectTable.setBorder(null);
-										defectTable.setRowMargin(10);
-										defectTable.setForeground(new Color(255, 255, 255));
-										defectTable.setSelectionForeground(new Color(255, 255, 255));
-										defectTable.setShowVerticalLines(false);
-										defectTable.setSelectionBackground(new Color(153, 102, 204));
-										defectTable.setRequestFocusEnabled(false);
-										defectTable.setRowHeight(50);
-										defectTable.setIntercellSpacing(new Dimension(0, 0));
-										
-
-										defectTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
-										defectTable.setGridColor(new Color(0, 0, 0));
-										defectTable.getTableHeader().setBackground(new Color(34,36,39));
-										defectTable.getTableHeader().setForeground(new Color(255,255,255));
-										
-										
-		JScrollPane scrollTablePane = new JScrollPane(defectTable);
-		scrollTablePane.setBorder(null);
-		scrollTablePane.setBackground(new Color(34,36,39));
-		
-		tablePanel.add(scrollTablePane, BorderLayout.CENTER);
-		scrollTablePane.setPreferredSize(new Dimension(887, 249));
 		
 		JPanel tabFrm = new JPanel();
 		tabFrm.setBounds(new Rectangle(0, 0, 1280, 0));
