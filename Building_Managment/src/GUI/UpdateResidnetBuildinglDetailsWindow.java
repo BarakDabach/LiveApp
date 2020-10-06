@@ -8,6 +8,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
@@ -50,6 +51,7 @@ public class UpdateResidnetBuildinglDetailsWindow {
 	private JComboBox streetComboBox;
 	private JComboBox buildingNumberComboBox;
 	private String phoneNumber;
+	private JComboBox appartmentNumComboBox;
 	public UpdateResidnetBuildinglDetailsWindow(int buildingNumber,String phoneNumber ) {
 		this.buildingNumber = buildingNumber;
 		this.phoneNumber = phoneNumber;
@@ -112,9 +114,10 @@ public class UpdateResidnetBuildinglDetailsWindow {
 				
 					
 					
-						preStatment = con.prepareStatement("UPDATE  Resident SET buildingID = ?   where phone = ?");
+						preStatment = con.prepareStatement("UPDATE  Resident SET buildingID = ? , appartmentNum = ?   where phone = ?");
 						preStatment.setInt(1,newBuildingID );
-						preStatment.setString(2, phoneNumber);
+						preStatment.setString(3, phoneNumber);
+						preStatment.setInt(2, Integer.parseInt(appartmentNumComboBox.getSelectedItem().toString()));
 						preStatment.executeUpdate();
 
 						Resident_Window.buildingIDSQL = newBuildingID;
@@ -165,6 +168,7 @@ public class UpdateResidnetBuildinglDetailsWindow {
 			public void actionPerformed(ActionEvent e) {
 				getStreets(streetComboBox);
 				getBuildingNumber(buildingNumberComboBox);
+				getAppartmentNumber(appartmentNumComboBox);
 			}
 		});
 		cityComboBox.setUI(new BasicComboBoxUI());
@@ -188,6 +192,7 @@ public class UpdateResidnetBuildinglDetailsWindow {
 		streetComboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				getBuildingNumber(buildingNumberComboBox);
+				getAppartmentNumber(appartmentNumComboBox);
 			}
 		});
 		streetComboBox.setUI(new BasicComboBoxUI());
@@ -209,6 +214,11 @@ public class UpdateResidnetBuildinglDetailsWindow {
 		panel.add(label_3);
 		
 		buildingNumberComboBox = new JComboBox();
+		buildingNumberComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				getAppartmentNumber(appartmentNumComboBox);
+			}
+		});
 		buildingNumberComboBox.setUI(new BasicComboBoxUI());
 		buildingNumberComboBox.setForeground(Color.WHITE);
 		buildingNumberComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
@@ -220,16 +230,17 @@ public class UpdateResidnetBuildinglDetailsWindow {
 		buildingNumberComboBox.setBounds(145, 346, 198, 22);
 		panel.add(buildingNumberComboBox);
 		
-		JComboBox comboBox_3 = new JComboBox();
-		comboBox_3.setForeground(Color.WHITE);
-		comboBox_3.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
-		comboBox_3.setFocusable(false);
-		comboBox_3.setFocusTraversalKeysEnabled(false);
-		comboBox_3.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
-		comboBox_3.setBackground(new Color(34, 36, 39));
-		comboBox_3.setAlignmentX(1.0f);
-		comboBox_3.setBounds(177, 431, 134, 22);
-		panel.add(comboBox_3);
+		appartmentNumComboBox = new JComboBox();
+		appartmentNumComboBox.setForeground(Color.WHITE);
+		appartmentNumComboBox.setUI(new BasicComboBoxUI());
+		appartmentNumComboBox.setFont(new Font("Yu Gothic", Font.PLAIN, 14));
+		appartmentNumComboBox.setFocusable(false);
+		appartmentNumComboBox.setFocusTraversalKeysEnabled(false);
+		appartmentNumComboBox.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(51, 204, 153)));
+		appartmentNumComboBox.setBackground(new Color(34, 36, 39));
+		appartmentNumComboBox.setAlignmentX(1.0f);
+		appartmentNumComboBox.setBounds(177, 431, 134, 22);
+		panel.add(appartmentNumComboBox);
 		
 		JLabel label_4 = new JLabel("Appartment Number");
 		label_4.setForeground(Color.WHITE);
@@ -270,7 +281,52 @@ public class UpdateResidnetBuildinglDetailsWindow {
 		
 	}
 
-	
+	protected void getAppartmentNumber(JComboBox appartmentComboBox) {
+		ArrayList<String> avaAppr = new ArrayList<String>();
+		
+		
+		try {
+			preStatment = con.prepareStatement("select numberOfAppartments,buildingID from Building where city = ? and streetName = ? and buildingNumber = ?");
+			preStatment.setString(1, cityComboBox.getSelectedItem().toString());
+			preStatment.setString(2, streetComboBox.getSelectedItem().toString());
+			preStatment.setString(3, buildingNumberComboBox.getSelectedItem().toString());
+			
+			rs = preStatment.executeQuery();
+			int numogap = 0;
+			int buildID =  0;
+			while(rs.next()) {
+				numogap = rs.getInt(1);
+				buildID = rs.getInt(2);
+			}
+			
+			
+			for(int i = 1; i<= numogap ; i++ ) {
+				avaAppr.add(Integer.toString(i));
+			}
+			
+			
+			preStatment = con.prepareStatement("select appartmentNum from Resident where buildingID = ?");
+			preStatment.setInt(1, buildID);
+
+			
+			rs = preStatment.executeQuery();
+			
+			while(rs.next()) {
+				avaAppr.remove(Integer.toString(rs.getInt(1)));
+			}
+			
+			
+			appartmentComboBox.setModel(new DefaultComboBoxModel(avaAppr.toArray(new String[0])));
+			
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
 	protected void getCurrentUserBuildingDetails() {
 		
 		try {
@@ -303,11 +359,28 @@ public class UpdateResidnetBuildinglDetailsWindow {
 				buildingNumberComboBox.setSelectedItem(Integer.toString(rs.getInt("buildingNumber")));
 			}
 			
+			getAppartmentNumber(appartmentNumComboBox);
+			
+			preStatment = con.prepareStatement("select * from Resident where phone = ?");
+			preStatment.setString(1, phoneNumber);
+
+			
+			rs = preStatment.executeQuery();
+
+			while(rs.next()) {
+				
+				appartmentNumComboBox.setSelectedItem(Integer.toString(rs.getInt("appartmentNum")));
+			}
+			
+			
+			
+		
+			
 			
 			
 		}
 		catch(SQLException e1) {
-			
+			System.out.println(e1.getMessage());
 		}
 		
 	}
