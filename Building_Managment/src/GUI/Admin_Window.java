@@ -18,6 +18,7 @@ import SQL.sqlDriver;
 import javafx.scene.control.ComboBox;
 
 import javax.swing.JDesktopPane;
+import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JButton;
@@ -31,6 +32,7 @@ import java.awt.Frame;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,6 +62,7 @@ import javax.swing.DefaultListModel;
 import java.awt.ComponentOrientation;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.plaf.TableUI;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import javax.swing.plaf.basic.BasicScrollPaneUI;
@@ -81,6 +84,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
@@ -98,6 +102,11 @@ import java.awt.event.ComponentEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.FocusAdapter;
@@ -113,6 +122,7 @@ public class Admin_Window {
 	private static JPanel Notificationfrm;
 	private static JPanel sendMessageFrm;
 	private static JPanel paymentsFrm;
+	private static JPanel accountFrm;
 	private static JButton residentTab;
 	private static JButton HomeTab;
 	private static JButton notificationTab;
@@ -154,10 +164,14 @@ public class Admin_Window {
 	private static JTextArea notificationsTextBox;
 	static String userPhoneNumber = Login_Page.userPhoneNumber;
 	public static int buildingFee;
+	private JFileChooser profileImgFileChooser;
+	private InputStream imageStream;
+	private JLabel accountUserImageIcon;
+	private JLabel userProfileImage;
 
 	public static void setPanel(JPanel currentPanel) {
-		panels = new JPanel[] { DefectFrm, open_Frm, Notificationfrm, paymentsFrm, sendMessageFrm, Aboutfrm,
-				inboxFrm, };
+		panels = new JPanel[] { DefectFrm, open_Frm, Notificationfrm, paymentsFrm, sendMessageFrm, Aboutfrm, inboxFrm,
+				accountFrm };
 
 		for (int i = 0; i < panels.length; i++) {
 			if (panels[i].equals(currentPanel)) {
@@ -376,6 +390,44 @@ public class Admin_Window {
 		}
 
 		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private ImageIcon resizeImageIocn(ImageIcon srcImg, int w, int h) {
+		java.awt.Image image = srcImg.getImage(); // transform it
+		java.awt.Image newimg = image.getScaledInstance(w, h, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+		return new ImageIcon(newimg); // transform it back
+	}
+
+	// get resident picture
+	public void getResidentPicture() {
+
+		try {
+			preStatment = con.prepareStatement("select image from Resident where phone = ?");
+			preStatment.setString(1, userPhoneNumber);
+			rs = preStatment.executeQuery();
+			while (rs.next()) {
+				if (rs.getBinaryStream("image") != null) {
+					BufferedImage imageRetrived;
+					try {
+
+						imageRetrived = ImageIO.read(rs.getBinaryStream("image"));
+						ImageIcon retrivedIcon = resizeImageIocn(new ImageIcon(imageRetrived),
+								userProfileImage.getWidth(), userProfileImage.getHeight());
+
+						userProfileImage.setIcon(retrivedIcon);
+						accountUserImageIcon.setIcon(retrivedIcon);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+			}
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -635,10 +687,72 @@ public class Admin_Window {
 		frmAdminWindow.getContentPane().setLayout(null);
 		frmAdminWindow.setLocationRelativeTo(null);
 
+		paymentsFrm = new JPanel();
+		paymentsFrm.setVisible(false);
+
+		sendMessageFrm = new JPanel();
+		sendMessageFrm.setVisible(false);
+		sendMessageFrm.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseMoved(MouseEvent e) {
+
+				if (messagefield.getText().length() > 0 && list.isSelectionEmpty() == false) {
+
+					sendMessagebtn.setEnabled(true);
+				} else {
+					sendMessagebtn.setEnabled(false);
+				}
+			}
+		});
+		sendMessageFrm.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				sendMessagebtn.setEnabled(false);
+				list.clearSelection();
+			}
+		});
+
+		Aboutfrm = new JPanel();
+		Aboutfrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		Aboutfrm.setVisible(false);
+		Aboutfrm = new JPanel();
+		Aboutfrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		Aboutfrm.setVisible(false);
+
 		Notificationfrm = new JPanel();
 		Notificationfrm.setBorder(null);
 		Notificationfrm.setBounds(new Rectangle(0, 0, 1280, 0));
 		Notificationfrm.setVisible(false);
+
+		String[] msgNames = new String[3];
+		try {
+
+			preStatment = con.prepareStatement(
+					"select CONCAT(`f_Name` , ' ', `l_Name`) as fullname,phone, password from Resident where buildingID = ?");
+			preStatment.setInt(1, buildingIDSQL);
+			rs = preStatment.executeQuery();
+			int i = -1;
+			while (rs.next()) {
+				i++;
+			}
+
+			msgNames = new String[i + 1];
+			msgNames[0] = "";
+			rs = preStatment.executeQuery();
+			int k = 1;
+			while (rs.next()) {
+
+				if (!rs.getString("password").equalsIgnoreCase(Login_Page.getPasswordEntry().getText())) {
+					msgNames[k] = rs.getString("fullname");
+					k++;
+				}
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		inboxFrm = new JPanel();
 		inboxFrm.setBounds(new Rectangle(0, 0, 1280, 0));
@@ -653,135 +767,172 @@ public class Admin_Window {
 
 		DefectFrm = new JPanel();
 		DefectFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		JButton btnRemoveDefect = new JButton("Remove Defect");
 		DefectFrm.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				defectTable.clearSelection();
+				btnRemoveDefect.setEnabled(false);
 			}
 		});
 		DefectFrm.setVisible(false);
 
-		paymentsFrm = new JPanel();
-		paymentsFrm.setVisible(false);
-		paymentsFrm.setBounds(304, 45, 974, 705);
-		frmAdminWindow.getContentPane().add(paymentsFrm);
-		paymentsFrm.setBackground(new Color(34, 36, 39));
-		paymentsFrm.setLayout(null);
+		accountFrm = new JPanel();
+		accountFrm.setBounds(new Rectangle(0, 0, 1280, 0));
+		accountFrm.setVisible(false);
+		accountFrm.setBackground(new Color(34, 36, 39));
+		accountFrm.setBounds(304, 45, 974, 705);
+		frmAdminWindow.getContentPane().add(accountFrm);
+		accountFrm.setLayout(null);
 
-		JPanel panel = new JPanel();
-		panel.setLayout(null);
-		panel.setBorder(null);
-		panel.setBackground(new Color(51, 153, 153));
-		panel.setBounds(0, 0, 973, 142);
-		paymentsFrm.add(panel);
+		JPanel panel_7 = new JPanel();
+		panel_7.setLayout(null);
+		panel_7.setBorder(null);
+		panel_7.setBackground(new Color(51, 153, 153));
+		panel_7.setBounds(0, 0, 973, 142);
+		accountFrm.add(panel_7);
 
-		JLabel lblPayments = new JLabel("Status payments in your building");
-		lblPayments.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblPayments.setHorizontalAlignment(SwingConstants.LEFT);
-		lblPayments.setForeground(Color.WHITE);
-		lblPayments.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-		lblPayments.setBounds(32, 32, 361, 34);
-		panel.add(lblPayments);
+		JLabel lblManageYourAccount = new JLabel("Manage Your Account");
+		lblManageYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblManageYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
+		lblManageYourAccount.setForeground(Color.WHITE);
+		lblManageYourAccount.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+		lblManageYourAccount.setBounds(32, 32, 257, 34);
+		panel_7.add(lblManageYourAccount);
 
-		JComboBox sortPayments = new JComboBox();
-		sortPayments.setModel(new DefaultComboBoxModel(years));
-		sortPayments.setUI(new BasicComboBoxUI());
-		sortPayments.addActionListener(new ActionListener() {
+		JLabel lblEditYourAccount = new JLabel("Edit Your Account Details");
+		lblEditYourAccount.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblEditYourAccount.setHorizontalAlignment(SwingConstants.LEFT);
+		lblEditYourAccount.setForeground(Color.WHITE);
+		lblEditYourAccount.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblEditYourAccount.setBounds(32, 79, 248, 34);
+		panel_7.add(lblEditYourAccount);
+
+		JButton updatePersonalDetailsBtn = new JButton("Update Personal Details");
+		updatePersonalDetailsBtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String selectedYear = sortPayments.getSelectedItem().toString();
-				addPaymentsTable(Integer.parseInt(selectedYear));
+
+				UpdateResidnetPersonalDetailsWindow updateWindow = new UpdateResidnetPersonalDetailsWindow(
+						userPhoneNumber);
+				updateWindow.frame.setVisible(true);
 			}
 		});
+		updatePersonalDetailsBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				updatePersonalDetailsBtn.setBackground(new Color(0, 204, 153));
+			}
 
-		sortPayments.setRequestFocusEnabled(false);
-		sortPayments.setLightWeightPopupEnabled(false);
-		sortPayments.setForeground(Color.WHITE);
-		sortPayments.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
-		sortPayments.setFocusable(false);
-		sortPayments.setFocusTraversalKeysEnabled(false);
-		sortPayments.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		sortPayments.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		sortPayments.setBackground(new Color(34, 36, 39));
-		sortPayments.setAlignmentY(1.0f);
-		sortPayments.setAlignmentX(1.0f);
-		sortPayments.setBounds(381, 182, 148, 22);
-		paymentsFrm.add(sortPayments);
+			@Override
+			public void mouseExited(MouseEvent e) {
+				updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
+			}
+		});
+		updatePersonalDetailsBtn.setForeground(new Color(255, 255, 255));
+		updatePersonalDetailsBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+		updatePersonalDetailsBtn.setFocusPainted(false);
+		updatePersonalDetailsBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(0, 204, 153)));
+		updatePersonalDetailsBtn.setBackground(new Color(34, 36, 39));
+		updatePersonalDetailsBtn.setBounds(60, 294, 244, 122);
+		accountFrm.add(updatePersonalDetailsBtn);
 
-		////////////////////////////////////////////////////////////////////////////////////////////////////////
-		paymentsTable = new JTable();
-		paymentsTable.setOpaque(false);
-		paymentsTable.setShowGrid(false);
-		paymentsTable.setUI(new BasicTableUI());
-		paymentsTable.setAutoCreateRowSorter(true);
-		paymentsTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		paymentsTable.setFocusTraversalKeysEnabled(false);
-		paymentsTable.setBackground(new Color(34, 36, 39));
-		paymentsTable.setBorder(null);
-		paymentsTable.setRowMargin(10);
-		paymentsTable.setForeground(new Color(255, 255, 255));
-		paymentsTable.setSelectionForeground(new Color(255, 255, 255));
-		paymentsTable.setShowVerticalLines(false);
-		paymentsTable.setSelectionBackground(new Color(153, 102, 204));
-		paymentsTable.setRequestFocusEnabled(false);
-		paymentsTable.setRowHeight(50);
-		paymentsTable.setIntercellSpacing(new Dimension(0, 0));
+		JButton updateBuildingDetaisBtn = new JButton("Update Building Detais");
+		updateBuildingDetaisBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				UpdateResidnetBuildinglDetailsWindow buildingUpdate = new UpdateResidnetBuildinglDetailsWindow(
+						buildingIDSQL, userPhoneNumber);
+				buildingUpdate.frame.setVisible(true);
+			}
+		});
+		updateBuildingDetaisBtn.setForeground(new Color(255, 255, 255));
+		updateBuildingDetaisBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+		updateBuildingDetaisBtn.setFocusPainted(false);
+		updateBuildingDetaisBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				updateBuildingDetaisBtn.setBackground(new Color(102, 102, 153));
+			}
 
-		paymentsTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
-		paymentsTable.setGridColor(new Color(0, 0, 0));
-		paymentsTable.getTableHeader().setBackground(new Color(34, 36, 39));
-		paymentsTable.getTableHeader().setForeground(new Color(255, 255, 255));
-		paymentsTable.setBounds(18, 108, 508, 347);
-		paymentsTable.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		////////////////////////////////////////////////////////////////////////////
-		JScrollPane tablePanelPayments = new JScrollPane(paymentsTable);
-		tablePanelPayments.setForeground(Color.WHITE);
-		tablePanelPayments.setAutoscrolls(true);
-		tablePanelPayments.setBackground(new Color(34, 36, 39));
-		tablePanelPayments.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		tablePanelPayments.setBorder(null);
-		tablePanelPayments.setBounds(new Rectangle(42, 245, 886, 381));
-		paymentsFrm.add(tablePanelPayments, BorderLayout.CENTER);
+			@Override
+			public void mouseExited(MouseEvent e) {
+				updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
+			}
+		});
+		updateBuildingDetaisBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 102, 153)));
+		updateBuildingDetaisBtn.setBackground(new Color(34, 36, 39));
+		updateBuildingDetaisBtn.setBounds(364, 294, 244, 122);
+		accountFrm.add(updateBuildingDetaisBtn);
 
-		JLabel label_6 = new JLabel("Sort By:");
-		label_6.setForeground(Color.WHITE);
-		label_6.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
-		label_6.setBounds(416, 147, 67, 22);
-		paymentsFrm.add(label_6);
+		JButton deleteAccountBtn = new JButton("Delete Your Account");
+		deleteAccountBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				verifyAccountDeleteWindow verify = new verifyAccountDeleteWindow(preStatment, userPhoneNumber);
+				verify.alertFrame.setVisible(true);
+			}
+		});
+		deleteAccountBtn.setForeground(new Color(255, 255, 255));
+		deleteAccountBtn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				deleteAccountBtn.setBackground(new Color(204, 102, 102));
+			}
 
-		JButton btnPay = new JButton("Pay");
-		btnPay.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseExited(MouseEvent e) {
+				deleteAccountBtn.setBackground(new Color(34, 36, 39));
+			}
+		});
+		deleteAccountBtn.setFont(new Font("Yu Gothic UI", Font.BOLD, 17));
+		deleteAccountBtn.setFocusPainted(false);
+		deleteAccountBtn.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(204, 102, 102)));
+		deleteAccountBtn.setBackground(new Color(34, 36, 39));
+		deleteAccountBtn.setBounds(668, 294, 244, 122);
+		accountFrm.add(deleteAccountBtn);
+		JPanel panel_8 = new JPanel();
+		panel_8.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				try {
-					preStatment = con.prepareStatement("select comitteeAmount from Building where buildingID = ?");	
-					preStatment.setInt(1,buildingIDSQL);
-					
-					rs = preStatment.executeQuery();
-					
-					while(rs.next()) {
-						buildingFee = rs.getInt(1);
+				profileImgFileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+				int result = profileImgFileChooser.showOpenDialog(panel_8);
+				if (result == JFileChooser.APPROVE_OPTION) {
+					try {
+						imageStream = new FileInputStream(profileImgFileChooser.getSelectedFile());
+
+						preStatment = con.prepareStatement("UPDATE  Resident SET image = ? where phone = ?");
+						preStatment.setBlob(1, imageStream);
+						preStatment.setString(2, userPhoneNumber);
+
+						preStatment.executeUpdate();
+
+						getResidentPicture();
+
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
+
 				}
-				catch(Exception e1) {
-					System.out.println(e1.getMessage());
-				}
-				payWindow payWindow = new payWindow();
-				payWindow.payFrame.setVisible(true);
-				payWindow.getPayedMonths();
+
 			}
 		});
-		btnPay.setVerifyInputWhenFocusTarget(false);
-		btnPay.setRolloverEnabled(false);
-		btnPay.setRequestFocusEnabled(false);
-		btnPay.setHorizontalTextPosition(SwingConstants.RIGHT);
-		btnPay.setForeground(Color.WHITE);
-		btnPay.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		btnPay.setFocusable(false);
-		btnPay.setFocusPainted(false);
-		btnPay.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
-		btnPay.setBackground(new Color(34, 36, 39));
-		btnPay.setBounds(748, 653, 180, 39);
-		paymentsFrm.add(btnPay);
+		panel_8.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		panel_8.setBackground(new Color(34, 36, 39));
+		panel_8.setBounds(453, 165, 97, 105);
+		accountFrm.add(panel_8);
+		panel_8.setLayout(null);
+
+		accountUserImageIcon = new JLabel("");
+		accountUserImageIcon.setBounds(0, 0, 64, 64);
+		panel_8.add(accountUserImageIcon);
+		accountUserImageIcon.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
+
+		JLabel label = new JLabel("");
+		label.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/edit.png")));
+		label.setBounds(59, 55, 25, 25);
+		panel_8.add(label);
 
 		DefectFrm.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
 		DefectFrm.setRequestFocusEnabled(false);
@@ -844,9 +995,10 @@ public class Admin_Window {
 
 		DefectFrm.add(btnAddDefect);
 
-		JButton btnRemoveDefect = new JButton("Remove Defect");
+		// JButton btnRemoveDefect = new JButton("Remove Defect");
 		btnRemoveDefect.setEnabled(false);
 		btnRemoveDefect.setToolTipText("Select a defect");
+		btnRemoveDefect.setEnabled(false);
 		btnRemoveDefect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -874,6 +1026,17 @@ public class Admin_Window {
 		btnRemoveDefect.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
 		btnRemoveDefect.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
 		btnRemoveDefect.setBounds(560, 537, 173, 39);
+		btnRemoveDefect.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent arg0) {
+
+				if (defectTable.getSelectedRowCount() == 0) {
+
+					btnRemoveDefect.setEnabled(false);
+				}
+
+			}
+		});
 
 		DefectFrm.add(btnRemoveDefect);
 
@@ -914,7 +1077,6 @@ public class Admin_Window {
 		tablePanel.setLayout(new BorderLayout(0, 0));
 
 		defectTable = new JTable();
-
 		defectTable.setBounds(new Rectangle(41, 268, 887, 249));
 		defectTable.setOpaque(false);
 		defectTable.setShowGrid(false);
@@ -937,6 +1099,14 @@ public class Admin_Window {
 		defectTable.setGridColor(new Color(0, 0, 0));
 		defectTable.getTableHeader().setBackground(new Color(34, 36, 39));
 		defectTable.getTableHeader().setForeground(new Color(255, 255, 255));
+
+		defectTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+
+				btnRemoveDefect.setEnabled(true);
+			}
+		});
 
 		JScrollPane scrollTablePane = new JScrollPane(defectTable);
 		scrollTablePane.setBorder(null);
@@ -1011,36 +1181,6 @@ public class Admin_Window {
 				messageTable.setRowSorter(sorter);
 			}
 		});
-
-		String[] msgNames = new String[3];
-		try {
-
-			preStatment = con.prepareStatement(
-					"select CONCAT(`f_Name` , ' ', `l_Name`) as fullname,phone, password from Resident where buildingID = ?");
-			preStatment.setInt(1, buildingIDSQL);
-			rs = preStatment.executeQuery();
-			int i = -1;
-			while (rs.next()) {
-				i++;
-			}
-
-			msgNames = new String[i + 1];
-			msgNames[0] = "";
-			rs = preStatment.executeQuery();
-			int k = 1;
-			while (rs.next()) {
-
-				if (!rs.getString("password").equalsIgnoreCase(Login_Page.getPasswordEntry().getText())) {
-					msgNames[k] = rs.getString("fullname");
-					k++;
-				}
-
-			}
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
 		sortInbox.setModel(new DefaultComboBoxModel(msgNames));
 		sortInbox.setRequestFocusEnabled(false);
@@ -1120,28 +1260,185 @@ public class Admin_Window {
 		lblMessagesFromOther.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblMessagesFromOther.setBounds(32, 79, 350, 34);
 		panel_2.add(lblMessagesFromOther);
+		Notificationfrm.setBackground(new Color(34, 36, 39));
+		Notificationfrm.setBounds(304, 45, 974, 705);
+		frmAdminWindow.getContentPane().add(Notificationfrm);
+		Notificationfrm.setLayout(null);
 
-		sendMessageFrm = new JPanel();
-		sendMessageFrm.setVisible(false);
-		sendMessageFrm.addMouseMotionListener(new MouseMotionAdapter() {
+		JPanel panel_6 = new JPanel();
+		panel_6.setBorder(null);
+		panel_6.setLayout(null);
+		panel_6.setBackground(new Color(51, 153, 153));
+		panel_6.setBounds(0, 0, 973, 142);
+		Notificationfrm.add(panel_6);
+
+		lblNotification = new JLabel("Notification");
+		lblNotification.setBounds(32, 32, 464, 49);
+		panel_6.add(lblNotification);
+		lblNotification.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblNotification.setHorizontalAlignment(SwingConstants.LEFT);
+		lblNotification.setForeground(new Color(255, 255, 255));
+		lblNotification.setFont(new Font("Yu Gothic Light", Font.PLAIN, 29));
+
+		JPanel tablePanelNot = new JPanel();
+		tablePanelNot.setBorder(null);
+		tablePanelNot.setBackground(new Color(34, 36, 39));
+		tablePanelNot.setBounds(41, 268, 887, 249);
+		Notificationfrm.add(tablePanelNot);
+		tablePanelNot.setLayout(new BorderLayout(0, 0));
+
+		notificationTable = new JTable();
+		notificationTable.addFocusListener(new FocusAdapter() {
 			@Override
-			public void mouseMoved(MouseEvent e) {
+			public void focusLost(FocusEvent arg0) {
 
-				if (messagefield.getText().length() > 0 && list.isSelectionEmpty() == false) {
+				if (notificationTable.getSelectedRowCount() == 0) {
 
-					sendMessagebtn.setEnabled(true);
-				} else {
-					sendMessagebtn.setEnabled(false);
+					// btnRemoveDefect.setEnabled(false);
+					System.out.println(notificationTable.getSelectedRowCount());
 				}
+
 			}
 		});
-		sendMessageFrm.addMouseListener(new MouseAdapter() {
+
+		notificationTable.setBounds(new Rectangle(41, 268, 887, 249));
+		notificationTable.setOpaque(false);
+		notificationTable.setShowGrid(false);
+		notificationTable.setUI(new BasicTableUI());
+		notificationTable.setAutoCreateRowSorter(true);
+		notificationTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		notificationTable.setFocusTraversalKeysEnabled(false);
+		notificationTable.setBackground(new Color(34, 36, 39));
+		notificationTable.setBorder(null);
+		notificationTable.setRowMargin(10);
+		notificationTable.setForeground(new Color(255, 255, 255));
+		notificationTable.setSelectionForeground(new Color(255, 255, 255));
+		notificationTable.setShowVerticalLines(false);
+		notificationTable.setSelectionBackground(new Color(153, 102, 204));
+		notificationTable.setRequestFocusEnabled(false);
+		notificationTable.setRowHeight(50);
+		notificationTable.setIntercellSpacing(new Dimension(0, 0));
+		notificationTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
+		notificationTable.setGridColor(new Color(0, 0, 0));
+		notificationTable.getTableHeader().setBackground(new Color(34, 36, 39));
+		notificationTable.getTableHeader().setForeground(new Color(255, 255, 255));
+
+		JScrollPane scrollTablePaneNot = new JScrollPane(notificationTable);
+		scrollTablePaneNot.setBorder(null);
+		scrollTablePaneNot.setBackground(new Color(34, 36, 39));
+		tablePanelNot.add(scrollTablePaneNot, BorderLayout.CENTER);
+		scrollTablePaneNot.setPreferredSize(new Dimension(887, 249));
+
+		JButton btnRemoveNotification = new JButton("Delete");
+		btnRemoveNotification.setEnabled(false);
+		btnRemoveNotification.setToolTipText("Select a notification");
+		btnRemoveNotification.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				int[] selectedRows2 = notificationTable.getSelectedRows();
+
+				for (int i = 0; i < selectedRows2.length; i++) {
+					try {
+						preStatment = con.prepareStatement("delete from Notification where id = ?");
+						preStatment.setInt(1, notificationIDs[selectedRows2[i]]);
+						preStatment.executeUpdate();
+					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+
+				}
+
+				addDataNotificationTable();
+			}
+		});
+		btnRemoveNotification.setForeground(new Color(255, 255, 255));
+		btnRemoveNotification.setIcon(null);
+		btnRemoveNotification.setFocusPainted(false);
+		btnRemoveNotification.setBackground(new Color(34, 36, 39));
+		btnRemoveNotification.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+		btnRemoveNotification.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		btnRemoveNotification.setBounds(560, 537, 173, 39);
+
+		Notificationfrm.add(btnRemoveNotification);
+
+		notificationTable.addFocusListener(new FocusAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				sendMessagebtn.setEnabled(false);
-				list.clearSelection();
+			public void focusLost(FocusEvent arg0) {
+
+				if (notificationTable.getSelectedRowCount() == 0) {
+
+					btnRemoveNotification.setEnabled(false);
+				}
+
 			}
 		});
+		notificationTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+
+				btnRemoveNotification.setEnabled(true);
+			}
+		});
+
+		JButton btnAddNotification = new JButton("Add");
+		btnAddNotification.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddNotificationWindow addWindow = new AddNotificationWindow();
+				addWindow.addNotificationFrame.setVisible(true);
+			}
+		});
+		btnAddNotification.setForeground(new Color(255, 255, 255));
+		btnAddNotification.setHorizontalTextPosition(SwingConstants.RIGHT);
+		btnAddNotification.setIcon(null);
+		btnAddNotification.setFocusPainted(false);
+		btnAddNotification.setBackground(new Color(34, 36, 39));
+		btnAddNotification.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+		btnAddNotification.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		btnAddNotification.setBounds(755, 537, 173, 39);
+
+		Notificationfrm.add(btnAddNotification);
+
+		Aboutfrm.setBackground(new Color(34, 36, 39));
+		Aboutfrm.setBounds(304, 45, 974, 705);
+		frmAdminWindow.getContentPane().add(Aboutfrm);
+		Aboutfrm.setLayout(null);
+
+		JLabel lblThisProductWas = new JLabel("This Product Was Developed By Barak And David");
+		lblThisProductWas.setForeground(Color.WHITE);
+		lblThisProductWas.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblThisProductWas.setBounds(266, 233, 440, 36);
+		Aboutfrm.add(lblThisProductWas);
+
+		JPanel panel_4 = new JPanel();
+		panel_4.setBounds(0, 0, 973, 100);
+		Aboutfrm.add(panel_4);
+		panel_4.setLayout(null);
+		panel_4.setBackground(new Color(101, 26, 163));
+
+		JLabel lblAboutOurApp = new JLabel("About Our App");
+		lblAboutOurApp.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAboutOurApp.setForeground(Color.WHITE);
+		lblAboutOurApp.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 23));
+		lblAboutOurApp.setBounds(22, 30, 207, 38);
+		panel_4.add(lblAboutOurApp);
+
+		JLabel lblEmailsBarakdabachgmailcom = new JLabel("BarakDabach@gmail.com");
+		lblEmailsBarakdabachgmailcom.setForeground(Color.WHITE);
+		lblEmailsBarakdabachgmailcom.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblEmailsBarakdabachgmailcom.setBounds(379, 301, 215, 36);
+		Aboutfrm.add(lblEmailsBarakdabachgmailcom);
+
+		JLabel lblDavidnahumgmailcom = new JLabel("David2Nahum@gmail.com");
+		lblDavidnahumgmailcom.setForeground(Color.WHITE);
+		lblDavidnahumgmailcom.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblDavidnahumgmailcom.setBounds(376, 334, 220, 36);
+		Aboutfrm.add(lblDavidnahumgmailcom);
+
+		JLabel label_1 = new JLabel("");
+		label_1.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/logo_transparent.png")));
+		label_1.setBounds(351, 398, 271, 288);
+		Aboutfrm.add(label_1);
 		sendMessageFrm.setBounds(304, 45, 974, 705);
 		frmAdminWindow.getContentPane().add(sendMessageFrm);
 		sendMessageFrm.setBackground(new Color(34, 36, 39));
@@ -1314,6 +1611,128 @@ public class Admin_Window {
 		messagefield.setSelectionColor(new Color(153, 153, 204));
 		messagefield.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		messagefield.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		paymentsFrm.setBounds(304, 45, 974, 705);
+		frmAdminWindow.getContentPane().add(paymentsFrm);
+		paymentsFrm.setBackground(new Color(34, 36, 39));
+		paymentsFrm.setLayout(null);
+
+		JPanel panel = new JPanel();
+		panel.setLayout(null);
+		panel.setBorder(null);
+		panel.setBackground(new Color(51, 153, 153));
+		panel.setBounds(0, 0, 973, 142);
+		paymentsFrm.add(panel);
+
+		JLabel lblPayments = new JLabel("Status payments in your building");
+		lblPayments.setHorizontalTextPosition(SwingConstants.LEFT);
+		lblPayments.setHorizontalAlignment(SwingConstants.LEFT);
+		lblPayments.setForeground(Color.WHITE);
+		lblPayments.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+		lblPayments.setBounds(32, 32, 361, 34);
+		panel.add(lblPayments);
+
+		JComboBox sortPayments = new JComboBox();
+		sortPayments.setModel(new DefaultComboBoxModel(years));
+		sortPayments.setUI(new BasicComboBoxUI());
+		sortPayments.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String selectedYear = sortPayments.getSelectedItem().toString();
+				addPaymentsTable(Integer.parseInt(selectedYear));
+			}
+		});
+
+		sortPayments.setRequestFocusEnabled(false);
+		sortPayments.setLightWeightPopupEnabled(false);
+		sortPayments.setForeground(Color.WHITE);
+		sortPayments.setFont(new Font("Yu Gothic UI", Font.BOLD, 14));
+		sortPayments.setFocusable(false);
+		sortPayments.setFocusTraversalKeysEnabled(false);
+		sortPayments.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+		sortPayments.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
+		sortPayments.setBackground(new Color(34, 36, 39));
+		sortPayments.setAlignmentY(1.0f);
+		sortPayments.setAlignmentX(1.0f);
+		sortPayments.setBounds(381, 182, 148, 22);
+		paymentsFrm.add(sortPayments);
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////////
+		paymentsTable = new JTable();
+		paymentsTable.setOpaque(false);
+		paymentsTable.setShowGrid(false);
+		paymentsTable.setUI(new BasicTableUI());
+		paymentsTable.setAutoCreateRowSorter(true);
+		paymentsTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		paymentsTable.setFocusTraversalKeysEnabled(false);
+		paymentsTable.setBackground(new Color(34, 36, 39));
+		paymentsTable.setBorder(null);
+		paymentsTable.setRowMargin(10);
+		paymentsTable.setForeground(new Color(255, 255, 255));
+		paymentsTable.setSelectionForeground(new Color(255, 255, 255));
+		paymentsTable.setShowVerticalLines(false);
+		paymentsTable.setSelectionBackground(new Color(153, 102, 204));
+		paymentsTable.setRequestFocusEnabled(false);
+		paymentsTable.setRowHeight(50);
+		paymentsTable.setIntercellSpacing(new Dimension(0, 0));
+
+		paymentsTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
+		paymentsTable.setGridColor(new Color(0, 0, 0));
+		paymentsTable.getTableHeader().setBackground(new Color(34, 36, 39));
+		paymentsTable.getTableHeader().setForeground(new Color(255, 255, 255));
+		paymentsTable.setBounds(18, 108, 508, 347);
+		paymentsTable.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		////////////////////////////////////////////////////////////////////////////
+		JScrollPane tablePanelPayments = new JScrollPane(paymentsTable);
+		tablePanelPayments.setForeground(Color.WHITE);
+		tablePanelPayments.setAutoscrolls(true);
+		tablePanelPayments.setBackground(new Color(34, 36, 39));
+		tablePanelPayments.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
+		tablePanelPayments.setBorder(null);
+		tablePanelPayments.setBounds(new Rectangle(42, 245, 886, 381));
+		paymentsFrm.add(tablePanelPayments, BorderLayout.CENTER);
+
+		JLabel label_6 = new JLabel("Sort By:");
+		label_6.setForeground(Color.WHITE);
+		label_6.setFont(new Font("Yu Gothic UI", Font.PLAIN, 16));
+		label_6.setBounds(416, 147, 67, 22);
+		paymentsFrm.add(label_6);
+
+		JButton btnPay = new JButton("Pay");
+		btnPay.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				try {
+					preStatment = con.prepareStatement("select comitteeAmount from Building where buildingID = ?");
+					preStatment.setInt(1, buildingIDSQL);
+
+					rs = preStatment.executeQuery();
+
+					while (rs.next()) {
+						buildingFee = rs.getInt(1);
+					}
+				} catch (Exception e1) {
+					System.out.println(e1.getMessage());
+				}
+				payWindow payWindow = new payWindow();
+				payWindow.payFrame.setVisible(true);
+				payWindow.getPayedMonths();
+			}
+		});
+		btnPay.setVerifyInputWhenFocusTarget(false);
+		btnPay.setRolloverEnabled(false);
+		btnPay.setRequestFocusEnabled(false);
+		btnPay.setHorizontalTextPosition(SwingConstants.RIGHT);
+		btnPay.setForeground(Color.WHITE);
+		btnPay.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
+		btnPay.setFocusable(false);
+		btnPay.setFocusPainted(false);
+		btnPay.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(153, 255, 153)));
+		btnPay.setBackground(new Color(34, 36, 39));
+		btnPay.setBounds(748, 653, 180, 39);
+		paymentsFrm.add(btnPay);
+
+		profileImgFileChooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
+		profileImgFileChooser.setFileFilter(filter);
 
 		open_Frm = new JPanel();
 		open_Frm.setBorder(null);
@@ -1435,188 +1854,6 @@ public class Admin_Window {
 		totalDefectsLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		totalDefectsLabel.setForeground(Color.WHITE);
 		totalDefectsLabel.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		Notificationfrm.setBackground(new Color(34, 36, 39));
-		Notificationfrm.setBounds(304, 45, 974, 705);
-		frmAdminWindow.getContentPane().add(Notificationfrm);
-		Notificationfrm.setLayout(null);
-
-		JPanel panel_6 = new JPanel();
-		panel_6.setBorder(null);
-		panel_6.setLayout(null);
-		panel_6.setBackground(new Color(51, 153, 153));
-		panel_6.setBounds(0, 0, 973, 142);
-		Notificationfrm.add(panel_6);
-
-		lblNotification = new JLabel("Notification");
-		lblNotification.setBounds(32, 32, 464, 49);
-		panel_6.add(lblNotification);
-		lblNotification.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblNotification.setHorizontalAlignment(SwingConstants.LEFT);
-		lblNotification.setForeground(new Color(255, 255, 255));
-		lblNotification.setFont(new Font("Yu Gothic Light", Font.PLAIN, 29));
-
-		JPanel tablePanelNot = new JPanel();
-		tablePanelNot.setBorder(null);
-		tablePanelNot.setBackground(new Color(34, 36, 39));
-		tablePanelNot.setBounds(41, 268, 887, 249);
-		Notificationfrm.add(tablePanelNot);
-		tablePanelNot.setLayout(new BorderLayout(0, 0));
-
-		notificationTable = new JTable();
-		notificationTable.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-
-				if (defectTable.getSelectedRowCount() == 0) {
-
-					// btnRemoveDefect.setEnabled(false);
-					System.out.println(notificationTable.getSelectedRowCount());
-				}
-
-			}
-		});
-
-		notificationTable.setBounds(new Rectangle(41, 268, 887, 249));
-		notificationTable.setOpaque(false);
-		notificationTable.setShowGrid(false);
-		notificationTable.setUI(new BasicTableUI());
-		notificationTable.setAutoCreateRowSorter(true);
-		notificationTable.getTableHeader().setFont(new Font("Yu Gothic UI", Font.BOLD, 16));
-		notificationTable.setFocusTraversalKeysEnabled(false);
-		notificationTable.setBackground(new Color(34, 36, 39));
-		notificationTable.setBorder(null);
-		notificationTable.setRowMargin(10);
-		notificationTable.setForeground(new Color(255, 255, 255));
-		notificationTable.setSelectionForeground(new Color(255, 255, 255));
-		notificationTable.setShowVerticalLines(false);
-		notificationTable.setSelectionBackground(new Color(153, 102, 204));
-		notificationTable.setRequestFocusEnabled(false);
-		notificationTable.setRowHeight(50);
-		notificationTable.setIntercellSpacing(new Dimension(0, 0));
-		notificationTable.setFont(new Font("Yu Gothic", Font.BOLD, 16));
-		notificationTable.setGridColor(new Color(0, 0, 0));
-		notificationTable.getTableHeader().setBackground(new Color(34, 36, 39));
-		notificationTable.getTableHeader().setForeground(new Color(255, 255, 255));
-
-		JScrollPane scrollTablePaneNot = new JScrollPane(notificationTable);
-		scrollTablePaneNot.setBorder(null);
-		scrollTablePaneNot.setBackground(new Color(34, 36, 39));
-		tablePanelNot.add(scrollTablePaneNot, BorderLayout.CENTER);
-		scrollTablePaneNot.setPreferredSize(new Dimension(887, 249));
-
-		JButton btnRemoveNotification = new JButton("Delete");
-		btnRemoveNotification.setEnabled(false);
-		btnRemoveNotification.setToolTipText("Select a notification");
-		btnRemoveNotification.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				int[] selectedRows2 = notificationTable.getSelectedRows();
-
-				for (int i = 0; i < selectedRows2.length; i++) {
-					try {
-						preStatment = con.prepareStatement("delete from Notification where id = ?");
-						preStatment.setInt(1, notificationIDs[selectedRows2[i]]);
-						preStatment.executeUpdate();
-					} catch (SQLException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-				}
-
-				addDataNotificationTable();
-			}
-		});
-		btnRemoveNotification.setForeground(new Color(255, 255, 255));
-		btnRemoveNotification.setIcon(null);
-		btnRemoveNotification.setFocusPainted(false);
-		btnRemoveNotification.setBackground(new Color(34, 36, 39));
-		btnRemoveNotification.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		btnRemoveNotification.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		btnRemoveNotification.setBounds(560, 537, 173, 39);
-
-		Notificationfrm.add(btnRemoveNotification);
-
-		notificationTable.addFocusListener(new FocusAdapter() {
-			@Override
-			public void focusLost(FocusEvent arg0) {
-
-				if (notificationTable.getSelectedRowCount() == 0) {
-
-					btnRemoveNotification.setEnabled(false);
-				}
-
-			}
-		});
-		notificationTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-
-				btnRemoveNotification.setEnabled(true);
-			}
-		});
-
-		JButton btnAddNotification = new JButton("Add");
-		btnAddNotification.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				AddNotificationWindow addWindow = new AddNotificationWindow();
-				addWindow.addNotificationFrame.setVisible(true);
-			}
-		});
-		btnAddNotification.setForeground(new Color(255, 255, 255));
-		btnAddNotification.setHorizontalTextPosition(SwingConstants.RIGHT);
-		btnAddNotification.setIcon(null);
-		btnAddNotification.setFocusPainted(false);
-		btnAddNotification.setBackground(new Color(34, 36, 39));
-		btnAddNotification.setFont(new Font("Yu Gothic UI", Font.BOLD, 15));
-		btnAddNotification.setBorder(new MatteBorder(2, 2, 2, 2, (Color) new Color(102, 255, 204)));
-		btnAddNotification.setBounds(755, 537, 173, 39);
-
-		Notificationfrm.add(btnAddNotification);
-
-		Aboutfrm = new JPanel();
-		Aboutfrm.setBounds(new Rectangle(0, 0, 1280, 0));
-		Aboutfrm.setVisible(false);
-		Aboutfrm.setBackground(new Color(34, 36, 39));
-		Aboutfrm.setBounds(306, 45, 993, 705);
-		frmAdminWindow.getContentPane().add(Aboutfrm);
-		Aboutfrm.setLayout(null);
-
-		JLabel lblThisProductWas = new JLabel("This Product Was Developed By Barak And David");
-		lblThisProductWas.setForeground(new Color(0, 0, 0));
-		lblThisProductWas.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblThisProductWas.setBounds(215, 233, 440, 36);
-		Aboutfrm.add(lblThisProductWas);
-
-		JPanel panel_4 = new JPanel();
-		panel_4.setBounds(0, 0, 973, 100);
-		Aboutfrm.add(panel_4);
-		panel_4.setLayout(null);
-		panel_4.setBackground(new Color(101, 26, 163));
-
-		JLabel lblAboutOurApp = new JLabel("About Our App");
-		lblAboutOurApp.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAboutOurApp.setForeground(Color.WHITE);
-		lblAboutOurApp.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 23));
-		lblAboutOurApp.setBounds(22, 30, 207, 38);
-		panel_4.add(lblAboutOurApp);
-
-		JLabel lblEmailsBarakdabachgmailcom = new JLabel("BarakDabach@gmail.com");
-		lblEmailsBarakdabachgmailcom.setForeground(new Color(0, 0, 0));
-		lblEmailsBarakdabachgmailcom.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblEmailsBarakdabachgmailcom.setBounds(339, 349, 272, 36);
-		Aboutfrm.add(lblEmailsBarakdabachgmailcom);
-
-		JLabel lblDavidnahumgmailcom = new JLabel("David2Nahum@gmail.com");
-		lblDavidnahumgmailcom.setForeground(new Color(0, 0, 0));
-		lblDavidnahumgmailcom.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblDavidnahumgmailcom.setBounds(339, 382, 226, 36);
-		Aboutfrm.add(lblDavidnahumgmailcom);
-
-		JLabel label_1 = new JLabel("");
-		label_1.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/EmailIcon.png")));
-		label_1.setBounds(254, 354, 69, 64);
-		Aboutfrm.add(label_1);
 
 		JPanel tabFrm = new JPanel();
 		tabFrm.setBounds(new Rectangle(0, 0, 1280, 0));
@@ -1850,16 +2087,24 @@ public class Admin_Window {
 		lblLiveapp.setBounds(20, 46, 101, 33);
 		tabFrm.add(lblLiveapp);
 
-		JPanel panel_7 = new JPanel();
-		panel_7.setBackground(new Color(51, 204, 153));
-		panel_7.setBounds(20, 83, 140, 2);
-		tabFrm.add(panel_7);
+		JPanel panel_9 = new JPanel();
+		panel_9.setBackground(new Color(51, 204, 153));
+		panel_9.setBounds(20, 83, 140, 2);
+		tabFrm.add(panel_9);
+
+		userProfileImage = new JLabel("");
+		userProfileImage.setBounds(112, 103, 64, 64);
+		tabFrm.add(userProfileImage);
+		userProfileImage.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
+		getResidentPicture();
 
 		accountTab = new JButton("Account");
 		accountTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/user.png")));
 		accountTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				getResidentPicture();
 				setTabColorGray(accountTab);
+				setPanel(accountFrm);
 			}
 		});
 		accountTab.setRequestFocusEnabled(false);
@@ -1876,6 +2121,7 @@ public class Admin_Window {
 		tabFrm.add(accountTab);
 
 		aboutTab = new JButton("About");
+		aboutTab.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/information.png")));
 		aboutTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				setPanel(Aboutfrm);
@@ -1895,10 +2141,10 @@ public class Admin_Window {
 		aboutTab.setBounds(0, 651, 304, 63);
 		tabFrm.add(aboutTab);
 
-		JLabel label = new JLabel("");
-		label.setBounds(112, 103, 64, 64);
-		tabFrm.add(label);
-		label.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
+		JLabel label1 = new JLabel("");
+		label1.setBounds(112, 103, 64, 64);
+		tabFrm.add(label1);
+		label1.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/userImg1.png")));
 
 		JPanel closeminimizePanel = new JPanel();
 		closeminimizePanel.setBounds(1195, 0, 78, 53);
