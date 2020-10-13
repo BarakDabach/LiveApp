@@ -148,8 +148,8 @@ public class addDefectWindow {
 		btnOpenDefect.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (descTxtField.getText().equals("")) {
-					alertDefectAdd alert = new alertDefectAdd();
-					alert.defectAlertFrm.setVisible(true);
+//					alertDefectAdd alert = new alertDefectAdd();
+//					alert.defectAlertFrm.setVisible(true);
 				}
 				
 				

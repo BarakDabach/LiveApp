@@ -98,6 +98,7 @@ public class Login_Page {
 	public static String userName;
 	public static String num_of_msg = "You Have ";
 	public static int buildingIDSQL;
+	public static boolean admin;
 	private JLabel label;
 	private JLabel label_1;
 	private JLabel lblWeWillHelp;
@@ -208,7 +209,7 @@ public class Login_Page {
 						buildingIDSQL = rs.getInt("buildingID");
 						
 							userName = rs.getString("f_Name")+" "+rs.getString("l_Name");
-							boolean admin = rs.getBoolean("admin");
+							admin = rs.getBoolean("admin");
 							
 							
 							preStatment = con.prepareStatement("select count(receive) from Message where receive = ?");

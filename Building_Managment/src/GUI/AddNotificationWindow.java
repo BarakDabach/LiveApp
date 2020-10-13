@@ -118,13 +118,13 @@ public class AddNotificationWindow {
 		btnOpennotification.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (descTxtField.getText().equals("")) {
-					alertDefectAdd alert = new alertDefectAdd();
-					alert.defectAlertFrm.setVisible(true);
+//					btnOpennotification.setEnabled(false);
 				}
 				
 				
 				else {
 					try {
+						
 						long millis=System.currentTimeMillis();  
 						java.sql.Date date=new java.sql.Date(millis);   
 						preStatment = con.prepareStatement("insert into Notification (buildingID,message,date)"

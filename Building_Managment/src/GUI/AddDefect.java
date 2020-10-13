@@ -90,7 +90,12 @@ public class AddDefect {
 			public void actionPerformed(ActionEvent e) {
 				alertFrame.dispose();
 				addDefectWindow.addDefectFrame.dispose();
-				Resident_Window.addDataDefectTable();
+				if(Login_Page.admin) {
+					Admin_Window.addDataDefectTable();
+				}
+				else {
+					Resident_Window.addDataDefectTable();
+				}
 			}
 		});
 		btnGotIt.setFont(new Font("Yu Gothic UI", Font.BOLD, 16));

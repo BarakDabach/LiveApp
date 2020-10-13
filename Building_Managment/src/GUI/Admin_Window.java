@@ -780,6 +780,127 @@ public class Admin_Window {
 		accountFrm = new JPanel();
 		accountFrm.setBounds(new Rectangle(0, 0, 1280, 0));
 		accountFrm.setVisible(false);
+		
+				open_Frm = new JPanel();
+				open_Frm.setBorder(null);
+				open_Frm.setBounds(new Rectangle(0, 0, 1280, 0));
+				open_Frm.setBackground(new Color(34, 36, 39));
+				open_Frm.setBounds(304, 45, 974, 705);
+				frmAdminWindow.getContentPane().add(open_Frm);
+				open_Frm.setLayout(null);
+				
+						JPanel panel_3 = new JPanel();
+						panel_3.setBorder(null);
+						panel_3.setLayout(null);
+						panel_3.setBackground(new Color(51, 153, 153));
+						panel_3.setBounds(0, 0, 973, 142);
+						open_Frm.add(panel_3);
+						
+								lblWelcomeBack = new JLabel("Welcome Back ");
+								lblWelcomeBack.setBounds(32, 32, 464, 34);
+								panel_3.add(lblWelcomeBack);
+								lblWelcomeBack.setHorizontalTextPosition(SwingConstants.LEFT);
+								lblWelcomeBack.setHorizontalAlignment(SwingConstants.LEFT);
+								lblWelcomeBack.setForeground(new Color(255, 255, 255));
+								lblWelcomeBack.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
+								
+										JLabel lblBuildingStatus = new JLabel("Your Building Status");
+										lblBuildingStatus.setHorizontalTextPosition(SwingConstants.LEFT);
+										lblBuildingStatus.setHorizontalAlignment(SwingConstants.LEFT);
+										lblBuildingStatus.setForeground(Color.WHITE);
+										lblBuildingStatus.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+										lblBuildingStatus.setBounds(32, 79, 308, 34);
+										panel_3.add(lblBuildingStatus);
+										
+												JPanel notificationRubrik = new JPanel();
+												
+														notificationRubrik.setBorder(null);
+														
+																notificationRubrik.setBackground(new Color(153, 102, 204));
+																notificationRubrik.setBounds(116, 155, 743, 211);
+																open_Frm.add(notificationRubrik);
+																notificationRubrik.setLayout(null);
+																
+																		JLabel label_4 = new JLabel("");
+																		label_4.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/alert.png")));
+																		label_4.setBounds(12, 13, 64, 64);
+																		notificationRubrik.add(label_4);
+																		
+																				JScrollPane scrollPane_1 = new JScrollPane();
+																				scrollPane_1.setBorder(null);
+																				scrollPane_1.setBounds(22, 90, 721, 121);
+																				notificationRubrik.add(scrollPane_1);
+																				
+																						notificationsTextBox = new JTextArea();
+																						notificationsTextBox.setBorder(null);
+																						scrollPane_1.setViewportView(notificationsTextBox);
+																						notificationsTextBox.setEditable(false);
+																						notificationsTextBox.setForeground(Color.WHITE);
+																						notificationsTextBox.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+																						notificationsTextBox.setBackground(new Color(153, 102, 204));
+																						
+																								JPanel messagesRubrik = new JPanel();
+																								messagesRubrik.setBorder(null);
+//																								messagesRubrik.addMouseListener(new MouseAdapter() {
+//																									@Override
+//																									public void mouseEntered(MouseEvent e) {
+//																										messagesRubrik.setBackground(new Color(86, 70, 119));
+//																									}
+//
+//																									@Override
+//																									public void mouseExited(MouseEvent e) {
+//																										messagesRubrik.setBackground(new Color(152, 102, 204));
+//																									}
+//																								});
+																								messagesRubrik.setBackground(new Color(153, 102, 204));
+																								messagesRubrik.setBounds(116, 379, 407, 130);
+																								open_Frm.add(messagesRubrik);
+																								messagesRubrik.setLayout(null);
+																								
+																										msg_lbl = new JLabel(Login_Page.num_of_msg);
+																										msg_lbl.setBounds(12, 90, 308, 34);
+																										messagesRubrik.add(msg_lbl);
+																										msg_lbl.setHorizontalTextPosition(SwingConstants.LEFT);
+																										msg_lbl.setHorizontalAlignment(SwingConstants.LEFT);
+																										msg_lbl.setForeground(new Color(255, 255, 255));
+																										msg_lbl.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+																										
+																												JLabel label_2 = new JLabel("");
+																												label_2.setBounds(12, 13, 64, 64);
+																												messagesRubrik.add(label_2);
+																												label_2.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/notification.png")));
+																												
+																														JPanel defectRubrik = new JPanel();
+																														defectRubrik.setBorder(null);
+																														defectRubrik.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+//																														defectRubrik.addMouseListener(new MouseAdapter() {
+//																															@Override
+//																															public void mouseEntered(MouseEvent e) {
+//																																defectRubrik.setBackground(new Color(86, 70, 119));
+//																															}
+//
+//																															@Override
+//																															public void mouseExited(MouseEvent e) {
+//																																defectRubrik.setBackground(new Color(152, 102, 204));
+//																															}
+//																														});
+																														defectRubrik.setBackground(new Color(153, 102, 204));
+																														defectRubrik.setBounds(535, 379, 324, 130);
+																														open_Frm.add(defectRubrik);
+																														defectRubrik.setLayout(null);
+																														
+																																JLabel label_5 = new JLabel("");
+																																label_5.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/defects.png")));
+																																label_5.setBounds(12, 13, 64, 64);
+																																defectRubrik.add(label_5);
+																																
+																																		totalDefectsLabel = new JLabel("Total 3 Defects");
+																																		totalDefectsLabel.setBounds(12, 90, 300, 34);
+																																		defectRubrik.add(totalDefectsLabel);
+																																		totalDefectsLabel.setHorizontalTextPosition(SwingConstants.LEFT);
+																																		totalDefectsLabel.setHorizontalAlignment(SwingConstants.LEFT);
+																																		totalDefectsLabel.setForeground(Color.WHITE);
+																																		totalDefectsLabel.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		accountFrm.setBackground(new Color(34, 36, 39));
 		accountFrm.setBounds(304, 45, 974, 705);
 		frmAdminWindow.getContentPane().add(accountFrm);
@@ -1734,127 +1855,6 @@ public class Admin_Window {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg", "jpeg");
 		profileImgFileChooser.setFileFilter(filter);
 
-		open_Frm = new JPanel();
-		open_Frm.setBorder(null);
-		open_Frm.setBounds(new Rectangle(0, 0, 1280, 0));
-		open_Frm.setBackground(new Color(34, 36, 39));
-		open_Frm.setBounds(304, 45, 974, 705);
-		frmAdminWindow.getContentPane().add(open_Frm);
-		open_Frm.setLayout(null);
-
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(null);
-		panel_3.setLayout(null);
-		panel_3.setBackground(new Color(51, 153, 153));
-		panel_3.setBounds(0, 0, 973, 142);
-		open_Frm.add(panel_3);
-
-		lblWelcomeBack = new JLabel("Welcome Back ");
-		lblWelcomeBack.setBounds(32, 32, 464, 34);
-		panel_3.add(lblWelcomeBack);
-		lblWelcomeBack.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblWelcomeBack.setHorizontalAlignment(SwingConstants.LEFT);
-		lblWelcomeBack.setForeground(new Color(255, 255, 255));
-		lblWelcomeBack.setFont(new Font("Yu Gothic Light", Font.PLAIN, 25));
-
-		JLabel lblBuildingStatus = new JLabel("Your Building Status");
-		lblBuildingStatus.setHorizontalTextPosition(SwingConstants.LEFT);
-		lblBuildingStatus.setHorizontalAlignment(SwingConstants.LEFT);
-		lblBuildingStatus.setForeground(Color.WHITE);
-		lblBuildingStatus.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblBuildingStatus.setBounds(32, 79, 308, 34);
-		panel_3.add(lblBuildingStatus);
-
-		JPanel notificationRubrik = new JPanel();
-
-		notificationRubrik.setBorder(null);
-
-		notificationRubrik.setBackground(new Color(153, 102, 204));
-		notificationRubrik.setBounds(116, 155, 743, 211);
-		open_Frm.add(notificationRubrik);
-		notificationRubrik.setLayout(null);
-
-		JLabel label_4 = new JLabel("");
-		label_4.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/alert.png")));
-		label_4.setBounds(12, 13, 64, 64);
-		notificationRubrik.add(label_4);
-
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBorder(null);
-		scrollPane_1.setBounds(22, 90, 721, 121);
-		notificationRubrik.add(scrollPane_1);
-
-		notificationsTextBox = new JTextArea();
-		notificationsTextBox.setBorder(null);
-		scrollPane_1.setViewportView(notificationsTextBox);
-		notificationsTextBox.setEditable(false);
-		notificationsTextBox.setForeground(Color.WHITE);
-		notificationsTextBox.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		notificationsTextBox.setBackground(new Color(153, 102, 204));
-
-		JPanel messagesRubrik = new JPanel();
-		messagesRubrik.setBorder(null);
-		messagesRubrik.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				messagesRubrik.setBackground(new Color(86, 70, 119));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				messagesRubrik.setBackground(new Color(152, 102, 204));
-			}
-		});
-		messagesRubrik.setBackground(new Color(153, 102, 204));
-		messagesRubrik.setBounds(116, 379, 407, 130);
-		open_Frm.add(messagesRubrik);
-		messagesRubrik.setLayout(null);
-
-		msg_lbl = new JLabel(Login_Page.num_of_msg);
-		msg_lbl.setBounds(12, 90, 308, 34);
-		messagesRubrik.add(msg_lbl);
-		msg_lbl.setHorizontalTextPosition(SwingConstants.LEFT);
-		msg_lbl.setHorizontalAlignment(SwingConstants.LEFT);
-		msg_lbl.setForeground(new Color(255, 255, 255));
-		msg_lbl.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-
-		JLabel label_2 = new JLabel("");
-		label_2.setBounds(12, 13, 64, 64);
-		messagesRubrik.add(label_2);
-		label_2.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/notification.png")));
-
-		JPanel defectRubrik = new JPanel();
-		defectRubrik.setBorder(null);
-		defectRubrik.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		defectRubrik.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				defectRubrik.setBackground(new Color(86, 70, 119));
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				defectRubrik.setBackground(new Color(152, 102, 204));
-			}
-		});
-		defectRubrik.setBackground(new Color(153, 102, 204));
-		defectRubrik.setBounds(535, 379, 324, 130);
-		open_Frm.add(defectRubrik);
-		defectRubrik.setLayout(null);
-
-		JLabel label_5 = new JLabel("");
-		label_5.setIcon(new ImageIcon(Resident_Window.class.getResource("/Media/defects.png")));
-		label_5.setBounds(12, 13, 64, 64);
-		defectRubrik.add(label_5);
-
-		totalDefectsLabel = new JLabel("Total 3 Defects");
-		totalDefectsLabel.setBounds(12, 90, 300, 34);
-		defectRubrik.add(totalDefectsLabel);
-		totalDefectsLabel.setHorizontalTextPosition(SwingConstants.LEFT);
-		totalDefectsLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		totalDefectsLabel.setForeground(Color.WHITE);
-		totalDefectsLabel.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-
 		JPanel tabFrm = new JPanel();
 		tabFrm.setBounds(new Rectangle(0, 0, 1280, 0));
 		tabFrm.setBorder(new MatteBorder(0, 0, 0, 0, (Color) new Color(0, 0, 0)));
@@ -1968,6 +1968,8 @@ public class Admin_Window {
 		HomeTab.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		HomeTab.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				getNumOfDefects();
+				getNotifications();
 				setPanel(open_Frm);
 				setTabColorGray(HomeTab);
 
