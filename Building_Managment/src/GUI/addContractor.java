@@ -126,8 +126,7 @@ public class addContractor {
 						preStatment.setString(6,FieldCombo.getSelectedItem().toString());
 						preStatment.setString(7,cityCombo.getSelectedItem().toString());
 						preStatment.executeUpdate();
-						AddContractorMsg contractormsg = new AddContractorMsg();
-						contractormsg.contractorAddFrame.setVisible(true);
+
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

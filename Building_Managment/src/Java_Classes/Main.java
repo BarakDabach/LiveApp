@@ -57,7 +57,12 @@ public class Main {
 				a.lblWelcomeBack.setText("Welcome Admin");
 				
 				while(isLoggedIn == true) {
-					 
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					}
 			}
 			

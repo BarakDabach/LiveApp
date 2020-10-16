@@ -115,8 +115,7 @@ public class addBuilding {
 						preStatment.setString(5,textFieldPhone.getText());
 						preStatment.executeUpdate();
 						alertBuildingAdd alert = new alertBuildingAdd();
-						AddBuildingMsg bulidingmsg = new AddBuildingMsg();
-						bulidingmsg.alertFrame.setVisible(true);
+
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

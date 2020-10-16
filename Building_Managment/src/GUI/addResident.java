@@ -118,8 +118,7 @@ public class addResident {
 						preStatment.setString(4,(textFieldPhone.getText()));
 						preStatment.setInt(5,Integer.parseInt(buildingIDCombo.getSelectedItem().toString()));
 						preStatment.executeUpdate();
-						AddResidentMsg residentMsg = new AddResidentMsg();
-						residentMsg.ResidentAddFrame.setVisible(true);
+
 					} catch (SQLException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();

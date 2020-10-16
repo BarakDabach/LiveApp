@@ -1214,6 +1214,7 @@ public class Login_Page {
 			
 			
 			appartmentComboBox.setModel(new DefaultComboBoxModel(avaAppr.toArray(new String[0])));
+			appartmentComboBox.setSelectedIndex(0);
 			
 			
 			
@@ -1246,7 +1247,6 @@ public class Login_Page {
 				BuildingID = rs.getInt(1);
 			}
 			if(imageStream != null) {
-				preStatment.setBlob(7,imageStream);
 				
 				preStatment = con.prepareStatement("insert into Resident(f_Name,l_Name,email,phone,buildingID,password,image)"
 						+ " values(?,?,?,?,?,?,?)");
@@ -1300,7 +1300,7 @@ public class Login_Page {
 					frmLoginPage.dispose();
 					windowType = "User";
 					PasswordEntry.setText(signUpPasswordTextField.getText());
-					userPhoneNumber = signUpPasswordTextField.getText();
+					userPhoneNumber = signUpPhoneTextField.getText();
 					return;
 			
 				
@@ -1375,6 +1375,7 @@ public class Login_Page {
 		
 		
 		buildingNumberComboBox.setModel(new DefaultComboBoxModel(buildingNumbers.toArray(new String[0])));
+		
 		
 	}
 
